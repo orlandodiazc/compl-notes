@@ -3,6 +3,7 @@ package com.ditod.notes.domain.user;
 import com.ditod.notes.domain.DateTimeAudit;
 import com.ditod.notes.domain.note.Note;
 import com.ditod.notes.domain.user_image.UserImage;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class User extends DateTimeAudit {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Note> notes;
-
+    @JsonManagedReference
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserImage image;
 
