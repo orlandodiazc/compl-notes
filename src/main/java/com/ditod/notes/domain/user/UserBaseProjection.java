@@ -9,5 +9,9 @@ public interface UserBaseProjection {
 
     String getName();
 
-    UUID getImageId();
+    UserImageSummary getImage();
+
+    interface UserImageSummary {
+        UUID getId();
+    }
 }

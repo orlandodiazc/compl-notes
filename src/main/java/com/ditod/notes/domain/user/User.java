@@ -23,7 +23,7 @@ public class User extends DateTimeAudit {
     private String username;
 
     private String name;
-
+    @JsonManagedReference
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Note> notes;
     @JsonManagedReference

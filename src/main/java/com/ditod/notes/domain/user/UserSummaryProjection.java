@@ -1,7 +1,7 @@
 package com.ditod.notes.domain.user;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public interface UserSummaryProjection extends UserBaseProjection {
-    LocalDateTime getCreatedAt();
+    Instant getCreatedAt();
 }

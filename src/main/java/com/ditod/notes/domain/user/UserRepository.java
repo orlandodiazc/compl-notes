@@ -25,5 +25,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
             """)
     List<UserFilteredProjection> findFilteredUsers(@Param("term") String searchQuery, Pageable pageable);
 
-    Optional<UserSummaryProjection> findByUsername(String username);
+    <T> Optional<T> findByUsername(String username, Class<T> type);
 }

@@ -17,14 +17,14 @@ public class UserController {
     }
 
     @GetMapping
-    List<UserFilteredProjection> filteredInvoices(@RequestParam(required = false, defaultValue = "") String query) {
+    List<UserFilteredProjection> filteredUsers(@RequestParam(required = false, defaultValue = "") String query) {
         Pageable pageable = PageRequest.of(0, 6);
         return userRepository.findFilteredUsers(query, pageable);
     }
 
     @GetMapping("/{username}")
     UserSummaryProjection one(@PathVariable String username) {
-        return userRepository.findByUsername(username)
+        return userRepository.findByUsername(username, UserSummaryProjection.class)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
     }
 

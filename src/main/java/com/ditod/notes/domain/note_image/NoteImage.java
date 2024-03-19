@@ -2,6 +2,7 @@ package com.ditod.notes.domain.note_image;
 
 import com.ditod.notes.domain.DateTimeAudit;
 import com.ditod.notes.domain.note.Note;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -18,6 +19,7 @@ public class NoteImage extends DateTimeAudit {
 
     @ManyToOne
     @JoinColumn(name = "noteId")
+    @JsonBackReference
     private Note note;
 
     public NoteImage() {
