@@ -8,7 +8,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice
 public class RestExceptionControllerAdvice extends ResponseEntityExceptionHandler {
-    @ExceptionHandler({UsernameDoesNotExistException.class})
+    @ExceptionHandler({UsernameDoesNotExistException.class, NoteDoesNotExistException.class})
     public ProblemDetail exceptionDoesNotExistHandler(RuntimeException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     }

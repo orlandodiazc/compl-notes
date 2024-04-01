@@ -19,7 +19,7 @@ public class UserService {
 
     public User findById(UUID id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UsernameDoesNotExistException(id.toString()));
+                .orElseThrow(() -> new UsernameDoesNotExistException(id));
     }
 
     public List<UserFilteredDTO> findFilteredUsers(String search) {

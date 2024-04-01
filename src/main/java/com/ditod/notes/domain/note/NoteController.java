@@ -4,13 +4,11 @@ import com.ditod.notes.domain.note.dto.NoteRequest;
 import com.ditod.notes.domain.note.dto.NoteSummaryDTO;
 import com.ditod.notes.domain.note.dto.NoteUsernameAndIdDTO;
 import com.ditod.notes.domain.note_image.NoteImage;
-import com.ditod.notes.domain.note_image.NoteImageRepository;
+import com.ditod.notes.domain.note_image.NoteImageService;
 import com.ditod.notes.domain.user.User;
-import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.domain.user.dto.UserNotesDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,45 +20,37 @@ import java.util.stream.Collectors;
 @RequestMapping("/users/{username}/notes")
 public class NoteController {
     private final NoteService noteService;
-    private final UserRepository userRepository;
     private final UserService userService;
-    private final NoteImageRepository noteImageRepository;
+    private final NoteImageService noteImageService;
 
-    private final NoteRepository noteRepository;
-
-    public NoteController(NoteService noteService,
-            UserRepository userRepository, UserService userService,
-            NoteImageRepository noteImageRepository,
-            NoteRepository noteRepository) {
+    public NoteController(NoteService noteService, UserService userService,
+            NoteImageService noteImageService) {
         this.noteService = noteService;
-        this.userRepository = userRepository;
         this.userService = userService;
-        this.noteImageRepository = noteImageRepository;
-        this.noteRepository = noteRepository;
+        this.noteImageService = noteImageService;
     }
 
     @GetMapping
     UserNotesDTO allNotes(@PathVariable String username) {
-        return userRepository.findByUsername(username, UserNotesDTO.class)
-                .orElseThrow(() -> new UsernameNotFoundException(username)); // fix user not found
+        return noteService.findAll(username);
     }
 
     @GetMapping("/{noteId}")
     NoteSummaryDTO oneNote(@PathVariable UUID noteId) {
-        return noteRepository.findById(noteId, NoteSummaryDTO.class)
-                .orElseThrow();
+        return noteService.findNoteSummaryById(noteId);
     }
 
     @PostMapping
     NoteUsernameAndIdDTO newNote(@RequestBody Note note) {
         User user = userService.findById(note.getOwner().getId());
-        Note savedNote = noteRepository.save(new Note(note.getTitle(), note.getContent(), user, note.getImages()));
+        Note savedNote = noteService.save(new Note(note.getTitle(), note.getContent(), user, note.getImages()));
         return new NoteUsernameAndIdDTO(savedNote.getId(), user.getUsername());
     }
 
     @DeleteMapping("/{noteId}")
     void deleteNote(@PathVariable UUID noteId, @PathVariable String username) {
-        noteRepository.deleteById(noteId);
+        // Path variable must check for authorization
+        noteService.deleteById(noteId);
     }
 
     @PutMapping("/{noteId}")
@@ -69,28 +59,27 @@ public class NoteController {
             @PathVariable String username) {
         User owner = userService.findByUsername(username, User.class);
 
-        Note replacedNote = noteRepository.findById(noteId).map(note -> {
+        Note replacedOrNewNote = noteService.findNoteById(noteId).map(note -> {
             note.setTitle(newNote.getTitle());
             note.setContent(newNote.getContent());
             List<NoteImage> imageUpdates = noteService.convertMultipartFilesToNoteImage(newNote.getImages(), note);
             if (imageUpdates.isEmpty()) {
-                noteImageRepository.deleteByNote(note);
+                noteImageService.deleteByNote(note);
             } else {
-                noteImageRepository.deleteByIdNotIn(imageUpdates.stream()
+                noteImageService.deleteByIdNotIn(imageUpdates.stream()
                         .map(NoteImage::getId)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
             }
 
-            noteImageRepository.saveAll(imageUpdates);
-            return noteRepository.save(note);
+            return noteService.save(note);
         }).orElseGet(() -> {
-            Note createdNote = noteRepository.save(new Note(newNote.getTitle(), newNote.getContent(), owner));
+            Note createdNote = noteService.save(new Note(newNote.getTitle(), newNote.getContent(), owner));
             createdNote.setImages(noteService.convertMultipartFilesToNoteImage(newNote.getImages(), createdNote));
-            return noteRepository.save(createdNote);
+            return noteService.save(createdNote);
         });
 
-        return ResponseEntity.ok(new NoteUsernameAndIdDTO(replacedNote.getId(), replacedNote.getOwner()
+        return ResponseEntity.ok(new NoteUsernameAndIdDTO(replacedOrNewNote.getId(), replacedOrNewNote.getOwner()
                 .getUsername()));
     }
 }
