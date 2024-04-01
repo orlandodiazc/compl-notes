@@ -12,35 +12,30 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/user-images")
 public class UserImageController {
-    private final UserImageRepository userImageRepository;
+    private final UserImageService userImageService;
 
-
-    public UserImageController(UserImageRepository userImageRepository) {
-        this.userImageRepository = userImageRepository;
+    public UserImageController(UserImageService userImageService) {
+        this.userImageService = userImageService;
     }
 
     @GetMapping("/{imageId}")
     ResponseEntity<?> oneUserImage(@PathVariable UUID imageId) {
-        var userImage = userImageRepository.findById(imageId);
-        if (userImage.isEmpty()) {
-            return ResponseEntity.status(400).body("Image Not Found");
-        } else {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.setContentType(MediaType.parseMediaType(userImage.get()
-                    .getContentType()));
-            responseHeaders.setContentLength(userImage.get().getBlob().length);
-            responseHeaders.setContentDisposition(ContentDisposition.builder("inline")
-                    .filename(imageId.toString())
-                    .build());
-            responseHeaders.setCacheControl(CacheControl.maxAge(Duration.ofDays(365))
-                    .cachePublic()
-                    .immutable());
-            return ResponseEntity.ok()
-                    .headers(responseHeaders)
-                    .body(userImage.get().getBlob());
+        UserImage userImage = userImageService.findById(imageId);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.parseMediaType(userImage.getContentType()));
+        responseHeaders.setContentLength(userImage.getBlob().length);
+        responseHeaders.setContentDisposition(ContentDisposition.builder("inline")
+                .filename(imageId.toString())
+                .build());
+        responseHeaders.setCacheControl(CacheControl.maxAge(Duration.ofDays(365))
+                .cachePublic()
+                .immutable());
 
-        }
+        return ResponseEntity.ok()
+                .headers(responseHeaders)
+                .body(userImage.getBlob());
     }
-
-
 }
+
+
+

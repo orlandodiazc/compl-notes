@@ -25,7 +25,8 @@ public class UserImage extends DateTimeAudit {
     public UserImage() {
     }
 
-    public UserImage(String altText, String contentType, byte[] blob, User user) {
+    public UserImage(String altText, String contentType, byte[] blob,
+            User user) {
         this.altText = altText;
         this.contentType = contentType;
         this.blob = blob;
