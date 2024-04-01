@@ -1,8 +1,8 @@
 package com.ditod.notes.domain.user;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.ditod.notes.domain.user.dto.UserFilteredDTO;
+import com.ditod.notes.domain.user.dto.UserSummaryDTO;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,22 +10,23 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserRepository userRepository;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
-    List<UserFilteredProjection> filteredUsers(@RequestParam(required = false, defaultValue = "") String query) {
-        Pageable pageable = PageRequest.of(0, 6);
-        return userRepository.findFilteredUsers(query, pageable);
+    ResponseEntity<List<UserFilteredDTO>> filteredUsers(
+            @RequestParam(required = false, defaultValue = "") String search) {
+        return ResponseEntity.ok(userService.findFilteredUsers(search));
     }
 
     @GetMapping("/{username}")
-    UserSummaryProjection one(@PathVariable String username) {
-        return userRepository.findByUsername(username, UserSummaryProjection.class)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+    ResponseEntity<UserSummaryDTO> onUser(@PathVariable String username) {
+        return ResponseEntity.ok(userService.findByUsername(username, UserSummaryDTO.class));
+
     }
 
 }

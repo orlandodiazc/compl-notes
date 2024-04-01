@@ -19,11 +19,10 @@ public class NoteImageController {
     }
 
     @GetMapping("/{imageId}")
-    ResponseEntity<?> one(@PathVariable UUID imageId) {
+    ResponseEntity<?> oneNoteImage(@PathVariable UUID imageId) {
         var userImage = noteImageRepository.findById(imageId);
-        System.out.println("image: " + userImage);
         if (userImage.isEmpty()) {
-            return ResponseEntity.status(400).body("Image Not Found");
+            return ResponseEntity.status(404).body("Image Not Found");
         } else {
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.setContentType(MediaType.parseMediaType(userImage.get()

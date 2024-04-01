@@ -1,5 +1,6 @@
 package com.ditod.notes.domain.user;
 
+import com.ditod.notes.domain.user.dto.UserFilteredDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,7 +24,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
             ) DESC
                         
             """)
-    List<UserFilteredProjection> findFilteredUsers(@Param("term") String searchQuery, Pageable pageable);
+    List<UserFilteredDTO> findFilteredUsers(@Param("term") String searchQuery,
+            Pageable pageable);
 
     <T> Optional<T> findByUsername(String username, Class<T> type);
 }

@@ -1,7 +1,10 @@
 package com.ditod.notes.domain.user_image;
 
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 import java.util.UUID;
@@ -17,9 +20,8 @@ public class UserImageController {
     }
 
     @GetMapping("/{imageId}")
-    ResponseEntity<?> one(@PathVariable UUID imageId) {
+    ResponseEntity<?> oneUserImage(@PathVariable UUID imageId) {
         var userImage = userImageRepository.findById(imageId);
-        System.out.println("image: " + userImage);
         if (userImage.isEmpty()) {
             return ResponseEntity.status(400).body("Image Not Found");
         } else {

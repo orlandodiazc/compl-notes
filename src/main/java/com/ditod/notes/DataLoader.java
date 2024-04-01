@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.Collections;
 
 @Component
 public class DataLoader implements ApplicationRunner {
@@ -26,7 +25,10 @@ public class DataLoader implements ApplicationRunner {
     private final NoteImageRepository noteImageRepository;
     static final String IMAGES_DIRECTORY = "/home/ditod/Code/JavaProjects/notes/src/test/java/com/ditod/notes/fixtures/images";
 
-    public DataLoader(UserRepository userRepository, UserImageRepository userImageRepository, NoteRepository noteRepository, NoteImageRepository noteImageRepository) {
+    public DataLoader(UserRepository userRepository,
+            UserImageRepository userImageRepository,
+            NoteRepository noteRepository,
+            NoteImageRepository noteImageRepository) {
         this.userRepository = userRepository;
         this.userImageRepository = userImageRepository;
         this.noteRepository = noteRepository;
@@ -37,17 +39,16 @@ public class DataLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         File ditodImageFile = new File(IMAGES_DIRECTORY + "/user/ditod.png");
         byte[] ditodImageContent = Files.readAllBytes(ditodImageFile.toPath());
-        User ditod = new User("ditod@test.com", "ditod", "Orlando Diaz", Collections.emptyList());
+        User ditod = new User("ditod@test.com", "ditod", "Orlando Diaz");
         UserImage ditodImage = new UserImage("Dito's profile picture", MediaType.IMAGE_PNG.toString(), ditodImageContent, ditod);
+
+        Note ditodNote = new Note("Koalas", "Koalas are great", ditod);
+        File ditodNoteImageFile = new File(IMAGES_DIRECTORY + "/ditod-notes/cute-koala.png");
+        byte[] ditodNoteImageContent = Files.readAllBytes(ditodNoteImageFile.toPath());
+        NoteImage ditodNoteImage = new NoteImage("Dito's note picture", MediaType.IMAGE_PNG.toString(), ditodNoteImageContent, ditodNote);
 
         userRepository.save(ditod);
         userImageRepository.save(ditodImage);
-
-        Note ditodNote = new Note("Basic Koala Facts", "Koalas are great", ditod);
-        File ditodNoteImageFile = new File(IMAGES_DIRECTORY + "/ditod-notes/cute-koala.png");
-        byte[] ditodNoteImageContent = Files.readAllBytes(ditodNoteImageFile.toPath());
-        NoteImage ditodNoteImage = new NoteImage("Dito's note picture", "image/png", ditodNoteImageContent, ditodNote);
-
         noteRepository.save(ditodNote);
         noteImageRepository.save(ditodNoteImage);
     }

@@ -1,10 +1,14 @@
-package com.ditod.notes.domain.user;
+package com.ditod.notes.domain.user.dto;
+
+import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public interface UserBaseProjection {
+public interface UserBaseDTO {
+    @NotNull
     UUID getId();
 
+    @NotNull
     String getUsername();
 
     String getName();
@@ -12,6 +16,7 @@ public interface UserBaseProjection {
     UserImageSummary getImage();
 
     interface UserImageSummary {
+        @NotNull
         UUID getId();
     }
 }

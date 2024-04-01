@@ -5,6 +5,7 @@ import com.ditod.notes.domain.note.Note;
 import com.ditod.notes.domain.user_image.UserImage;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,17 +15,19 @@ import java.util.UUID;
 public class User extends DateTimeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @NotNull
     private UUID id;
-
     @Column(unique = true)
+    @NotNull
     private String email;
-
     @Column(unique = true)
+    @NotNull
     private String username;
 
     private String name;
     @JsonManagedReference
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @NotNull
     private List<Note> notes;
     @JsonManagedReference
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
@@ -33,11 +36,10 @@ public class User extends DateTimeAudit {
     public User() {
     }
 
-    public User(String email, String username, String name, List<Note> notes) {
+    public User(String email, String username, String name) {
         this.email = email;
         this.username = username;
         this.name = name;
-        this.notes = notes;
     }
 
     public UUID getId() {
