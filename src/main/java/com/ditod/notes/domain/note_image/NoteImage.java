@@ -33,12 +33,6 @@ public class NoteImage extends DateTimeAudit {
         this.note = note;
     }
 
-    public NoteImage(String altText, String contentType, byte[] blob) {
-        this.altText = altText;
-        this.contentType = contentType;
-        this.blob = blob;
-    }
-
     public NoteImage(UUID id, String altText, String contentType, byte[] blob,
             Note note) {
         this.id = id;

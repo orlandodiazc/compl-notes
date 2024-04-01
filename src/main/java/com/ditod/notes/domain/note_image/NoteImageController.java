@@ -12,33 +12,29 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/note-images")
 public class NoteImageController {
-    private final NoteImageRepository noteImageRepository;
+    private final NoteImageService noteImageService;
 
-    public NoteImageController(NoteImageRepository noteImageRepository) {
-        this.noteImageRepository = noteImageRepository;
+    public NoteImageController(NoteImageService noteImageService) {
+        this.noteImageService = noteImageService;
     }
 
     @GetMapping("/{imageId}")
     ResponseEntity<?> oneNoteImage(@PathVariable UUID imageId) {
-        var userImage = noteImageRepository.findById(imageId);
-        if (userImage.isEmpty()) {
-            return ResponseEntity.status(404).body("Image Not Found");
-        } else {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.setContentType(MediaType.parseMediaType(userImage.get()
-                    .getContentType()));
-            responseHeaders.setContentLength(userImage.get().getBlob().length);
-            responseHeaders.setContentDisposition(ContentDisposition.builder("inline")
-                    .filename(imageId.toString())
-                    .build());
-            responseHeaders.setCacheControl(CacheControl.maxAge(Duration.ofDays(365))
-                    .cachePublic()
-                    .immutable());
-            return ResponseEntity.ok()
-                    .headers(responseHeaders)
-                    .body(userImage.get().getBlob());
+        NoteImage userImage = noteImageService.findById(imageId);
 
-        }
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.parseMediaType(userImage.getContentType()));
+        responseHeaders.setContentLength(userImage.getBlob().length);
+        responseHeaders.setContentDisposition(ContentDisposition.builder("inline")
+                .filename(imageId.toString())
+                .build());
+        responseHeaders.setCacheControl(CacheControl.maxAge(Duration.ofDays(365))
+                .cachePublic()
+                .immutable());
+
+        return ResponseEntity.ok()
+                .headers(responseHeaders)
+                .body(userImage.getBlob());
     }
 
 
