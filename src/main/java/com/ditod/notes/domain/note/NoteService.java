@@ -2,10 +2,10 @@ package com.ditod.notes.domain.note;
 
 import com.ditod.notes.domain.exception.NoteDoesNotExistException;
 import com.ditod.notes.domain.note.dto.NoteImageRequest;
-import com.ditod.notes.domain.note.dto.NoteSummaryDTO;
+import com.ditod.notes.domain.note.dto.NoteSummaryResponse;
 import com.ditod.notes.domain.note_image.NoteImage;
 import com.ditod.notes.domain.user.UserRepository;
-import com.ditod.notes.domain.user.dto.UserNotesDTO;
+import com.ditod.notes.domain.user.dto.UserNotesResponse;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -46,13 +46,13 @@ public class NoteService {
                 .toList();
     }
 
-    UserNotesDTO findAll(String username) {
-        return userRepository.findByUsername(username, UserNotesDTO.class)
+    UserNotesResponse findAll(String username) {
+        return userRepository.findByUsername(username, UserNotesResponse.class)
                 .orElseThrow(() -> new UsernameNotFoundException(username)); // fix user not found
     }
 
-    NoteSummaryDTO findNoteSummaryById(UUID noteId) {
-        return noteRepository.findById(noteId, NoteSummaryDTO.class)
+    NoteSummaryResponse findNoteSummaryById(UUID noteId) {
+        return noteRepository.findById(noteId, NoteSummaryResponse.class)
                 .orElseThrow(() -> new NoteDoesNotExistException(noteId));
     }
 

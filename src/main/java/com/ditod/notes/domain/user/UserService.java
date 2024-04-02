@@ -1,7 +1,7 @@
 package com.ditod.notes.domain.user;
 
 import com.ditod.notes.domain.exception.UsernameDoesNotExistException;
-import com.ditod.notes.domain.user.dto.UserFilteredDTO;
+import com.ditod.notes.domain.user.dto.UserFilteredResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class UserService {
                 .orElseThrow(() -> new UsernameDoesNotExistException(id));
     }
 
-    public List<UserFilteredDTO> findFilteredUsers(String search) {
+    public List<UserFilteredResponse> findFilteredUsers(String search) {
         Pageable pageable = PageRequest.of(0, 6);
         return userRepository.findFilteredUsers(search, pageable);
     }

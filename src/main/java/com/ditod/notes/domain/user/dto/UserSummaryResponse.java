@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 
-public interface UserSummaryDTO extends UserBaseDTO {
+public interface UserSummaryResponse extends UserBaseResponse {
     @NotNull
     Instant getCreatedAt();
 }

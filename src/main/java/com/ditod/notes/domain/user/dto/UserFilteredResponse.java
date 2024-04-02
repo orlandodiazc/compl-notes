@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public interface UserFilteredDTO {
+public interface UserFilteredResponse {
     @NotNull
     UUID getId();
 

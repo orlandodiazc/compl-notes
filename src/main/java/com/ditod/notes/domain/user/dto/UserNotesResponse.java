@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
-public interface UserNotesDTO extends UserBaseDTO {
+public interface UserNotesResponse extends UserBaseResponse {
     @NotNull List<NoteSummary> getNotes();
 
     interface NoteSummary {

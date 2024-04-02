@@ -1,13 +1,13 @@
 package com.ditod.notes.domain.note;
 
 import com.ditod.notes.domain.note.dto.NoteRequest;
-import com.ditod.notes.domain.note.dto.NoteSummaryDTO;
-import com.ditod.notes.domain.note.dto.NoteUsernameAndIdDTO;
+import com.ditod.notes.domain.note.dto.NoteSummaryResponse;
+import com.ditod.notes.domain.note.dto.NoteUsernameAndIdResponse;
 import com.ditod.notes.domain.note_image.NoteImage;
 import com.ditod.notes.domain.note_image.NoteImageService;
 import com.ditod.notes.domain.user.User;
 import com.ditod.notes.domain.user.UserService;
-import com.ditod.notes.domain.user.dto.UserNotesDTO;
+import com.ditod.notes.domain.user.dto.UserNotesResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,20 +31,20 @@ public class NoteController {
     }
 
     @GetMapping
-    UserNotesDTO allNotes(@PathVariable String username) {
+    UserNotesResponse allNotes(@PathVariable String username) {
         return noteService.findAll(username);
     }
 
     @GetMapping("/{noteId}")
-    NoteSummaryDTO oneNote(@PathVariable UUID noteId) {
+    NoteSummaryResponse oneNote(@PathVariable UUID noteId) {
         return noteService.findNoteSummaryById(noteId);
     }
 
     @PostMapping
-    NoteUsernameAndIdDTO newNote(@RequestBody Note note) {
+    NoteUsernameAndIdResponse newNote(@RequestBody Note note) {
         User user = userService.findById(note.getOwner().getId());
         Note savedNote = noteService.save(new Note(note.getTitle(), note.getContent(), user, note.getImages()));
-        return new NoteUsernameAndIdDTO(savedNote.getId(), user.getUsername());
+        return new NoteUsernameAndIdResponse(savedNote.getId(), user.getUsername());
     }
 
     @DeleteMapping("/{noteId}")
@@ -54,7 +54,7 @@ public class NoteController {
     }
 
     @PutMapping("/{noteId}")
-    ResponseEntity<NoteUsernameAndIdDTO> replaceNote(
+    ResponseEntity<NoteUsernameAndIdResponse> replaceNote(
             @ModelAttribute NoteRequest newNote, @PathVariable UUID noteId,
             @PathVariable String username) {
         User owner = userService.findByUsername(username, User.class);
@@ -71,7 +71,7 @@ public class NoteController {
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
             }
-
+            noteImageService.save(imageUpdates);
             return noteService.save(note);
         }).orElseGet(() -> {
             Note createdNote = noteService.save(new Note(newNote.getTitle(), newNote.getContent(), owner));
@@ -79,7 +79,7 @@ public class NoteController {
             return noteService.save(createdNote);
         });
 
-        return ResponseEntity.ok(new NoteUsernameAndIdDTO(replacedOrNewNote.getId(), replacedOrNewNote.getOwner()
+        return ResponseEntity.ok(new NoteUsernameAndIdResponse(replacedOrNewNote.getId(), replacedOrNewNote.getOwner()
                 .getUsername()));
     }
 }

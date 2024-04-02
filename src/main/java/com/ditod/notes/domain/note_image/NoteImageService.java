@@ -15,6 +15,10 @@ public class NoteImageService {
         this.noteImageRepository = noteImageRepository;
     }
 
+    public void save(List<NoteImage> images) {
+        noteImageRepository.saveAll(images);
+    }
+
     public void deleteByNote(Note note) {
         noteImageRepository.deleteByNote(note);
     }
