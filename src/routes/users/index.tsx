@@ -1,12 +1,13 @@
 import { SearchBar } from "@/components/search-bar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { usersQuery } from "@/lib/api/queryOptions";
-import { cn, getUserImgSrc } from "@/lib/utils";
+import { getNameInitials, getUserImgSrc } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 
 export const Route = createFileRoute("/users/")({
-  component: Users,
+  component: UsersRoute,
   validateSearch: z.object({ filter: z.string().optional() }),
   loaderDeps: ({ search: { filter } }) => ({ filter }),
   loader: ({ deps: { filter }, context: { queryClient } }) => {
@@ -14,15 +15,18 @@ export const Route = createFileRoute("/users/")({
   },
 });
 
-function Users() {
+function UsersRoute() {
   const navigate = useNavigate({ from: Route.fullPath });
   const search = Route.useSearch();
   return (
-    <main className="container my-8 flex flex-col items-center justify-center gap-6">
-      <div className="md:w-96">
+    <main className="container my-20 flex flex-col items-center justify-center gap-6">
+      <h1 className="text-h1">Compl Notes Users</h1>
+      <div className="w-full max-w-3xl ">
         <SearchBar
           handleChange={(term) => navigate({ search: { filter: term } })}
+          autoFocus
           defaultValue={search.filter}
+          placeholder="Search users..."
         />
       </div>
       <UserList />
@@ -37,22 +41,22 @@ function UserList() {
   return (
     <>
       {data.length ? (
-        <ul
-          className={cn(
-            "flex w-full flex-wrap items-center justify-center gap-4 delay-200",
-          )}
-        >
+        <ul className="flex w-full flex-wrap items-center justify-center gap-4 delay-200">
           {data.map((user) => (
             <li key={user.id}>
               <Link
                 to={user.username}
                 className="flex h-36 w-44 flex-col items-center justify-center rounded-lg bg-muted px-5 py-3"
               >
-                <img
-                  alt={user.name ?? user.username}
-                  src={getUserImgSrc(user.imageId)}
-                  className="h-16 w-16 rounded-full"
-                />
+                <Avatar className="h-16 w-16">
+                  <AvatarImage
+                    src={getUserImgSrc(user.imageId)}
+                    alt={user.name ?? user.username}
+                  />
+                  <AvatarFallback>
+                    {getNameInitials(user.name) ?? user.username.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
                 {user.name ? (
                   <span className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-center text-body-md">
                     {user.name}

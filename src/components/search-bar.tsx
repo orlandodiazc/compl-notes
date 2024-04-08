@@ -25,7 +25,7 @@ export function SearchBar({
     400,
   );
   return (
-    <div className="relative max-w-96">
+    <div className="relative">
       <Label htmlFor={inputId} className="sr-only">
         Search
       </Label>

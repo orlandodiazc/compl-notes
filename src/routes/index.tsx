@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  component: RootIndexRoute,
 });
 
-function Index() {
+function RootIndexRoute() {
   return (
     <div className="container text-center">
       <h1 className="my-8 text-h1">Epic Notes</h1>
