@@ -57,7 +57,6 @@ export default function NoteForm({
     id: "note-editor",
     onValidate({ formData }) {
       const sub = parseWithZod(formData, { schema: NoteEditorSchema });
-      console.log(sub.payload);
       return sub;
     },
     shouldValidate: "onBlur",
