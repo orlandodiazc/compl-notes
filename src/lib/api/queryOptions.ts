@@ -5,6 +5,7 @@ import {
   fetchNote,
   fetchNotes,
   fetchUser,
+  newNote,
   putNote,
 } from ".";
 import { queryClient } from "@/main";
@@ -53,6 +54,17 @@ export const usePutNoteMutation = (params: {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: noteQuery(params).queryKey,
+      });
+    },
+  });
+};
+
+export const useNewNoteMutation = (username: string) => {
+  return useMutation({
+    mutationFn: (formData: FormData) => newNote({ username, formData }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: notesQuery(username).queryKey,
       });
     },
   });

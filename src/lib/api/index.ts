@@ -80,3 +80,24 @@ export async function putNote({
     throw data;
   }
 }
+
+export async function newNote({
+  username,
+  formData,
+}: {
+  username: string;
+  formData: FormData;
+}) {
+  const response = await fetch(API_BASEURL + "/users/" + username + "/notes", {
+    method: "POST",
+    body: formData,
+  });
+  //maybe add submission reply
+  const data = await response.json();
+  if (response.status === 400) {
+    return data;
+  }
+  if (!response.ok) {
+    throw data;
+  }
+}

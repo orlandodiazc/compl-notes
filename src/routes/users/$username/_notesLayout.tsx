@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Icon } from "@/components/ui/icon";
 import { notesQuery } from "@/lib/api/queryOptions";
 import { getNameInitials, getUserImgSrc } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -40,6 +41,15 @@ export default function NotesRoute() {
               </h1>
             </Link>
             <ul className="overflow-y-auto overflow-x-hidden pb-12">
+              <li className="p-1 pr-0">
+                <Link
+                  to="/users/$username/notes/new"
+                  params={{ username }}
+                  className="line-clamp-2 block rounded-l-full py-2 pl-8 pr-6 text-base lg:text-xl data-[status=active]:bg-background"
+                >
+                  <Icon name="plus">New Note</Icon>
+                </Link>
+              </li>
               {data.notes.map((note) => (
                 <li key={note.id} className="p-1 pr-0">
                   <Link

@@ -18,6 +18,7 @@ import { Route as UsersIndexImport } from './routes/users/index'
 import { Route as UsersUsernameIndexImport } from './routes/users/$username/index'
 import { Route as UsersUsernameNotesLayoutImport } from './routes/users/$username/_notesLayout'
 import { Route as UsersUsernameNotesLayoutNotesIndexImport } from './routes/users/$username/_notesLayout/notes.index'
+import { Route as UsersUsernameNotesLayoutNotesNewImport } from './routes/users/$username/_notesLayout/notes.new'
 import { Route as UsersUsernameNotesLayoutNotesNoteIdImport } from './routes/users/$username/_notesLayout/notes.$noteId'
 import { Route as UsersUsernameNotesLayoutNotesNoteIdEditImport } from './routes/users/$username/_notesLayout/notes.$noteId_.edit'
 
@@ -55,6 +56,12 @@ const UsersUsernameNotesLayoutRoute = UsersUsernameNotesLayoutImport.update({
 const UsersUsernameNotesLayoutNotesIndexRoute =
   UsersUsernameNotesLayoutNotesIndexImport.update({
     path: '/notes/',
+    getParentRoute: () => UsersUsernameNotesLayoutRoute,
+  } as any)
+
+const UsersUsernameNotesLayoutNotesNewRoute =
+  UsersUsernameNotesLayoutNotesNewImport.update({
+    path: '/notes/new',
     getParentRoute: () => UsersUsernameNotesLayoutRoute,
   } as any)
 
@@ -98,6 +105,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UsersUsernameNotesLayoutNotesNoteIdImport
       parentRoute: typeof UsersUsernameNotesLayoutImport
     }
+    '/users/$username/_notesLayout/notes/new': {
+      preLoaderRoute: typeof UsersUsernameNotesLayoutNotesNewImport
+      parentRoute: typeof UsersUsernameNotesLayoutImport
+    }
     '/users/$username/_notesLayout/notes/': {
       preLoaderRoute: typeof UsersUsernameNotesLayoutNotesIndexImport
       parentRoute: typeof UsersUsernameNotesLayoutImport
@@ -117,6 +128,7 @@ export const routeTree = rootRoute.addChildren([
   UsersUsernameRoute.addChildren([
     UsersUsernameNotesLayoutRoute.addChildren([
       UsersUsernameNotesLayoutNotesNoteIdRoute,
+      UsersUsernameNotesLayoutNotesNewRoute,
       UsersUsernameNotesLayoutNotesIndexRoute,
       UsersUsernameNotesLayoutNotesNoteIdEditRoute,
     ]),
