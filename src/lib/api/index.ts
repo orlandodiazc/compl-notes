@@ -1,6 +1,6 @@
 import { ApiSchema } from "./apiSchema";
 
-export const API_BASEURL = "http://localhost:8080";
+export const API_BASEURL = import.meta.env.VITE_API_BASEURL;
 
 async function fetcher(...args: Parameters<typeof fetch>) {
   const [url, opts] = args;
