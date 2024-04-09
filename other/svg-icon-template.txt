@@ -3,8 +3,6 @@
 
 import { type SVGProps } from 'react'
 import { cn } from '@/lib/utils'
-import href from './icon.svg'
-export { href }
 
 const sizeClassName = {
 	font: 'w-[1em] h-[1em]',
@@ -57,7 +55,7 @@ export function Icon({
 			{...props}
 			className={cn(sizeClassName[size], 'inline self-center', className)}
 		>
-			<use href={`${href}#${name}`} />
+			<use href={`/icon.svg#${name}`} />
 		</svg>
 	)
 }
