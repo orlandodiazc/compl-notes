@@ -5,7 +5,6 @@ export const API_BASEURL = import.meta.env.VITE_API_BASEURL;
 async function fetcher(...args: Parameters<typeof fetch>) {
   const [url, opts] = args;
   const response = await fetch(`${API_BASEURL}${url}`, opts);
-  console.log(response);
   const data = await response.json();
   if (!response.ok) throw data;
   return data;
