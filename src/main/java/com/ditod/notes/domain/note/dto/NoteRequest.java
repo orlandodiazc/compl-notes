@@ -1,11 +1,19 @@
 package com.ditod.notes.domain.note.dto;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
+
 import java.util.List;
 
 public class NoteRequest {
+    @Size(min = 1, max = 10)
     private String title;
+
+    @Size(min = 1, max = 10000)
     private String content;
-    private List<NoteImageRequest> images;
+
+    @Size(max = 5)
+    private List<@Valid NoteImageRequest> images;
 
     public String getTitle() {
         return title;

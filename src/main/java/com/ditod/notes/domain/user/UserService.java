@@ -1,6 +1,6 @@
 package com.ditod.notes.domain.user;
 
-import com.ditod.notes.domain.exception.UsernameDoesNotExistException;
+import com.ditod.notes.domain.exception.EntityNotFoundException;
 import com.ditod.notes.domain.user.dto.UserFilteredResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +19,7 @@ public class UserService {
 
     public User findById(UUID id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UsernameDoesNotExistException(id));
+                .orElseThrow(() -> new EntityNotFoundException("username", id));
     }
 
     public List<UserFilteredResponse> findFilteredUsers(String search) {
@@ -29,6 +29,6 @@ public class UserService {
 
     public <T> T findByUsername(String username, Class<T> type) {
         return userRepository.findByUsername(username, type)
-                .orElseThrow(() -> new UsernameDoesNotExistException(username));
+                .orElseThrow(() -> new EntityNotFoundException("username", username));
     }
 }

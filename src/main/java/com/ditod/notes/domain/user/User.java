@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +16,6 @@ import java.util.UUID;
 public class User extends DateTimeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @NotNull
     private UUID id;
     @Column(unique = true)
     @NotNull
@@ -40,6 +40,7 @@ public class User extends DateTimeAudit {
         this.email = email;
         this.username = username;
         this.name = name;
+        this.notes = Collections.emptyList();
     }
 
     public UUID getId() {

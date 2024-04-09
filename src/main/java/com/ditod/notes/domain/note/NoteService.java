@@ -1,19 +1,15 @@
 package com.ditod.notes.domain.note;
 
-import com.ditod.notes.domain.exception.NoteDoesNotExistException;
+import com.ditod.notes.domain.exception.EntityNotFoundException;
 import com.ditod.notes.domain.note.dto.NoteImageRequest;
 import com.ditod.notes.domain.note.dto.NoteSummaryResponse;
 import com.ditod.notes.domain.note_image.NoteImage;
 import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user.dto.UserNotesResponse;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -36,24 +32,27 @@ public class NoteService {
                 .orElseGet(Stream::empty)
                 .map(i -> {
                     try {
+                        if (i.getFile().getSize() == 0 && i.getId() == null) {
+                            return null;
+                        }
                         return new NoteImage(i.getId(), i.getAltText(), i.getFile()
                                 .getContentType(), i.getFile()
                                 .getBytes(), note);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                })
+                }).filter(Objects::nonNull)
                 .toList();
     }
 
     UserNotesResponse findAll(String username) {
         return userRepository.findByUsername(username, UserNotesResponse.class)
-                .orElseThrow(() -> new UsernameNotFoundException(username)); // fix user not found
+                .orElseThrow(() -> new EntityNotFoundException("username", username));
     }
 
     NoteSummaryResponse findNoteSummaryById(UUID noteId) {
         return noteRepository.findById(noteId, NoteSummaryResponse.class)
-                .orElseThrow(() -> new NoteDoesNotExistException(noteId));
+                .orElseThrow(() -> new EntityNotFoundException("note", noteId));
     }
 
     Optional<Note> findNoteById(UUID noteId) {

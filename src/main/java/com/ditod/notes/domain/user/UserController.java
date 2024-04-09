@@ -19,8 +19,8 @@ public class UserController {
 
     @GetMapping
     ResponseEntity<List<UserFilteredResponse>> filteredUsers(
-            @RequestParam(required = false, defaultValue = "") String search) {
-        return ResponseEntity.ok(userService.findFilteredUsers(search));
+            @RequestParam(required = false, defaultValue = "") String filter) {
+        return ResponseEntity.ok(userService.findFilteredUsers(filter));
     }
 
     @GetMapping("/{username}")

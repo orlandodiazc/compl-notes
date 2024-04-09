@@ -1,6 +1,6 @@
 package com.ditod.notes.domain.user_image;
 
-import com.ditod.notes.domain.exception.NotFoundException;
+import com.ditod.notes.domain.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -16,6 +16,6 @@ public class UserImageService {
 
     public UserImage findById(UUID id) {
         return userImageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No user image with the id " + id + " exists"));
+                .orElseThrow(() -> new EntityNotFoundException("user image", id));
     }
 }

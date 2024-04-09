@@ -1,6 +1,6 @@
 package com.ditod.notes.domain.note_image;
 
-import com.ditod.notes.domain.exception.NotFoundException;
+import com.ditod.notes.domain.exception.EntityNotFoundException;
 import com.ditod.notes.domain.note.Note;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +29,6 @@ public class NoteImageService {
 
     NoteImage findById(UUID id) {
         return noteImageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No note image with the id " + id + " exists"));
+                .orElseThrow(() -> new EntityNotFoundException("note image", id));
     }
 }

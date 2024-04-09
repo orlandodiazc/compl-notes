@@ -8,6 +8,8 @@ import com.ditod.notes.domain.note_image.NoteImageService;
 import com.ditod.notes.domain.user.User;
 import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.domain.user.dto.UserNotesResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,32 +33,39 @@ public class NoteController {
     }
 
     @GetMapping
-    UserNotesResponse allNotes(@PathVariable String username) {
-        return noteService.findAll(username);
+    ResponseEntity<UserNotesResponse> allNotes(@PathVariable String username) {
+        return ResponseEntity.ok(noteService.findAll(username));
     }
 
     @GetMapping("/{noteId}")
-    NoteSummaryResponse oneNote(@PathVariable UUID noteId) {
-        return noteService.findNoteSummaryById(noteId);
+    ResponseEntity<NoteSummaryResponse> oneNote(@PathVariable UUID noteId) {
+        return ResponseEntity.ok(noteService.findNoteSummaryById(noteId));
     }
 
     @PostMapping
-    NoteUsernameAndIdResponse newNote(@RequestBody Note note) {
-        User user = userService.findById(note.getOwner().getId());
-        Note savedNote = noteService.save(new Note(note.getTitle(), note.getContent(), user, note.getImages()));
-        return new NoteUsernameAndIdResponse(savedNote.getId(), user.getUsername());
+    ResponseEntity<NoteUsernameAndIdResponse> newNote(
+            @Valid @ModelAttribute NoteRequest note,
+            @PathVariable String username, HttpServletRequest request) {
+        User user = userService.findByUsername(username, User.class);
+        Note savedNote = noteService.save(new Note(note.getTitle(), note.getContent(), user));
+        List<NoteImage> images = noteService.convertMultipartFilesToNoteImage(note.getImages(), savedNote);
+        noteImageService.save(images);
+        return ResponseEntity.ok(new NoteUsernameAndIdResponse(savedNote.getId(), savedNote.getOwner()
+                .getUsername()));
     }
 
     @DeleteMapping("/{noteId}")
-    void deleteNote(@PathVariable UUID noteId, @PathVariable String username) {
+    ResponseEntity<Void> deleteNote(@PathVariable UUID noteId,
+            @PathVariable String username) {
         // Path variable must check for authorization
         noteService.deleteById(noteId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{noteId}")
     ResponseEntity<NoteUsernameAndIdResponse> replaceNote(
-            @ModelAttribute NoteRequest newNote, @PathVariable UUID noteId,
-            @PathVariable String username) {
+            @Valid @ModelAttribute NoteRequest newNote,
+            @PathVariable UUID noteId, @PathVariable String username) {
         User owner = userService.findByUsername(username, User.class);
 
         Note replacedOrNewNote = noteService.findNoteById(noteId).map(note -> {
