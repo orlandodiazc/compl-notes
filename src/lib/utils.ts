@@ -10,6 +10,10 @@ export function getUserImgSrc(imageId?: string) {
   return `${API_BASEURL}/user-images/${imageId}`;
 }
 
+export function getNoteImgSrc(imageId: string) {
+  return `${API_BASEURL}/note-images/${imageId}`;
+}
+
 export function getNameInitials(name?: string) {
   if (!name) return;
   return name

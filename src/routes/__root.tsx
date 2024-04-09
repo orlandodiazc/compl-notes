@@ -4,7 +4,7 @@ import {
   Outlet,
   createRootRouteWithContext,
 } from "@tanstack/react-router";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -16,7 +16,7 @@ function RootRoute() {
   return (
     <>
       <Helmet>
-        <title>Compl notes</title>
+        <title>Compl Notes</title>
         <meta
           name="description"
           content="Effortlessly track your own notes and those of your friends."

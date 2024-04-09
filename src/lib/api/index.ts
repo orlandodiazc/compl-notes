@@ -20,3 +20,39 @@ export async function fetchUser(
   if (!response.ok) throw data;
   return data;
 }
+
+export async function fetchNotes(
+  username: string,
+): Promise<ApiSchema["UserNotesResponse"]> {
+  const response = await fetch(API_BASEURL + "/users/" + username + "/notes");
+  const data = await response.json();
+  if (!response.ok) throw data;
+  return data;
+}
+
+export async function fetchNote({
+  username,
+  noteId,
+}: {
+  username: string;
+  noteId: string;
+}): Promise<ApiSchema["NoteSummaryResponse"]> {
+  const response = await fetch(
+    API_BASEURL + "/users/" + username + "/notes/" + noteId,
+  );
+  const data = await response.json();
+  if (!response.ok) throw data;
+  return data;
+}
+
+export async function deleteNote({
+  username,
+  noteId,
+}: {
+  username: string;
+  noteId: string;
+}) {
+  await fetch(API_BASEURL + "/users/" + username + "/notes/" + noteId, {
+    method: "delete",
+  });
+}

@@ -1,8 +1,8 @@
 import { useDebounce } from "@/lib/misc";
-import { Label } from "@radix-ui/react-label";
 import { ChangeEvent, useId } from "react";
 import { Input } from "./ui/input";
 import { Icon } from "./ui/icon";
+import { Label } from "./ui/label";
 
 export function SearchBar({
   autoFocus = false,

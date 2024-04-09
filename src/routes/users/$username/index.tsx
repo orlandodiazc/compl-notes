@@ -4,9 +4,9 @@ import { userQuery } from "@/lib/api/queryOptions";
 import { getNameInitials, getUserImgSrc } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
-export const Route = createFileRoute("/users/$username")({
+export const Route = createFileRoute("/users/$username/")({
   component: UserProfileRoute,
   loader: ({ params: { username }, context: { queryClient } }) => {
     return queryClient.ensureQueryData(userQuery(username));
@@ -14,17 +14,17 @@ export const Route = createFileRoute("/users/$username")({
 });
 
 export default function UserProfileRoute() {
-  const params = Route.useParams();
-  const { data } = useSuspenseQuery(userQuery(params.username));
+  const { username } = Route.useParams();
+  const { data } = useSuspenseQuery(userQuery(username));
   const userDisplayName = data.name ?? data.username;
 
   return (
     <main className="container my-20 flex flex-col items-center justify-center">
       <Helmet>
-        <title> {`${userDisplayName} | Epic Notes`}</title>
+        <title> {`${userDisplayName} | Compl Notes`}</title>
         <meta
           name="description"
-          content={`Profile of ${userDisplayName} on Epic Notes`}
+          content={`Profile of ${userDisplayName} on Compl Notes`}
         />
       </Helmet>
       <div className="container flex flex-col items-center rounded-3xl bg-muted p-12 mt-4">
@@ -53,7 +53,9 @@ export default function UserProfileRoute() {
           </p>
           <div className="mt-10 flex gap-4">
             <Button asChild>
-              <Link to="notes">{userDisplayName}'s notes</Link>
+              <Link to="/users/$username/notes" params={{ username }}>
+                {userDisplayName}'s notes
+              </Link>
             </Button>
           </div>
         </div>
