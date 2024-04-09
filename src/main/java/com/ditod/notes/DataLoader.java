@@ -23,7 +23,7 @@ public class DataLoader implements ApplicationRunner {
     private final NoteRepository noteRepository;
 
     private final NoteImageRepository noteImageRepository;
-    static final String IMAGES_DIRECTORY = "/home/ditod/Code/JavaProjects/notes/src/test/java/com/ditod/notes/fixtures/images";
+    static final String IMAGES_DIRECTORY = "./images";
 
     public DataLoader(UserRepository userRepository,
             UserImageRepository userImageRepository,
