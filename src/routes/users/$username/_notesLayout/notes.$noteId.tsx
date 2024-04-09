@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { noteQuery, useDeleteNoteMutation } from "@/lib/api/queryOptions";
 import { getNoteImgSrc } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute(
   "/users/$username/_notesLayout/notes/$noteId",
@@ -25,6 +25,7 @@ export default function NoteRoute() {
         navigate({
           to: "/users/$username/notes",
           params: { username: params.username },
+          replace: true,
         });
       },
     });
@@ -51,12 +52,18 @@ export default function NoteRoute() {
         </p>
       </div>
       <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 rounded-lg bg-muted/80 p-4 pl-5 shadow-xl shadow-accent backdrop-blur-sm md:gap-4 md:pl-7 justify-end">
-        <Button onClick={handleDeleteClick} disabled={isPending}>
+        <Button
+          onClick={handleDeleteClick}
+          disabled={isPending}
+          variant="destructive"
+        >
           Delete
         </Button>
-        {/* <Button asChild>
-          <Link to="edit">Edit</Link>
-        </Button> */}
+        <Button asChild>
+          <Link to="/users/$username/notes/$noteId/edit" params={params}>
+            Edit
+          </Link>
+        </Button>
       </div>
     </div>
   );

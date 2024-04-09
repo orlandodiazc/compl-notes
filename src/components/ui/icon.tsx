@@ -1,30 +1,30 @@
 // THIS FILE IS GENERATED, edit ./other/svg-icon-template.txt instead
 // then run "npm run build:icons"
 
-import { type SVGProps } from "react";
-import href from "./icon.svg";
-import { cn } from "@/lib/utils";
-export { href };
+import { type SVGProps } from 'react'
+import { cn } from '@/lib/utils'
+import href from './icon.svg'
+export { href }
 
 const sizeClassName = {
-  font: "w-[1em] h-[1em]",
-  xs: "w-3 h-3",
-  sm: "w-4 h-4",
-  md: "w-5 h-5",
-  lg: "w-6 h-6",
-  xl: "w-7 h-7",
-} as const;
+	font: 'w-[1em] h-[1em]',
+	xs: 'w-3 h-3',
+	sm: 'w-4 h-4',
+	md: 'w-5 h-5',
+	lg: 'w-6 h-6',
+	xl: 'w-7 h-7',
+} as const
 
-type Size = keyof typeof sizeClassName;
+type Size = keyof typeof sizeClassName
 
 const childrenSizeClassName = {
-  font: "gap-1",
-  xs: "gap-1",
-  sm: "gap-1",
-  md: "gap-2",
-  lg: "gap-2",
-  xl: "gap-3",
-} satisfies Record<Size, string>;
+	font: 'gap-1',
+	xs: 'gap-1',
+	sm: 'gap-1',
+	md: 'gap-2',
+	lg: 'gap-2',
+	xl: 'gap-3',
+} satisfies Record<Size, string>
 
 /**
  * Renders an SVG icon. The icon defaults to the size of the font. To make it
@@ -35,32 +35,38 @@ const childrenSizeClassName = {
  * aligned.
  */
 export function Icon({
-  name,
-  size = "font",
-  className,
-  children,
-  ...props
+	name,
+	size = 'font',
+	className,
+	children,
+	...props
 }: SVGProps<SVGSVGElement> & {
-  name: IconName;
-  size?: Size;
+	name: IconName
+	size?: Size
 }) {
-  if (children) {
-    return (
-      <span className={`inline-flex ${childrenSizeClassName[size]}`}>
-        <Icon name={name} size={size} className={className} {...props} />
-        {children}
-      </span>
-    );
-  }
-  return (
-    <svg
-      {...props}
-      className={cn(sizeClassName[size], "inline self-center", className)}
-    >
-      <use href={`${href}#${name}`} />
-    </svg>
-  );
+	if (children) {
+		return (
+			<span className={`inline-flex ${childrenSizeClassName[size]}`}>
+				<Icon name={name} size={size} className={className} {...props} />
+				{children}
+			</span>
+		)
+	}
+	return (
+		<svg
+			{...props}
+			className={cn(sizeClassName[size], 'inline self-center', className)}
+		>
+			<use href={`${href}#${name}`} />
+		</svg>
+	)
 }
 
-export const iconNames = ["search"] as const;
-export type IconName = (typeof iconNames)[number];
+export const iconNames = [
+  "check",
+  "plus",
+  "search",
+  "update",
+  "x",
+] as const;
+export type IconName = typeof iconNames[number];

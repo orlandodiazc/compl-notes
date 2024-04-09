@@ -53,6 +53,30 @@ export async function deleteNote({
   noteId: string;
 }) {
   await fetch(API_BASEURL + "/users/" + username + "/notes/" + noteId, {
-    method: "delete",
+    method: "DELETE",
   });
+}
+
+export async function putNote({
+  params: { username, noteId },
+  formData,
+}: {
+  params: { username: string; noteId: string };
+  formData: FormData;
+}) {
+  const response = await fetch(
+    API_BASEURL + "/users/" + username + "/notes/" + noteId,
+    {
+      method: "put",
+      body: formData,
+    },
+  );
+  //maybe add submission reply
+  const data = await response.json();
+  if (response.status === 400) {
+    return data;
+  }
+  if (!response.ok) {
+    throw data;
+  }
 }

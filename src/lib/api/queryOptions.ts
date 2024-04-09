@@ -5,6 +5,7 @@ import {
   fetchNote,
   fetchNotes,
   fetchUser,
+  putNote,
 } from ".";
 import { queryClient } from "@/main";
 
@@ -26,10 +27,10 @@ export const notesQuery = (username: string) =>
     queryFn: () => fetchNotes(username),
   });
 
-export const noteQuery = (opts: { username: string; noteId: string }) =>
+export const noteQuery = (params: { username: string; noteId: string }) =>
   queryOptions({
-    queryKey: ["users", "notes", opts],
-    queryFn: () => fetchNote(opts),
+    queryKey: ["users", "notes", params],
+    queryFn: () => fetchNote(params),
   });
 
 export const useDeleteNoteMutation = (usernameInvalidateParam: string) => {
@@ -38,6 +39,20 @@ export const useDeleteNoteMutation = (usernameInvalidateParam: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: notesQuery(usernameInvalidateParam).queryKey,
+      });
+    },
+  });
+};
+
+export const usePutNoteMutation = (params: {
+  username: string;
+  noteId: string;
+}) => {
+  return useMutation({
+    mutationFn: (formData: FormData) => putNote({ params, formData }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: noteQuery(params).queryKey,
       });
     },
   });
