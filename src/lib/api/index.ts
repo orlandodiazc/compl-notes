@@ -2,47 +2,41 @@ import { ApiSchema } from "./apiSchema";
 
 export const API_BASEURL = "http://localhost:8080";
 
-export async function fetchFilteredUsers(
+async function fetcher(...args: Parameters<typeof fetch>) {
+  const [url, opts] = args;
+  const response = await fetch(`${API_BASEURL}${url}`, opts);
+  console.log(response);
+  const data = await response.json();
+  if (!response.ok) throw data;
+  return data;
+}
+
+export function fetchFilteredUsers(
   filter?: string,
 ): Promise<ApiSchema["UserFilteredResponse"][]> {
-  const response = await fetch(
-    API_BASEURL + "/users?" + new URLSearchParams({ filter: filter ?? "" }),
-  );
-  const data = await response.json();
-  return data;
+  return fetcher("/users?" + new URLSearchParams({ filter: filter ?? "" }));
 }
 
-export async function fetchUser(
+export function fetchUser(
   username: string,
 ): Promise<ApiSchema["UserSummaryResponse"]> {
-  const response = await fetch(API_BASEURL + "/users/" + username);
-  const data = await response.json();
-  if (!response.ok) throw data;
-  return data;
+  return fetcher("/users/" + username);
 }
 
-export async function fetchNotes(
+export function fetchNotes(
   username: string,
 ): Promise<ApiSchema["UserNotesResponse"]> {
-  const response = await fetch(API_BASEURL + "/users/" + username + "/notes");
-  const data = await response.json();
-  if (!response.ok) throw data;
-  return data;
+  return fetcher("/users/" + username + "/notes");
 }
 
-export async function fetchNote({
+export function fetchNote({
   username,
   noteId,
 }: {
   username: string;
   noteId: string;
 }): Promise<ApiSchema["NoteSummaryResponse"]> {
-  const response = await fetch(
-    API_BASEURL + "/users/" + username + "/notes/" + noteId,
-  );
-  const data = await response.json();
-  if (!response.ok) throw data;
-  return data;
+  return fetcher("/users/" + username + "/notes/" + noteId);
 }
 
 export async function deleteNote({
@@ -57,47 +51,28 @@ export async function deleteNote({
   });
 }
 
-export async function putNote({
+export function putNote({
   params: { username, noteId },
   formData,
 }: {
   params: { username: string; noteId: string };
   formData: FormData;
 }) {
-  const response = await fetch(
-    API_BASEURL + "/users/" + username + "/notes/" + noteId,
-    {
-      method: "put",
-      body: formData,
-    },
-  );
-  //maybe add submission reply
-  const data = await response.json();
-  if (response.status === 400) {
-    return data;
-  }
-  if (!response.ok) {
-    throw data;
-  }
+  return fetcher("/users/" + username + "/notes/" + noteId, {
+    method: "put",
+    body: formData,
+  });
 }
 
-export async function newNote({
+export function newNote({
   username,
   formData,
 }: {
   username: string;
   formData: FormData;
 }) {
-  const response = await fetch(API_BASEURL + "/users/" + username + "/notes", {
+  return fetcher("/users/" + username + "/notes", {
     method: "POST",
     body: formData,
   });
-  //maybe add submission reply
-  const data = await response.json();
-  if (response.status === 400) {
-    return data;
-  }
-  if (!response.ok) {
-    throw data;
-  }
 }
