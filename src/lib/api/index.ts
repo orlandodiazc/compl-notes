@@ -1,6 +1,15 @@
 import { ApiSchema } from "./apiSchema";
+import Cookies from "js-cookie";
 
 export const API_BASEURL = import.meta.env.VITE_API_BASEURL;
+
+function getCsrfToken():
+  | Record<"X-XSRF-TOKEN", string>
+  | Record<string, never> {
+  const token = Cookies.get("XSRF-TOKEN");
+  if (!token) return {};
+  return { "X-XSRF-TOKEN": token };
+}
 
 async function fetcher(...args: Parameters<typeof fetch>) {
   const [url, opts] = args;
@@ -45,9 +54,15 @@ export async function deleteNote({
   username: string;
   noteId: string;
 }) {
-  await fetch(API_BASEURL + "/users/" + username + "/notes/" + noteId, {
-    method: "DELETE",
-  });
+  const response = await fetch(
+    API_BASEURL + "/users/" + username + "/notes/" + noteId,
+    {
+      method: "DELETE",
+      credentials: "include",
+      headers: { ...getCsrfToken() },
+    },
+  );
+  if (!response.ok) throw response;
 }
 
 export function putNote({
@@ -60,6 +75,8 @@ export function putNote({
   return fetcher("/users/" + username + "/notes/" + noteId, {
     method: "put",
     body: formData,
+    credentials: "include",
+    headers: { ...getCsrfToken() },
   });
 }
 
@@ -73,5 +90,7 @@ export function newNote({
   return fetcher("/users/" + username + "/notes", {
     method: "POST",
     body: formData,
+    credentials: "include",
+    headers: { ...getCsrfToken() },
   });
 }
