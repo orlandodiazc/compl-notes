@@ -10,12 +10,14 @@ import com.ditod.notes.domain.user_image.UserImage;
 import com.ditod.notes.domain.user_image.UserImageRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.nio.file.Files;
 
+@Profile("dev")
 @Component
 public class DataLoader implements ApplicationRunner {
     private final UserRepository userRepository;
@@ -23,7 +25,7 @@ public class DataLoader implements ApplicationRunner {
     private final NoteRepository noteRepository;
 
     private final NoteImageRepository noteImageRepository;
-    static final String IMAGES_DIRECTORY = "./images";
+    static final String IMAGES_DIRECTORY = "src/test/java/com/ditod/notes/fixtures/images";
 
     public DataLoader(UserRepository userRepository,
             UserImageRepository userImageRepository,
