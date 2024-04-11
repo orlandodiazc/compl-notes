@@ -18,7 +18,7 @@ public class SecurityConfig {
         http.cors(c -> {
             c.configurationSource(request -> {
                 CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:4173", "https://compl-notes.onrender.com/"));
+                config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:4173", "https://compl-notes.onrender.com/", "https://compl.fly.dev/"));
                 config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
                 config.setAllowedHeaders(List.of("*"));
                 config.setAllowCredentials(true);
