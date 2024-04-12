@@ -24,6 +24,7 @@ public class User extends DateTimeAudit {
     @NotNull
     private String username;
 
+    private String password;
     private String name;
     @JsonManagedReference
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
@@ -36,9 +37,10 @@ public class User extends DateTimeAudit {
     public User() {
     }
 
-    public User(String email, String username, String name) {
+    public User(String email, String username, String password, String name) {
         this.email = email;
         this.username = username;
+        this.password = password;
         this.name = name;
         this.notes = Collections.emptyList();
     }
@@ -53,6 +55,14 @@ public class User extends DateTimeAudit {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getName() {

@@ -1,13 +1,11 @@
 package com.ditod.notes.domain.note.dto;
 
-import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
 public class NoteImageRequest {
     private UUID id;
-    @Size(max = 100)
     private String altText;
     private MultipartFile file;
 

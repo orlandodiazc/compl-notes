@@ -31,4 +31,8 @@ public class UserService {
         return userRepository.findByUsername(username, type)
                 .orElseThrow(() -> new EntityNotFoundException("username", username));
     }
+
+    public User save(User user) {
+        return userRepository.save(user);
+    }
 }

@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 public class NoteRequest {
-    @Size(min = 1, max = 10)
+    @Size(min = 1, max = 100)
     private String title;
 
     @Size(min = 1, max = 10000)
