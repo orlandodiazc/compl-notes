@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ErrorPageComponent, NotFound } from "./components/errors";
 import { HelmetProvider } from "react-helmet-async";
 import { Icon } from "./components/ui/icon";
+import { AuthProvider, useAuth } from "./auth";
 
 export const queryClient = new QueryClient({
   defaultOptions: { mutations: { throwOnError: true } },
@@ -17,6 +18,7 @@ const router = createRouter({
   routeTree,
   context: {
     queryClient,
+    auth: undefined,
   },
   defaultPreload: "intent",
   defaultErrorComponent: ({ error }) => <ErrorPageComponent error={error} />,
@@ -38,11 +40,18 @@ declare module "@tanstack/react-router" {
   }
 }
 
+function AuthRouter() {
+  const auth = useAuth();
+  return <RouterProvider router={router} context={{ auth }} />;
+}
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <AuthProvider>
+          <AuthRouter />
+        </AuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
   </React.StrictMode>,

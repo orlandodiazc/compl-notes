@@ -1,3 +1,4 @@
+import { AuthContext } from "@/auth";
 import { QueryClient } from "@tanstack/react-query";
 import {
   Link,
@@ -6,11 +7,14 @@ import {
 } from "@tanstack/react-router";
 import { Helmet } from "react-helmet-async";
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
-  {
-    component: RootRoute,
-  },
-);
+interface RouterContext {
+  queryClient: QueryClient;
+  auth: AuthContext | undefined;
+}
+
+export const Route = createRootRouteWithContext<RouterContext>()({
+  component: RootRoute,
+});
 
 function RootRoute() {
   return (

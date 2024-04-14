@@ -1,14 +1,22 @@
+import { queryClient } from "@/main";
 import { queryOptions, useMutation } from "@tanstack/react-query";
 import {
   deleteNote,
+  fetchAuthUser,
   fetchFilteredUsers,
   fetchNote,
   fetchNotes,
   fetchUser,
   newNote,
+  postLogin,
   putNote,
 } from ".";
-import { queryClient } from "@/main";
+
+export const authUserQuery = () =>
+  queryOptions({
+    queryKey: ["auth", "user"],
+    queryFn: () => fetchAuthUser(),
+  });
 
 export const usersQuery = (filter?: string) =>
   queryOptions({
@@ -33,6 +41,16 @@ export const noteQuery = (params: { username: string; noteId: string }) =>
     queryKey: ["users", "notes", params],
     queryFn: () => fetchNote(params),
   });
+
+export const useLoginMutation = () => {
+  return useMutation({
+    mutationKey: ["auth", "login"],
+    mutationFn: (formData: FormData) => postLogin(formData),
+    onSuccess: (data) => {
+      queryClient.setQueryData(authUserQuery().queryKey, { user: data });
+    },
+  });
+};
 
 export const useDeleteNoteMutation = (usernameInvalidateParam: string) => {
   return useMutation({

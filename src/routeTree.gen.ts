@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as LoginImport } from './routes/login'
 import { Route as IndexImport } from './routes/index'
 import { Route as UsersIndexImport } from './routes/users/index'
 import { Route as UsersUsernameIndexImport } from './routes/users/$username/index'
@@ -27,6 +28,11 @@ import { Route as UsersUsernameNotesLayoutNotesNoteIdEditImport } from './routes
 const UsersUsernameImport = createFileRoute('/users/$username')()
 
 // Create/Update Routes
+
+const LoginRoute = LoginImport.update({
+  path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   path: '/',
@@ -85,6 +91,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/login': {
+      preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
     '/users/': {
       preLoaderRoute: typeof UsersIndexImport
       parentRoute: typeof rootRoute
@@ -124,6 +134,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
+  LoginRoute,
   UsersIndexRoute,
   UsersUsernameRoute.addChildren([
     UsersUsernameNotesLayoutRoute.addChildren([

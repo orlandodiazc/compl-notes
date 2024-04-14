@@ -3,6 +3,7 @@
  * Do not make direct changes to the file.
  */
 
+
 export interface paths {
   "/users/{username}/notes/{noteId}": {
     get: operations["oneNote"];
@@ -13,17 +14,26 @@ export interface paths {
     get: operations["allNotes"];
     post: operations["newNote"];
   };
+  "/auth/register": {
+    post: operations["register"];
+  };
+  "/auth/login": {
+    post: operations["login"];
+  };
   "/users": {
     get: operations["filteredUsers"];
   };
   "/users/{username}": {
-    get: operations["onUser"];
+    get: operations["oneUser"];
   };
   "/user-images/{imageId}": {
     get: operations["oneUserImage"];
   };
   "/note-images/{imageId}": {
     get: operations["oneNoteImage"];
+  };
+  "/auth/user": {
+    get: operations["authUser"];
   };
 }
 
@@ -48,6 +58,24 @@ export interface components {
       id: string;
       username: string;
     };
+    LoginRequest: {
+      username?: string;
+      password?: string;
+    };
+    AuthUserResponse: {
+      user?: components["schemas"]["UserBaseResponse"];
+    };
+    UserBaseResponse: {
+      name?: string;
+      /** Format: uuid */
+      id: string;
+      username: string;
+      image?: components["schemas"]["UserImageSummary"];
+    };
+    UserImageSummary: {
+      /** Format: uuid */
+      id: string;
+    };
     UserFilteredResponse: {
       name?: string;
       /** Format: uuid */
@@ -55,10 +83,6 @@ export interface components {
       username: string;
       /** Format: uuid */
       imageId?: string;
-    };
-    UserImageSummary: {
-      /** Format: uuid */
-      id: string;
     };
     UserSummaryResponse: {
       /** Format: date-time */
@@ -114,6 +138,7 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
+
   oneNote: {
     parameters: {
       path: {
@@ -195,10 +220,40 @@ export interface operations {
       };
     };
   };
+  register: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LoginRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  login: {
+    parameters: {
+      query: {
+        user: components["schemas"]["LoginRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["AuthUserResponse"];
+        };
+      };
+    };
+  };
   filteredUsers: {
     parameters: {
       query?: {
-        search?: string;
+        filter?: string;
       };
     };
     responses: {
@@ -210,7 +265,7 @@ export interface operations {
       };
     };
   };
-  onUser: {
+  oneUser: {
     parameters: {
       path: {
         username: string;
@@ -246,6 +301,16 @@ export interface operations {
         imageId: string;
       };
     };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  authUser: {
     responses: {
       /** @description OK */
       200: {

@@ -11,10 +11,20 @@ function getCsrfToken():
   return { "X-XSRF-TOKEN": token };
 }
 
-async function fetcher(...args: Parameters<typeof fetch>) {
+export async function fetcher(...args: Parameters<typeof fetch>) {
   const [url, opts] = args;
-  const response = await fetch(`${API_BASEURL}${url}`, opts);
-  const data = await response.json();
+  const response = await fetch(
+    `${API_BASEURL}${url}`,
+
+    opts,
+  );
+  let data;
+  try {
+    data = await response.json();
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
   if (!response.ok) throw data;
   return data;
 }
@@ -23,6 +33,10 @@ export function fetchFilteredUsers(
   filter?: string,
 ): Promise<ApiSchema["UserFilteredResponse"][]> {
   return fetcher("/users?" + new URLSearchParams({ filter: filter ?? "" }));
+}
+
+export function fetchAuthUser(): Promise<ApiSchema["AuthUserResponse"]> {
+  return fetcher("/auth/user", { credentials: "include" });
 }
 
 export function fetchUser(
@@ -92,5 +106,16 @@ export function newNote({
     body: formData,
     credentials: "include",
     headers: { ...getCsrfToken() },
+  });
+}
+
+export function postLogin(
+  formData: FormData,
+): Promise<ApiSchema["UserBaseResponse"]> {
+  return fetcher("/auth/login", {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+    headers: getCsrfToken(),
   });
 }
