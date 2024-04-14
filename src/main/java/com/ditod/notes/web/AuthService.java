@@ -27,8 +27,8 @@ public class AuthService {
         this.userService = userService;
     }
 
-    public String authenticate(LoginRequest user) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.username(), user.password()));
+    public String authenticate(LoginRequest userRequest) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userRequest.username(), userRequest.password()));
         return tokenService.generateToken(authentication);
     }
 

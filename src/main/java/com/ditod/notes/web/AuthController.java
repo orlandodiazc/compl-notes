@@ -1,38 +1,47 @@
 package com.ditod.notes.web;
 
+import com.ditod.notes.domain.user.UserService;
+import com.ditod.notes.domain.user.dto.UserBaseResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthService authService;
+    private final UserService userService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
+        this.userService = userService;
     }
 
-    @PostMapping
-    @RequestMapping("/login")
-    private ResponseEntity<?> login(@RequestBody LoginRequest user,
+    @GetMapping("/user")
+    ResponseEntity<?> authUser(JwtAuthenticationToken token) {
+        if (token == null || !token.isAuthenticated())
+            return ResponseEntity.ok(new AuthUserResponse(null));
+        return ResponseEntity.ok(new AuthUserResponse(userService.findByUsername(token.getName(), UserBaseResponse.class)));
+    }
+
+    @PostMapping("/login")
+    private ResponseEntity<AuthUserResponse> login(
+            @ModelAttribute LoginRequest userRequest,
             HttpServletResponse response) {
-        String jwtToken = authService.authenticate(user);
+        String jwtToken = authService.authenticate(userRequest);
         Cookie jwtTokenCookie = new Cookie("jwt", jwtToken);
-        jwtTokenCookie.setMaxAge(86400);
+        //TODO: handle remember cases
+        jwtTokenCookie.setMaxAge(userRequest.remember() ? 86400 : 0);
         jwtTokenCookie.setSecure(true);
         jwtTokenCookie.setHttpOnly(true);
         jwtTokenCookie.setPath("/");
         response.addCookie(jwtTokenCookie);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new AuthUserResponse(userService.findByUsername(userRequest.username(), UserBaseResponse.class)));
     }
 
-    @PostMapping
-    @RequestMapping("/register")
+    @PostMapping("/register")
     private ResponseEntity<?> register(@RequestBody LoginRequest user,
             HttpServletResponse response) {
         authService.register(user);
