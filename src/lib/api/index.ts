@@ -110,12 +110,12 @@ export function newNote({
 }
 
 export function postLogin(
-  formData: FormData,
+  loginRequest: ApiSchema["LoginRequest"],
 ): Promise<ApiSchema["UserBaseResponse"]> {
   return fetcher("/auth/login", {
     method: "POST",
-    body: formData,
+    body: JSON.stringify(loginRequest),
     credentials: "include",
-    headers: getCsrfToken(),
+    headers: { "Content-Type": "application/json", ...getCsrfToken() },
   });
 }

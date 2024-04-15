@@ -45,7 +45,7 @@ export const noteQuery = (params: { username: string; noteId: string }) =>
 export const useLoginMutation = () => {
   return useMutation({
     mutationKey: ["auth", "login"],
-    mutationFn: (formData: FormData) => postLogin(formData),
+    mutationFn: postLogin,
     onSuccess: (data) => {
       queryClient.setQueryData(authUserQuery().queryKey, { user: data });
     },

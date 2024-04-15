@@ -25,10 +25,7 @@ const UsernameSchema = z
   .max(20, { message: "Username is too long" })
   .regex(/^[a-zA-Z0-9_]+$/, {
     message: "Username can only include letters, numbers, and underscores",
-  })
-  // users can type the username in any case, but we store it in lowercase
-  // DO THIS IN BACKEND
-  .transform((value) => value.toLowerCase());
+  });
 
 const PasswordSchema = z
   .string({ required_error: "Password is required" })
@@ -53,15 +50,20 @@ export default function LoginPage() {
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: LoginFormSchema });
     },
-    shouldRevalidate: "onBlur",
+    shouldRevalidate: "onInput",
+    shouldValidate: "onBlur",
     onSubmit(event, context) {
       event.preventDefault();
-      console.log(JSON.stringify(Object.fromEntries(context.formData)));
-      mutate(context.formData, {
-        onSuccess: () => {
-          navigate({ to: redirect });
+      mutate(
+        parseWithZod(context.formData, {
+          schema: LoginFormSchema,
+        }).payload,
+        {
+          onSuccess: () => {
+            navigate({ to: redirect });
+          },
         },
-      });
+      );
     },
   });
 
