@@ -37,7 +37,6 @@ function RootRoute() {
             <Link className="underline" to="/users">
               All Users
             </Link>
-            <ThemeToggle />
           </div>
         </nav>
       </header>
@@ -46,8 +45,9 @@ function RootRoute() {
         <Outlet />
       </div>
 
-      <footer className="container py-6">
+      <footer className="container py-6 flex justify-between">
         <p className="text-body-xs">Built with React and Spring Boot.</p>
+        <ThemeToggle />
       </footer>
     </>
   );
