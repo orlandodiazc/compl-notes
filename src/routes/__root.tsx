@@ -1,4 +1,5 @@
 import { AuthContext } from "@/auth";
+import ThemeToggle from "@/components/theme-toggle";
 import { QueryClient } from "@tanstack/react-query";
 import {
   Link,
@@ -32,9 +33,12 @@ function RootRoute() {
             <div className="font-light">compl</div>
             <div className="font-bold">notes</div>
           </Link>
-          <Link className="underline" to="/users">
-            All Users
-          </Link>
+          <div className="flex gap-4 items-center">
+            <Link className="underline" to="/users">
+              All Users
+            </Link>
+            <ThemeToggle />
+          </div>
         </nav>
       </header>
 

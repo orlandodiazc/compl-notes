@@ -9,6 +9,7 @@ import { ErrorPageComponent, NotFound } from "./components/errors";
 import { HelmetProvider } from "react-helmet-async";
 import { Icon } from "./components/ui/icon";
 import { AuthProvider, useAuth } from "./auth";
+import { ThemeProvider } from "./components/theme-provider";
 
 export const queryClient = new QueryClient({
   defaultOptions: { mutations: { throwOnError: true } },
@@ -49,9 +50,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <AuthRouter />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <AuthRouter />
+          </AuthProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </HelmetProvider>
   </React.StrictMode>,
