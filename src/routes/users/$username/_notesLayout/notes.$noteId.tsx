@@ -3,6 +3,7 @@ import { noteQuery, useDeleteNoteMutation } from "@/lib/api/queryOptions";
 import { getNoteImgSrc } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 export const Route = createFileRoute(
   "/users/$username/_notesLayout/notes/$noteId",
@@ -22,6 +23,7 @@ export default function NoteRoute() {
   function handleDeleteClick() {
     mutate(params, {
       onSuccess: () => {
+        toast(`Succesfully deleted ${params.username}'s note`);
         navigate({
           to: "/users/$username/notes",
           params: { username: params.username },

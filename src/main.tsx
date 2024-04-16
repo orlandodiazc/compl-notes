@@ -10,6 +10,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { Icon } from "./components/ui/icon";
 import { AuthProvider, useAuth } from "./auth";
 import { ThemeProvider } from "./components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const queryClient = new QueryClient({
   defaultOptions: { mutations: { throwOnError: true } },
@@ -57,5 +58,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </ThemeProvider>
       </QueryClientProvider>
     </HelmetProvider>
+    <Toaster />
   </React.StrictMode>,
 );

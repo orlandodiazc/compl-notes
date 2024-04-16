@@ -1,6 +1,7 @@
 import { useNewNoteMutation } from "@/lib/api/queryOptions";
 import { createFileRoute } from "@tanstack/react-router";
 import NoteForm from "./-NoteForm";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/users/$username/_notesLayout/notes/new")(
   {
@@ -15,6 +16,7 @@ export default function NoteNew() {
   function handleSubmit(formData: FormData) {
     mutate(formData, {
       onSuccess: () => {
+        toast(`Succesfully created ${username}' note!`);
         navigate({
           to: "/users/$username/notes",
           params: { username },

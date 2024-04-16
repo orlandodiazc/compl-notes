@@ -2,6 +2,7 @@ import { noteQuery, usePutNoteMutation } from "@/lib/api/queryOptions";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import NoteForm from "./-NoteForm";
+import { toast } from "sonner";
 
 export const Route = createFileRoute(
   "/users/$username/_notesLayout/notes/$noteId/edit",
@@ -20,6 +21,7 @@ export default function NoteEdit() {
   function handleSubmit(formData: FormData) {
     mutate(formData, {
       onSuccess: () => {
+        toast(`Succesfully edited ${params.username}'s note!`);
         navigate({
           to: "/users/$username/notes/$noteId",
           params,
