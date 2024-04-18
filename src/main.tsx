@@ -52,9 +52,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
-          <AuthProvider>
-            <AuthRouter />
-          </AuthProvider>
+          {/* <AuthProvider> */}
+          {/* <AuthRouter /> */}
+          <RouterProvider router={router} context={{ auth: undefined }} />;
+          {/* </AuthProvider> */}
         </ThemeProvider>
       </QueryClientProvider>
     </HelmetProvider>
