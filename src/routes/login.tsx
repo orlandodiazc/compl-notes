@@ -1,11 +1,20 @@
-import { CheckboxConformField, ErrorList, Field } from "@/components/forms";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { StatusButton } from "@/components/ui/status-button";
 import { useLoginMutation } from "@/lib/api/queryOptions";
 import { PasswordSchema, UsernameSchema } from "@/lib/validation/user";
-import { getFormProps, getInputProps, useForm } from "@conform-to/react";
-import { getZodConstraint, parseWithZod } from "@conform-to/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Helmet } from "react-helmet-async";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export const Route = createFileRoute("/login")({
@@ -23,7 +32,7 @@ export const Route = createFileRoute("/login")({
 const LoginFormSchema = z.object({
   username: UsernameSchema,
   password: PasswordSchema,
-  remember: z.boolean().optional(),
+  remember: z.boolean().default(false).optional(),
 });
 
 export default function LoginPage() {
@@ -31,28 +40,28 @@ export default function LoginPage() {
   const { redirect } = Route.useSearch();
 
   const { mutate, status } = useLoginMutation();
-  const [form, fields] = useForm({
-    id: "login-form",
-    constraint: getZodConstraint(LoginFormSchema),
-    onValidate({ formData }) {
-      return parseWithZod(formData, { schema: LoginFormSchema });
-    },
-    shouldRevalidate: "onInput",
-    shouldValidate: "onBlur",
-    onSubmit(event, context) {
-      event.preventDefault();
-      mutate(
-        parseWithZod(context.formData, {
-          schema: LoginFormSchema,
-        }).payload,
-        {
-          onSuccess() {
-            navigate({ to: redirect });
-          },
-        },
-      );
-    },
+  const form = useForm<z.infer<typeof LoginFormSchema>>({
+    resolver: zodResolver(LoginFormSchema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    shouldFocusError: true,
+    defaultValues: { username: "", password: "", remember: false },
   });
+
+  const rootError = form.formState.errors.root;
+
+  function onSubmit(values: z.infer<typeof LoginFormSchema>) {
+    mutate(values, {
+      onSuccess() {
+        navigate({ to: redirect });
+      },
+      onError(error: Response) {
+        if (error.status === 401) {
+          form.setError("root", { message: "Invalid username or password" });
+        }
+      },
+    });
+  }
 
   return (
     <div className="flex min-h-full flex-col justify-center pb-32 pt-20">
@@ -68,39 +77,66 @@ export default function LoginPage() {
         </div>
         <div className="mt-16">
           <div className="mx-auto w-full max-w-md px-8">
-            <form method="POST" {...getFormProps(form)}>
-              {/* <AuthenticityTokenInput />
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                method="POST"
+                className="space-y-5"
+              >
+                {/* <AuthenticityTokenInput />
 							<HoneypotInputs /> */}
-              <Field
-                labelProps={{ children: "Username" }}
-                inputProps={{
-                  ...getInputProps(fields.username, { type: "text" }),
-                  autoFocus: true,
-                  className: "lowercase",
-                }}
-                errors={fields.username.errors}
-              />
-
-              <Field
-                labelProps={{ children: "Password" }}
-                inputProps={getInputProps(fields.password, {
-                  type: "password",
-                })}
-                errors={fields.password.errors}
-              />
-
-              <div className="flex justify-between">
-                <CheckboxConformField
-                  labelProps={{
-                    htmlFor: fields.remember.id,
-                    children: "Remember me",
-                  }}
-                  meta={fields.remember}
-                  errors={fields.remember.errors}
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Username</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          autoFocus={true}
+                          className="lowercase"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-              <ErrorList errors={form.errors} id={form.errorId} />
-              <div className="flex items-center justify-between gap-6 pt-3">
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="password" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="remember"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-2 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Remember me</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                {rootError && (
+                  <p className="text-sm font-medium text-destructive">
+                    {rootError.message}
+                  </p>
+                )}
                 <StatusButton
                   className="w-full"
                   status={status}
@@ -109,8 +145,8 @@ export default function LoginPage() {
                 >
                   Log in
                 </StatusButton>
-              </div>
-            </form>
+              </form>
+            </Form>
           </div>
         </div>
       </div>

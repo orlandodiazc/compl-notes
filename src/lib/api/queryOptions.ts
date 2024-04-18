@@ -50,6 +50,10 @@ export const useLoginMutation = () => {
     onSuccess(data) {
       queryClient.setQueryData(authUserQuery().queryKey, { user: data });
     },
+    onError(error: Response) {
+      return error;
+    },
+    throwOnError: false,
   });
 };
 

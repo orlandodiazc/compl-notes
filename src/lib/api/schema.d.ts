@@ -63,12 +63,12 @@ export interface components {
       name: string;
       password: string;
       confirmPassword: string;
-      agreeToTermsOfService: string;
+      agreeToTermsOfService: boolean;
     };
     LoginRequest: {
       username: string;
       password: string;
-      remember: string;
+      remember: boolean;
     };
     AuthUserResponse: {
       user?: components["schemas"]["UserBaseResponse"];
