@@ -1,5 +1,5 @@
-import { ApiSchema } from "./apiSchema";
 import Cookies from "js-cookie";
+import { ApiSchema } from "./apiSchema";
 
 export const API_BASEURL = import.meta.env.VITE_API_BASEURL;
 
@@ -23,7 +23,7 @@ export async function fetcher(...args: Parameters<typeof fetch>) {
     data = await response.json();
   } catch (e) {
     console.error(e);
-    throw e;
+    throw response;
   }
   if (!response.ok) throw data;
   return data;
@@ -100,7 +100,7 @@ export function newNote({
 }: {
   username: string;
   formData: FormData;
-}) {
+}): Promise<ApiSchema["NoteUsernameAndIdResponse"]> {
   return fetcher("/users/" + username + "/notes", {
     method: "POST",
     body: formData,
@@ -110,11 +110,22 @@ export function newNote({
 }
 
 export function postLogin(
-  loginRequest: ApiSchema["LoginRequest"],
+  loginRequest: Partial<ApiSchema["LoginRequest"]>,
 ): Promise<ApiSchema["UserBaseResponse"]> {
   return fetcher("/auth/login", {
     method: "POST",
     body: JSON.stringify(loginRequest),
+    credentials: "include",
+    headers: { "Content-Type": "application/json", ...getCsrfToken() },
+  });
+}
+
+export function newUser(
+  signupRequest: Partial<ApiSchema["SignupRequest"]>,
+): Promise<ApiSchema["UserBaseResponse"]> {
+  return fetcher("/auth/signup", {
+    method: "POST",
+    body: JSON.stringify(signupRequest),
     credentials: "include",
     headers: { "Content-Type": "application/json", ...getCsrfToken() },
   });

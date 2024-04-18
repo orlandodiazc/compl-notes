@@ -1,6 +1,7 @@
 import { CheckboxConformField, ErrorList, Field } from "@/components/forms";
 import { StatusButton } from "@/components/ui/status-button";
 import { useLoginMutation } from "@/lib/api/queryOptions";
+import { PasswordSchema, UsernameSchema } from "@/lib/validation/user";
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod";
 import { createFileRoute, redirect } from "@tanstack/react-router";
@@ -19,19 +20,6 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
-const UsernameSchema = z
-  .string({ required_error: "Username is required" })
-  .min(3, { message: "Username is too short" })
-  .max(20, { message: "Username is too long" })
-  .regex(/^[a-zA-Z0-9_]+$/, {
-    message: "Username can only include letters, numbers, and underscores",
-  });
-
-const PasswordSchema = z
-  .string({ required_error: "Password is required" })
-  .min(6, { message: "Password is too short" })
-  .max(100, { message: "Password is too long" });
-
 const LoginFormSchema = z.object({
   username: UsernameSchema,
   password: PasswordSchema,
@@ -43,7 +31,6 @@ export default function LoginPage() {
   const { redirect } = Route.useSearch();
 
   const { mutate, status } = useLoginMutation();
-
   const [form, fields] = useForm({
     id: "login-form",
     constraint: getZodConstraint(LoginFormSchema),
@@ -59,7 +46,7 @@ export default function LoginPage() {
           schema: LoginFormSchema,
         }).payload,
         {
-          onSuccess: () => {
+          onSuccess() {
             navigate({ to: redirect });
           },
         },

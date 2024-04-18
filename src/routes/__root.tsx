@@ -1,5 +1,6 @@
 import { AuthContext } from "@/auth";
 import ThemeToggle from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
 import { QueryClient } from "@tanstack/react-query";
 import {
   Link,
@@ -37,6 +38,11 @@ function RootRoute() {
             <Link className="underline" to="/users">
               All Users
             </Link>
+            <Button asChild>
+              <Link to="/login" search={{ redirect: "/" }}>
+                Log in
+              </Link>
+            </Button>
           </div>
         </nav>
       </header>

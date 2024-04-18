@@ -8,6 +8,7 @@ import {
   fetchNotes,
   fetchUser,
   newNote,
+  newUser,
   postLogin,
   putNote,
 } from ".";
@@ -46,6 +47,15 @@ export const useLoginMutation = () => {
   return useMutation({
     mutationKey: ["auth", "login"],
     mutationFn: postLogin,
+    onSuccess(data) {
+      queryClient.setQueryData(authUserQuery().queryKey, { user: data });
+    },
+  });
+};
+
+export const useNewUserMutation = () => {
+  return useMutation({
+    mutationFn: newUser,
     onSuccess: (data) => {
       queryClient.setQueryData(authUserQuery().queryKey, { user: data });
     },

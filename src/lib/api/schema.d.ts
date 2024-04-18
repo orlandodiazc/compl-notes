@@ -13,8 +13,8 @@ export interface paths {
     get: operations["allNotes"];
     post: operations["newNote"];
   };
-  "/auth/register": {
-    post: operations["register"];
+  "/auth/signup": {
+    post: operations["signup"];
   };
   "/auth/login": {
     post: operations["login"];
@@ -57,9 +57,18 @@ export interface components {
       id: string;
       username: string;
     };
+    SignupRequest: {
+      email: string;
+      username: string;
+      name: string;
+      password: string;
+      confirmPassword: string;
+      agreeToTermsOfService: string;
+    };
     LoginRequest: {
-      username?: string;
-      password?: string;
+      username: string;
+      password: string;
+      remember: string;
     };
     AuthUserResponse: {
       user?: components["schemas"]["UserBaseResponse"];
@@ -218,10 +227,10 @@ export interface operations {
       };
     };
   };
-  register: {
+  signup: {
     requestBody: {
       content: {
-        "application/json": components["schemas"]["LoginRequest"];
+        "application/json": components["schemas"]["SignupRequest"];
       };
     };
     responses: {
@@ -234,9 +243,9 @@ export interface operations {
     };
   };
   login: {
-    parameters: {
-      query: {
-        user: components["schemas"]["LoginRequest"];
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LoginRequest"];
       };
     };
     responses: {
