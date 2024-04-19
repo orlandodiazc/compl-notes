@@ -10,11 +10,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { StatusButton } from "@/components/ui/status-button";
 import { useLoginMutation } from "@/lib/api/queryOptions";
+import { useZodForm } from "@/lib/misc";
 import { PasswordSchema, UsernameSchema } from "@/lib/validation/user";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Helmet } from "react-helmet-async";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export const Route = createFileRoute("/login")({
@@ -42,10 +41,10 @@ export default function LoginPage() {
   const { redirect } = Route.useSearch();
 
   const { mutate, status } = useLoginMutation();
-  const form = useForm<LoginForm>({
-    resolver: zodResolver(LoginFormSchema),
-    mode: "onBlur",
-    reValidateMode: "onChange",
+
+  const form = useZodForm({
+    schema: LoginFormSchema,
+    mode: "onTouched",
     shouldFocusError: true,
     defaultValues: { username: "", password: "", remember: false },
   });
@@ -57,9 +56,11 @@ export default function LoginPage() {
       onSuccess() {
         navigate({ to: redirect });
       },
-      onError(error: Response) {
-        if (error.status === 401) {
-          form.setError("root", { message: "Invalid username or password" });
+      onError(response: Response) {
+        if (response.status === 401) {
+          form.setError("root", {
+            message: "Invalid username or password",
+          });
         }
       },
     });
@@ -85,8 +86,6 @@ export default function LoginPage() {
                 method="POST"
                 className="space-y-5"
               >
-                {/* <AuthenticityTokenInput />
-							<HoneypotInputs /> */}
                 <FormField
                   control={form.control}
                   name="username"
