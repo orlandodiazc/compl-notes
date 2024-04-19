@@ -35,12 +35,14 @@ const LoginFormSchema = z.object({
   remember: z.boolean().default(false).optional(),
 });
 
+type LoginForm = z.infer<typeof LoginFormSchema>;
+
 export default function LoginPage() {
   const navigate = Route.useNavigate();
   const { redirect } = Route.useSearch();
 
   const { mutate, status } = useLoginMutation();
-  const form = useForm<z.infer<typeof LoginFormSchema>>({
+  const form = useForm<LoginForm>({
     resolver: zodResolver(LoginFormSchema),
     mode: "onBlur",
     reValidateMode: "onChange",
@@ -50,7 +52,7 @@ export default function LoginPage() {
 
   const rootError = form.formState.errors.root;
 
-  function onSubmit(values: z.infer<typeof LoginFormSchema>) {
+  function onSubmit(values: LoginForm) {
     mutate(values, {
       onSuccess() {
         navigate({ to: redirect });
