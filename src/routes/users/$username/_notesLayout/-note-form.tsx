@@ -39,9 +39,17 @@ const ImageFieldsetSchema = z.object({
 });
 
 const NoteEditorSchema = z.object({
-  title: z.string().min(titleMinLength).max(titleMaxLength),
-  content: z.string().min(contentMinLength).max(contentMaxLength),
-  images: z.array(ImageFieldsetSchema).max(5, "shit man").optional(),
+  title: z
+    .string()
+    .min(titleMinLength, "Title is too short")
+    .max(titleMaxLength, "Title is too long"),
+  content: z
+    .string()
+    .min(contentMinLength, "Content is too short")
+    .max(contentMaxLength, "Content is too long"),
+  images: z
+    .array(ImageFieldsetSchema)
+    .max(5, "You can only add up to 5 images"),
 });
 
 type NoteEditorForm = z.infer<typeof NoteEditorSchema>;
@@ -57,7 +65,8 @@ export default function NoteForm({
 }) {
   const form = useForm<NoteEditorForm>({
     resolver: zodResolver(NoteEditorSchema),
-    mode: "onChange",
+    mode: "onTouched",
+
     defaultValues: {
       title: note?.title,
       content: note?.content,
@@ -73,9 +82,8 @@ export default function NoteForm({
     control: form.control,
     name: "images",
   });
+
   async function onSubmit(values: NoteEditorForm) {
-    const result = NoteEditorSchema.parse(values);
-    console.log(result);
     const formData = new FormData();
     formData.append("title", values.title);
     formData.append("content", values.content);
@@ -84,13 +92,11 @@ export default function NoteForm({
       image.file && formData.append(`images[${index}].file`, image.file);
       formData.append(`images[${index}].altText`, image.altText || "");
     });
-    for (const pair of formData.entries()) {
-      console.log(pair[0] + ", " + pair[1]);
-    }
+
     handleSubmit(formData);
   }
 
-  console.log(form.formState.errors);
+  const imagesError = form.formState.errors.images;
 
   return (
     <div className="absolute inset-0">
@@ -154,6 +160,11 @@ export default function NoteForm({
                 ))}
               </ul>
             </div>
+            {imagesError && (
+              <p className="text-sm font-medium text-destructive">
+                {imagesError.message ?? imagesError.root?.message}
+              </p>
+            )}
             <Button
               className="mt-3"
               onClick={() => {
@@ -166,12 +177,7 @@ export default function NoteForm({
               </span>
               <span className="sr-only">Add image</span>
             </Button>
-            {/* <ErrorList
-              id={fields.images.errorId}
-              errors={fields.images.errors}
-            /> */}
           </div>
-          {/* <ErrorList id={form.errorId} errors={form.errors} /> */}
         </form>
       </Form>
       <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 rounded-lg bg-muted/80 p-4 pl-5 shadow-xl shadow-accent backdrop-blur-sm md:gap-4 md:pl-7 justify-end">

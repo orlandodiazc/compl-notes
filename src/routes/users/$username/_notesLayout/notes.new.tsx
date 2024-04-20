@@ -1,6 +1,6 @@
 import { useNewNoteMutation } from "@/lib/api/queryOptions";
 import { createFileRoute } from "@tanstack/react-router";
-import NoteForm from "./-NoteForm";
+import NoteForm from "./-note-form";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/users/$username/_notesLayout/notes/new")(

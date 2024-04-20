@@ -1,7 +1,7 @@
 import { noteQuery, usePutNoteMutation } from "@/lib/api/queryOptions";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import NoteForm from "./-NoteForm";
+import NoteForm from "./-note-form";
 import { toast } from "sonner";
 
 export const Route = createFileRoute(

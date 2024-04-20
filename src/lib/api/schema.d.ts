@@ -3,6 +3,7 @@
  * Do not make direct changes to the file.
  */
 
+
 export interface paths {
   "/users/{username}/notes/{noteId}": {
     get: operations["oneNote"];
@@ -63,7 +64,7 @@ export interface components {
       name: string;
       password: string;
       confirmPassword: string;
-      agreeToTermsOfService: boolean;
+      agreeToTermsOfServiceAndPrivacyPolicy: boolean;
     };
     LoginRequest: {
       username: string;
@@ -146,6 +147,7 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
+
   oneNote: {
     parameters: {
       path: {

@@ -12,6 +12,7 @@ import {
   postLogin,
   putNote,
 } from ".";
+import { ApiProblemDetail } from "./apiSchema";
 
 export const authUserQuery = () =>
   queryOptions({
@@ -63,6 +64,10 @@ export const useNewUserMutation = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(authUserQuery().queryKey, { user: data });
     },
+    onError(error: ApiProblemDetail) {
+      return error;
+    },
+    throwOnError: false,
   });
 };
 

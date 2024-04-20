@@ -31,7 +31,7 @@ export const Route = createFileRoute("/login")({
 const LoginFormSchema = z.object({
   username: UsernameSchema,
   password: PasswordSchema,
-  remember: z.boolean().default(false).optional(),
+  remember: z.boolean(),
 });
 
 type LoginForm = z.infer<typeof LoginFormSchema>;
@@ -44,8 +44,6 @@ export default function LoginPage() {
 
   const form = useZodForm({
     schema: LoginFormSchema,
-    mode: "onTouched",
-    shouldFocusError: true,
     defaultValues: { username: "", password: "", remember: false },
   });
 

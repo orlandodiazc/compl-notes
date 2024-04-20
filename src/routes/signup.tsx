@@ -1,18 +1,25 @@
-import { CheckboxConformField, ErrorList, Field } from "@/components/forms";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { StatusButton } from "@/components/ui/status-button";
+import { useNewUserMutation } from "@/lib/api/queryOptions";
+import { useZodForm } from "@/lib/misc";
 import {
   EmailSchema,
   NameSchema,
   PasswordSchema,
   UsernameSchema,
 } from "@/lib/validation/user";
-import { getFormProps, useForm } from "@conform-to/react";
-import { getZodConstraint, parseWithZod } from "@conform-to/zod";
-import { getInputProps } from "@conform-to/react";
-
 import { createFileRoute } from "@tanstack/react-router";
+import { Helmet } from "react-helmet-async";
 import { z } from "zod";
-import { StatusButton } from "@/components/ui/status-button";
-import { useNewUserMutation } from "@/lib/api/queryOptions";
 
 export const Route = createFileRoute("/signup")({
   component: SignupRoute,
@@ -25,10 +32,12 @@ const SignupFormSchema = z
     email: EmailSchema,
     password: PasswordSchema,
     confirmPassword: PasswordSchema,
-    agreeToTermsOfServiceAndPrivacyPolicy: z.boolean({
-      required_error:
+    agreeToTermsOfServiceAndPrivacyPolicy: z
+      .boolean()
+      .refine(
+        (value) => value === true,
         "You must agree to the terms of service and privacy policy",
-    }),
+      ),
   })
   .superRefine(({ confirmPassword, password }, ctx) => {
     if (confirmPassword !== password) {
@@ -40,71 +49,41 @@ const SignupFormSchema = z
     }
   });
 
-// export async function action({ request }: DataFunctionArgs) {
-//   const formData = await request.formData();
-//   await validateCSRF(formData, request.headers);
-//   checkHoneypot(formData);
-//   const submission = await parse(formData, {
-//     schema: SignupFormSchema.superRefine(async (data, ctx) => {
-//       const existingUser = await prisma.user.findUnique({
-//         where: { username: data.username },
-//         select: { id: true },
-//       });
-//       if (existingUser) {
-//         ctx.addIssue({
-//           path: ["username"],
-//           code: z.ZodIssueCode.custom,
-//           message: "A user already exists with this username",
-//         });
-//         return;
-//       }
-//     }),
-//     async: true,
-//   });
-
-//   if (submission.intent !== "submit") {
-//     return json({ status: "idle", submission } as const);
-//   }
-//   if (!submission.value) {
-//     return json({ status: "error", submission } as const, { status: 400 });
-//   }
-
-//   return redirect("/");
-// }
-
-// export const meta: MetaFunction = () => {
-//   return [{ title: "Setup Epic Notes Account" }];
-// };
+type SignupForm = z.infer<typeof SignupFormSchema>;
 
 export default function SignupRoute() {
-  // const actionData = useActionData<typeof action>();
-  // const isPending = useIsPending();
-
-  const { mutate } = useNewUserMutation();
+  const { mutate, status } = useNewUserMutation();
   const navigate = Route.useNavigate();
-  const [form, fields] = useForm({
-    id: "signup-form",
-    constraint: getZodConstraint(SignupFormSchema),
-    // lastSubmission: actionData?.submission,
-    onValidate({ formData }) {
-      return parseWithZod(formData, { schema: SignupFormSchema });
-    },
-    shouldRevalidate: "onBlur",
-    onSubmit(event, context) {
-      event.preventDefault();
-      mutate(
-        parseWithZod(context.formData, { schema: SignupFormSchema }).payload,
-        {
-          onSuccess() {
-            navigate({ to: "/" });
-          },
-        },
-      );
+
+  const form = useZodForm({
+    schema: SignupFormSchema,
+    defaultValues: {
+      email: "",
+      username: "",
+      name: "",
+      password: "",
+      confirmPassword: "",
+      agreeToTermsOfServiceAndPrivacyPolicy: false,
     },
   });
 
+  function onSubmit(values: SignupForm) {
+    mutate(values, {
+      onSuccess() {
+        navigate({ to: "/" });
+      },
+      onError(error) {
+        error.errors &&
+          form.setError("username", { message: error.errors["username"] });
+      },
+    });
+  }
+
   return (
     <div className="container flex min-h-full flex-col justify-center pb-32 pt-20">
+      <Helmet>
+        <title>Setup Epic Notes Account</title>
+      </Helmet>
       <div className="mx-auto w-full max-w-lg">
         <div className="flex flex-col gap-3 text-center">
           <h1 className="text-h1">Welcome aboard!</h1>
@@ -112,84 +91,132 @@ export default function SignupRoute() {
             Please enter your details.
           </p>
         </div>
-        <form
-          method="POST"
-          className="mx-auto min-w-[368px] max-w-sm mt-4"
-          {...getFormProps(form)}
-        >
-          {/* <AuthenticityTokenInput />
-          <HoneypotInputs /> */}
-          <Field
-            labelProps={{ htmlFor: fields.email.id, children: "Email" }}
-            inputProps={{
-              ...getInputProps(fields.email, { type: "email" }),
-              autoComplete: "email",
-              autoFocus: true,
-              className: "lowercase",
-            }}
-            errors={fields.email.errors}
-          />
-          <Field
-            labelProps={{ htmlFor: fields.username.id, children: "Username" }}
-            inputProps={{
-              ...getInputProps(fields.username, { type: "text" }),
-              autoComplete: "username",
-              className: "lowercase",
-            }}
-            errors={fields.username.errors}
-          />
-          <Field
-            labelProps={{ htmlFor: fields.name.id, children: "Name" }}
-            inputProps={{
-              ...getInputProps(fields.name, { type: "text" }),
-              autoComplete: "name",
-            }}
-            errors={fields.name.errors}
-          />
-          <Field
-            labelProps={{ htmlFor: fields.password.id, children: "Password" }}
-            inputProps={{
-              ...getInputProps(fields.password, { type: "password" }),
-              autoComplete: "new-password",
-            }}
-            errors={fields.password.errors}
-          />
+        <Form {...form}>
+          <form
+            method="POST"
+            className="mx-auto min-w-[368px] max-w-sm mt-4 space-y-5"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      autoFocus={true}
+                      autoComplete="email"
+                      className="lowercase"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      autoComplete="username"
+                      className="lowercase"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} autoComplete="name" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Field
-            labelProps={{
-              htmlFor: fields.confirmPassword.id,
-              children: "Confirm Password",
-            }}
-            inputProps={{
-              ...getInputProps(fields.confirmPassword, { type: "password" }),
-              autoComplete: "new-password",
-            }}
-            errors={fields.confirmPassword.errors}
-          />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      autoComplete="new-password"
+                      type="password"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <CheckboxConformField
-            labelProps={{
-              htmlFor: fields.agreeToTermsOfServiceAndPrivacyPolicy.id,
-              children:
-                "Do you agree to our Terms of Service and Privacy Policy?",
-            }}
-            meta={fields.agreeToTermsOfServiceAndPrivacyPolicy}
-            errors={fields.agreeToTermsOfServiceAndPrivacyPolicy.errors}
-          />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm password</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      autoComplete="new-password"
+                      type="password"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <ErrorList errors={form.errors} id={form.errorId} />
+            <FormField
+              control={form.control}
+              name="agreeToTermsOfServiceAndPrivacyPolicy"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center space-x-2 mb-3">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel>
+                      Do you agree to our Terms of Service and Privacy Policy?
+                    </FormLabel>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div className="flex items-center justify-between gap-6">
-            <StatusButton
-              className="w-full"
-              status={"idle"}
-              type="submit"
-              disabled={false}
-            >
-              Create an account
-            </StatusButton>
-          </div>
-        </form>
+            {/* <ErrorList errors={form.errors} id={form.errorId} /> */}
+
+            <div className="flex items-center justify-between gap-6">
+              <StatusButton
+                className="w-full"
+                status={status}
+                type="submit"
+                disabled={status === "pending"}
+              >
+                Create an account
+              </StatusButton>
+            </div>
+          </form>
+        </Form>
       </div>
     </div>
   );
