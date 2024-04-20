@@ -42,6 +42,13 @@ public class NoteImage extends DateTimeAudit {
         this.note = note;
     }
 
+    public NoteImage(UUID id, String altText, Note note) {
+        this.id = id;
+        this.altText = altText;
+        this.note = note;
+    }
+
+
     public UUID getId() {
         return id;
     }

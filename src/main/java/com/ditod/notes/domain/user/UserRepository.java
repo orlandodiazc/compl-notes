@@ -25,8 +25,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
                         
             """)
     List<UserFilteredResponse> findFilteredUsers(
-            @Param("term") String searchQuery,
-            Pageable pageable);
+            @Param("term") String searchQuery, Pageable pageable);
 
     <T> Optional<T> findByUsername(String username, Class<T> type);
+
+    boolean existsByUsername(String username);
 }

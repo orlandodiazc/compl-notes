@@ -32,12 +32,21 @@ public class NoteService {
                 .orElseGet(Stream::empty)
                 .map(i -> {
                     try {
-                        if (i.getFile().getSize() == 0 && i.getId() == null) {
-                            return null;
+                        if (i.getFile() != null && !i.getFile().isEmpty()) {
+                            if (i.getId() != null) {
+                                return new NoteImage(i.getId(), i.getAltText(), i.getFile()
+                                        .getContentType(), i.getFile()
+                                        .getBytes(), note);
+                            } else {
+                                return new NoteImage(i.getAltText(), i.getFile()
+                                        .getContentType(), i.getFile()
+                                        .getBytes(), note);
+                            }
+                        } else if (i.getId() != null) {
+                            return new NoteImage(i.getId(), i.getAltText(), note);
                         }
-                        return new NoteImage(i.getId(), i.getAltText(), i.getFile()
-                                .getContentType(), i.getFile()
-                                .getBytes(), note);
+                        return null;
+
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

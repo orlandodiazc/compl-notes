@@ -1,19 +1,26 @@
 package com.ditod.notes.domain.note.dto;
 
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
 public class NoteRequest {
-    @Size(min = 1, max = 100)
-    private String title;
+    private String id;
 
-    @Size(min = 1, max = 10000)
-    private String content;
+    private @NotBlank(message = "Title is required") @Size(min = 1, max = 100, message = "Title length must be between 1 and 100 characters") String title;
 
-    @Size(max = 5)
-    private List<@Valid NoteImageRequest> images;
+    private @NotBlank(message = "Content is required") @Size(min = 1, max = 10000, message = "Content length must be between 1 and 10000 characters") String content;
+
+    private @Size(max = 5, message = "The maximum number of images is 5") List<NoteImageRequest> images;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

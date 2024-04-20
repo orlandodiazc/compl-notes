@@ -3,6 +3,8 @@ package com.ditod.notes.web;
 import com.ditod.notes.auth.TokenService;
 import com.ditod.notes.domain.user.User;
 import com.ditod.notes.domain.user.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,11 +30,22 @@ public class AuthService {
     }
 
     public String authenticate(LoginRequest userRequest) {
+        System.out.println(userRequest.toString());
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userRequest.username(), userRequest.password()));
         return tokenService.generateToken(authentication);
     }
 
-    public User register(LoginRequest user) {
-        return userService.save(new User("example@mail.com", user.username(), passwordEncoder.encode(user.password()), "example name"));
+    public void signup(SignupRequest user) {
+        userService.save(new User(user.email(), user.username(), passwordEncoder.encode(user.password()), user.name()));
+    }
+
+    public void addJwtCookieToResponse(HttpServletResponse response,
+            String jwtToken, int maxAge) {
+        Cookie jwtTokenCookie = new Cookie("jwt", jwtToken);
+        jwtTokenCookie.setMaxAge(maxAge);
+        jwtTokenCookie.setSecure(true);
+        jwtTokenCookie.setHttpOnly(true);
+        jwtTokenCookie.setPath("/");
+        response.addCookie(jwtTokenCookie);
     }
 }

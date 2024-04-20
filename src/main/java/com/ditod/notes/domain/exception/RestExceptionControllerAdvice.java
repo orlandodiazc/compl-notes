@@ -36,4 +36,16 @@ public class RestExceptionControllerAdvice extends ResponseEntityExceptionHandle
         return ResponseEntity.status(problemDetail.getStatus())
                 .body(problemDetail);
     }
+
+
+    @ExceptionHandler({EntityAlreadyExistsException.class})
+    public ProblemDetail exceptionAlreadyExistsHandler(
+            EntityAlreadyExistsException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        HashMap<String, String> errors = new HashMap<>();
+        errors.put(ex.getField(), ex.getMessage());
+        problemDetail.setProperty("errors", errors);
+        return problemDetail;
+    }
+
 }

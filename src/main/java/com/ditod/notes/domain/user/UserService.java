@@ -32,6 +32,11 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("username", username));
     }
 
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+
+    }
+
     public User save(User user) {
         return userRepository.save(user);
     }
