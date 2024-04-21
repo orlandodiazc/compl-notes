@@ -17,8 +17,7 @@ import {
   PasswordSchema,
   UsernameSchema,
 } from "@/lib/validation/user";
-import { redirect } from "@tanstack/react-router";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Helmet } from "react-helmet-async";
 import { z } from "zod";
 

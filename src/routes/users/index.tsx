@@ -1,7 +1,6 @@
 import { SearchBar } from "@/components/search-bar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import UserAvatar from "@/components/user-avatar";
 import { usersQuery } from "@/lib/api/queryOptions";
-import { getNameInitials, getUserImgSrc } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
@@ -48,15 +47,7 @@ function UserList() {
                 to={user.username}
                 className="flex h-36 w-44 flex-col items-center justify-center rounded-lg bg-muted px-5 py-3"
               >
-                <Avatar className="h-16 w-16">
-                  <AvatarImage
-                    src={getUserImgSrc(user.imageId)}
-                    alt={user.name ?? user.username}
-                  />
-                  <AvatarFallback>
-                    {getNameInitials(user.name) ?? user.username.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
+                <UserAvatar user={user} className="h-16 w-16" />
                 {user.name ? (
                   <span className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-center text-body-md">
                     {user.name}

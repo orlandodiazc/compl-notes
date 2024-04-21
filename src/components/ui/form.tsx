@@ -162,11 +162,12 @@ const FormMessage = React.forwardRef<
 const FormError = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
->(({ className, children, ...props }) => {
+>(({ className, children, ...props }, ref) => {
   return (
     <p
       className={cn("text-sm font-medium text-destructive", className)}
       {...props}
+      ref={ref}
     >
       {children}
     </p>

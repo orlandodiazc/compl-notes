@@ -1,8 +1,7 @@
 import { AuthContext, useAuth } from "@/auth";
 import ThemeToggle from "@/components/theme-toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { getNameInitials, getUserImgSrc } from "@/lib/utils";
+import UserAvatar from "@/components/user-avatar";
 import { QueryClient } from "@tanstack/react-query";
 import {
   Link,
@@ -50,15 +49,7 @@ function RootRoute() {
                     params={{ username: user.username }}
                     className="flex items-center gap-2"
                   >
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={getUserImgSrc(user.image?.id)}
-                        alt={user.name ?? user.username}
-                      />
-                      <AvatarFallback>
-                        {getNameInitials(user.name)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <UserAvatar user={user} className="h-8 w-8" />
                     <span className="hidden text-body-sm font-bold sm:block">
                       {user.name ?? user.username}
                     </span>

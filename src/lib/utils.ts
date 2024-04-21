@@ -19,5 +19,6 @@ export function getNameInitials(name?: string) {
   return name
     .split(" ")
     .map((n) => n.charAt(0))
-    .join();
+    .join("")
+    .toUpperCase();
 }

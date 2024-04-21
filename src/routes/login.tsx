@@ -13,7 +13,7 @@ import { StatusButton } from "@/components/ui/status-button";
 import { useLoginMutation } from "@/lib/api/queryOptions";
 import { useZodForm } from "@/lib/misc";
 import { PasswordSchema, UsernameSchema } from "@/lib/validation/user";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { Helmet } from "react-helmet-async";
 import { z } from "zod";
 
@@ -45,6 +45,7 @@ export default function LoginPage() {
 
   const form = useZodForm({
     schema: LoginFormSchema,
+    mode: "onSubmit",
     defaultValues: { username: "", password: "", remember: false },
   });
 
@@ -143,6 +144,10 @@ export default function LoginPage() {
                 </StatusButton>
               </form>
             </Form>
+          </div>
+          <div className="flex items-center justify-center gap-2 pt-6">
+            <span className="text-muted-foreground">New here?</span>
+            <Link to="/signup">Create an account</Link>
           </div>
         </div>
       </div>

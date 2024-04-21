@@ -40,19 +40,22 @@ export default function NoteRoute() {
     <div className="absolute inset-0 flex flex-col px-10">
       <h2 className="mb-2 pt-12 text-h2 lg:mb-6">{data.title}</h2>
       <div className={`${isOwner ? "pb-24" : "pb-12"} overflow-y-auto`}>
-        <ul className="flex flex-wrap gap-5 py-5">
-          {data.images.map((image) => (
-            <li key={image.id}>
-              <a href={getNoteImgSrc(image.id)}>
-                <img
-                  src={getNoteImgSrc(image.id)}
-                  alt={image.altText ?? ""}
-                  className="h-32 w-32 rounded-lg object-cover"
-                />
-              </a>
-            </li>
-          ))}
-        </ul>
+        {data.images.length ? (
+          <ul className="flex flex-wrap gap-5 py-5">
+            {data.images.map((image) => (
+              <li key={image.id}>
+                <a href={getNoteImgSrc(image.id)}>
+                  <img
+                    src={getNoteImgSrc(image.id)}
+                    alt={image.altText ?? ""}
+                    className="h-32 w-32 rounded-lg object-cover"
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
         <p className="whitespace-break-spaces text-sm md:text-lg">
           {data.content}
         </p>

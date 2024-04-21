@@ -1,9 +1,8 @@
 import { useAuth } from "@/auth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
+import UserAvatar from "@/components/user-avatar";
 import { useLogoutMutation, userQuery } from "@/lib/api/queryOptions";
-import { getNameInitials, getUserImgSrc } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Helmet } from "react-helmet-async";
@@ -44,44 +43,36 @@ export default function UserProfileRoute() {
         <div className="relative w-52">
           <div className="absolute -top-40">
             <div className="relative">
-              <Avatar className="h-52 w-52">
-                <AvatarImage
-                  src={getUserImgSrc(data.image?.id)}
-                  alt={userDisplayName}
-                />
-                <AvatarFallback>
-                  {getNameInitials(data.name) ?? data.username.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
+              <UserAvatar user={data} className="w-52 h-52" />
             </div>
           </div>
         </div>
 
         <div className="flex flex-col items-center mt-20">
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex flex-wrap items-center justify-center">
             <h1 className="text-center text-h2">{userDisplayName}</h1>
           </div>
-          <p className="mt-2 text-center text-muted-foreground">
+          <p className="text-center text-muted-foreground mb-2">
             Joined {new Date(data.createdAt).toLocaleDateString()}
           </p>
           {isLoggedInUser ? (
-            <Button variant="link" onClick={handleLogout}>
-              <Icon
-                name="log-out"
-                className="scale-125 max-md:scale-150"
-                size="font"
-              >
-                Logout
-              </Icon>
-            </Button>
+            <div>
+              <Button variant="link" onClick={handleLogout}>
+                <Icon
+                  name="log-out"
+                  className="scale-125 max-md:scale-150"
+                  size="font"
+                >
+                  Logout
+                </Icon>
+              </Button>
+            </div>
           ) : null}
-          <div className="flex gap-4">
-            <Button asChild>
-              <Link to="/users/$username/notes" params={{ username }}>
-                {userDisplayName}'s notes
-              </Link>
-            </Button>
-          </div>
+          <Button asChild>
+            <Link to="/users/$username/notes" params={{ username }}>
+              {userDisplayName}'s notes
+            </Link>
+          </Button>
         </div>
       </div>
     </main>
