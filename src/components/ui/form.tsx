@@ -158,6 +158,20 @@ const FormMessage = React.forwardRef<
     </p>
   );
 });
+
+const FormError = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, children, ...props }) => {
+  return (
+    <p
+      className={cn("text-sm font-medium text-destructive", className)}
+      {...props}
+    >
+      {children}
+    </p>
+  );
+});
 FormMessage.displayName = "FormMessage";
 
 export {
@@ -168,5 +182,6 @@ export {
   FormControl,
   FormDescription,
   FormMessage,
+  FormError,
   FormField,
 };

@@ -2,6 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
+  FormError,
   FormField,
   FormItem,
   FormLabel,
@@ -131,11 +132,7 @@ export default function LoginPage() {
                     </FormItem>
                   )}
                 />
-                {rootError && (
-                  <p className="text-sm font-medium text-destructive">
-                    {rootError.message}
-                  </p>
-                )}
+                {rootError && <FormError>{rootError.message}</FormError>}
                 <StatusButton
                   className="w-full"
                   status={status}

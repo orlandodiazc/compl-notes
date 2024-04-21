@@ -9,15 +9,16 @@ import { cn, getNoteImgSrc } from "@/lib/utils";
 import {
   Form,
   FormControl,
+  FormError,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useZodForm } from "@/lib/misc";
 import { useState } from "react";
-import { useFieldArray, useForm, useFormContext } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import { z } from "zod";
 
 const titleMinLength = 1;
@@ -63,15 +64,19 @@ export default function NoteForm({
   handleSubmit: (formData: FormData) => void;
   status: "pending" | "success" | "error" | "idle";
 }) {
-  const form = useForm<NoteEditorForm>({
-    resolver: zodResolver(NoteEditorSchema),
-    mode: "onTouched",
-
-    defaultValues: {
-      title: note?.title,
-      content: note?.content,
-      images: note?.images.length ? note.images : [{}],
-    },
+  const form = useZodForm({
+    schema: NoteEditorSchema,
+    defaultValues: note
+      ? {
+          title: note.title,
+          content: note.content,
+          images: note.images.length ? note.images : [{}],
+        }
+      : {
+          title: "",
+          content: "",
+          images: [{}],
+        },
   });
 
   const {
@@ -155,15 +160,15 @@ export default function NoteForm({
                       </span>{" "}
                       <span className="sr-only">Remove image {index + 1}</span>
                     </button>
-                    <ImageChooser meta={{ index }} />
+                    <ImageChooser index={index} />
                   </li>
                 ))}
               </ul>
             </div>
             {imagesError && (
-              <p className="text-sm font-medium text-destructive">
+              <FormError>
                 {imagesError.message ?? imagesError.root?.message}
-              </p>
+              </FormError>
             )}
             <Button
               className="mt-3"
@@ -197,7 +202,7 @@ export default function NoteForm({
   );
 }
 
-function ImageChooser({ meta: { index } }: { meta: { index: number } }) {
+function ImageChooser({ index }: { index: number }) {
   const form = useFormContext<NoteEditorForm>();
   const defaultValues = form.formState.defaultValues?.images?.[index];
   const initialId = defaultValues?.id;
@@ -300,9 +305,6 @@ function ImageChooser({ meta: { index } }: { meta: { index: number } }) {
             />
           </div>
         </div>
-      </div>
-      <div className="min-h-[32px] px-4 pb-3 pt-1">
-        {/* <ErrorList id={meta.errorId} errors={meta.errors} /> */}
       </div>
     </div>
   );
