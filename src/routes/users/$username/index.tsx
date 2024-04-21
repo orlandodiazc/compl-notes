@@ -1,6 +1,8 @@
+import { useAuth } from "@/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { userQuery } from "@/lib/api/queryOptions";
+import { Icon } from "@/components/ui/icon";
+import { useLogoutMutation, userQuery } from "@/lib/api/queryOptions";
 import { getNameInitials, getUserImgSrc } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
@@ -15,9 +17,20 @@ export const Route = createFileRoute("/users/$username/")({
 
 export default function UserProfileRoute() {
   const { username } = Route.useParams();
+  const navigate = Route.useNavigate();
   const { data } = useSuspenseQuery(userQuery(username));
-  const userDisplayName = data.name ?? data.username;
+  const { user } = useAuth();
 
+  const { mutate } = useLogoutMutation();
+  function handleLogout() {
+    mutate(undefined, {
+      onSuccess() {
+        navigate({ to: "/" });
+      },
+    });
+  }
+  const userDisplayName = data.name ?? data.username;
+  const isLoggedInUser = data.id === user?.id;
   return (
     <main className="container my-20 flex flex-col items-center justify-center">
       <Helmet>
@@ -51,7 +64,18 @@ export default function UserProfileRoute() {
           <p className="mt-2 text-center text-muted-foreground">
             Joined {new Date(data.createdAt).toLocaleDateString()}
           </p>
-          <div className="mt-10 flex gap-4">
+          {isLoggedInUser ? (
+            <Button variant="link" onClick={handleLogout}>
+              <Icon
+                name="log-out"
+                className="scale-125 max-md:scale-150"
+                size="font"
+              >
+                Logout
+              </Icon>
+            </Button>
+          ) : null}
+          <div className="flex gap-4">
             <Button asChild>
               <Link to="/users/$username/notes" params={{ username }}>
                 {userDisplayName}'s notes

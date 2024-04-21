@@ -1,3 +1,4 @@
+import { useAuth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { noteQuery, useDeleteNoteMutation } from "@/lib/api/queryOptions";
 import { getNoteImgSrc } from "@/lib/utils";
@@ -20,6 +21,9 @@ export default function NoteRoute() {
   const { data } = useSuspenseQuery(noteQuery(params));
   const { mutate, isPending } = useDeleteNoteMutation(params.username);
 
+  const { user } = useAuth();
+  const isOwner = user?.id === data.owner.id;
+
   function handleDeleteClick() {
     mutate(params, {
       onSuccess: () => {
@@ -35,7 +39,7 @@ export default function NoteRoute() {
   return (
     <div className="absolute inset-0 flex flex-col px-10">
       <h2 className="mb-2 pt-12 text-h2 lg:mb-6">{data.title}</h2>
-      <div className="overflow-y-auto pb-24">
+      <div className={`${isOwner ? "pb-24" : "pb-12"} overflow-y-auto`}>
         <ul className="flex flex-wrap gap-5 py-5">
           {data.images.map((image) => (
             <li key={image.id}>
@@ -53,20 +57,22 @@ export default function NoteRoute() {
           {data.content}
         </p>
       </div>
-      <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 rounded-lg bg-muted/80 p-4 pl-5 shadow-xl shadow-accent backdrop-blur-sm md:gap-4 md:pl-7 justify-end">
-        <Button
-          onClick={handleDeleteClick}
-          disabled={isPending}
-          variant="destructive"
-        >
-          Delete
-        </Button>
-        <Button asChild>
-          <Link to="/users/$username/notes/$noteId/edit" params={params}>
-            Edit
-          </Link>
-        </Button>
-      </div>
+      {isOwner && (
+        <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 rounded-lg bg-muted/80 p-4 pl-5 shadow-xl shadow-accent backdrop-blur-sm md:gap-4 md:pl-7 justify-end">
+          <Button
+            onClick={handleDeleteClick}
+            disabled={isPending}
+            variant="destructive"
+          >
+            Delete
+          </Button>
+          <Button asChild>
+            <Link to="/users/$username/notes/$noteId/edit" params={params}>
+              Edit
+            </Link>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

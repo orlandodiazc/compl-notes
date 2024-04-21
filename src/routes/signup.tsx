@@ -17,11 +17,17 @@ import {
   PasswordSchema,
   UsernameSchema,
 } from "@/lib/validation/user";
+import { redirect } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import { Helmet } from "react-helmet-async";
 import { z } from "zod";
 
 export const Route = createFileRoute("/signup")({
+  beforeLoad: ({ context: { auth } }) => {
+    if (auth?.isAuthenticated) {
+      throw redirect({ to: "/" });
+    }
+  },
   component: SignupRoute,
 });
 
@@ -202,8 +208,6 @@ export default function SignupRoute() {
                 </FormItem>
               )}
             />
-
-            {/* <ErrorList errors={form.errors} id={form.errorId} /> */}
 
             <div className="flex items-center justify-between gap-6">
               <StatusButton

@@ -1,6 +1,8 @@
-import { AuthContext } from "@/auth";
+import { AuthContext, useAuth } from "@/auth";
 import ThemeToggle from "@/components/theme-toggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { getNameInitials, getUserImgSrc } from "@/lib/utils";
 import { QueryClient } from "@tanstack/react-query";
 import {
   Link,
@@ -19,6 +21,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 });
 
 function RootRoute() {
+  const { user } = useAuth();
   return (
     <>
       <Helmet>
@@ -38,11 +41,37 @@ function RootRoute() {
             <Link className="underline" to="/users">
               All Users
             </Link>
-            <Button asChild>
-              <Link to="/login" search={{ redirect: "/" }}>
-                Log in
-              </Link>
-            </Button>
+
+            {user ? (
+              <div className="flex items-center gap-2">
+                <Button asChild variant="secondary">
+                  <Link
+                    to="/users/$username"
+                    params={{ username: user.username }}
+                    className="flex items-center gap-2"
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage
+                        src={getUserImgSrc(user.image?.id)}
+                        alt={user.name ?? user.username}
+                      />
+                      <AvatarFallback>
+                        {getNameInitials(user.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="hidden text-body-sm font-bold sm:block">
+                      {user.name ?? user.username}
+                    </span>
+                  </Link>
+                </Button>
+              </div>
+            ) : (
+              <Button asChild>
+                <Link to="/login" search={{ redirect: "/" }}>
+                  Log in
+                </Link>
+              </Button>
+            )}
           </div>
         </nav>
       </header>
@@ -51,7 +80,7 @@ function RootRoute() {
         <Outlet />
       </div>
 
-      <footer className="container py-6 flex justify-between">
+      <footer className="container py-4 flex justify-between items-center">
         <p className="text-body-xs">Built with React and Spring Boot.</p>
         <ThemeToggle />
       </footer>
