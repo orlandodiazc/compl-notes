@@ -49,8 +49,9 @@ export interface components {
       file?: string;
     };
     NoteRequest: {
-      title?: string;
-      content?: string;
+      id?: string;
+      title: string;
+      content: string;
       images?: components["schemas"]["NoteImageRequest"][];
     };
     NoteUsernameAndIdResponse: {
@@ -59,17 +60,18 @@ export interface components {
       username: string;
     };
     SignupRequest: {
-      email: string;
       username: string;
       name: string;
+      email: string;
       password: string;
       confirmPassword: string;
-      agreeToTermsOfServiceAndPrivacyPolicy: boolean;
+      agreeToTermsOfServiceAndPrivacyPolicy?: boolean;
+      passwordsMatch?: boolean;
     };
     LoginRequest: {
       username: string;
       password: string;
-      remember: boolean;
+      remember?: boolean;
     };
     AuthUserResponse: {
       user?: components["schemas"]["UserBaseResponse"];

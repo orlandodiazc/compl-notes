@@ -10,6 +10,7 @@ import {
   newNote,
   newUser,
   postLogin,
+  postLogout,
   putNote,
 } from ".";
 import { ApiProblemDetail } from "./apiSchema";
@@ -18,6 +19,7 @@ export const authUserQuery = () =>
   queryOptions({
     queryKey: ["auth", "user"],
     queryFn: () => fetchAuthUser(),
+    staleTime: Infinity,
   });
 
 export const usersQuery = (filter?: string) =>
@@ -49,12 +51,23 @@ export const useLoginMutation = () => {
     mutationKey: ["auth", "login"],
     mutationFn: postLogin,
     onSuccess(data) {
-      queryClient.setQueryData(authUserQuery().queryKey, { user: data });
+      queryClient.setQueryData(authUserQuery().queryKey, data);
     },
     onError(error: Response) {
       return error;
     },
+
     throwOnError: false,
+  });
+};
+
+export const useLogoutMutation = () => {
+  return useMutation({
+    mutationKey: ["auth", "logout"],
+    mutationFn: postLogout,
+    onSuccess() {
+      queryClient.setQueryData(authUserQuery().queryKey, { user: undefined });
+    },
   });
 };
 

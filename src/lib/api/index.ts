@@ -61,18 +61,19 @@ export function fetchNote({
   return fetcher("/users/" + username + "/notes/" + noteId);
 }
 
-export function deleteNote({
+export async function deleteNote({
   username,
   noteId,
 }: {
   username: string;
   noteId: string;
 }) {
-  return fetcher("/users/" + username + "/notes/" + noteId, {
+  const response = await fetch("/users/" + username + "/notes/" + noteId, {
     method: "DELETE",
     credentials: "include",
     headers: { ...getCsrfToken() },
   });
+  if (!response.ok) throw response;
 }
 
 export function putNote({
@@ -107,13 +108,22 @@ export function newNote({
 
 export function postLogin(
   loginRequest: ApiSchema["LoginRequest"],
-): Promise<ApiSchema["UserBaseResponse"]> {
+): Promise<ApiSchema["AuthUserResponse"]> {
   return fetcher("/auth/login", {
     method: "POST",
     body: JSON.stringify(loginRequest),
     credentials: "include",
     headers: { "Content-Type": "application/json", ...getCsrfToken() },
   });
+}
+
+export async function postLogout() {
+  const response = await fetch(API_BASEURL + "/auth/logout", {
+    method: "POST",
+    credentials: "include",
+    headers: { ...getCsrfToken() },
+  });
+  if (!response.ok) throw response;
 }
 
 export function newUser(
