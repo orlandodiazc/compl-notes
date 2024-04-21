@@ -8,9 +8,9 @@ import {
   fetchNotes,
   fetchUser,
   newNote,
-  newUser,
   postLogin,
   postLogout,
+  postSignup,
   putNote,
 } from ".";
 import { ApiProblemDetail } from "./apiSchema";
@@ -71,11 +71,11 @@ export const useLogoutMutation = () => {
   });
 };
 
-export const useNewUserMutation = () => {
+export const useSignupMutation = () => {
   return useMutation({
-    mutationFn: newUser,
+    mutationFn: postSignup,
     onSuccess: (data) => {
-      queryClient.setQueryData(authUserQuery().queryKey, { user: data });
+      queryClient.setQueryData(authUserQuery().queryKey, data);
     },
     onError(error: ApiProblemDetail) {
       return error;

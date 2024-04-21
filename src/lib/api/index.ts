@@ -68,11 +68,14 @@ export async function deleteNote({
   username: string;
   noteId: string;
 }) {
-  const response = await fetch("/users/" + username + "/notes/" + noteId, {
-    method: "DELETE",
-    credentials: "include",
-    headers: { ...getCsrfToken() },
-  });
+  const response = await fetch(
+    API_BASEURL + "/users/" + username + "/notes/" + noteId,
+    {
+      method: "DELETE",
+      credentials: "include",
+      headers: { ...getCsrfToken() },
+    },
+  );
   if (!response.ok) throw response;
 }
 
@@ -126,9 +129,9 @@ export async function postLogout() {
   if (!response.ok) throw response;
 }
 
-export function newUser(
+export function postSignup(
   signupRequest: ApiSchema["SignupRequest"],
-): Promise<ApiSchema["UserBaseResponse"]> {
+): Promise<ApiSchema["AuthUserResponse"]> {
   return fetcher("/auth/signup", {
     method: "POST",
     body: JSON.stringify(signupRequest),

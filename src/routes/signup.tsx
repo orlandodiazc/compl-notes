@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { StatusButton } from "@/components/ui/status-button";
-import { useNewUserMutation } from "@/lib/api/queryOptions";
+import { useSignupMutation } from "@/lib/api/queryOptions";
 import { useZodForm } from "@/lib/misc";
 import {
   EmailSchema,
@@ -58,7 +58,7 @@ const SignupFormSchema = z
 type SignupForm = z.infer<typeof SignupFormSchema>;
 
 export default function SignupRoute() {
-  const { mutate, status } = useNewUserMutation();
+  const { mutate, status } = useSignupMutation();
   const navigate = Route.useNavigate();
 
   const form = useZodForm({
