@@ -6,6 +6,7 @@ import com.ditod.notes.domain.user_image.UserImage;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.ColumnTransformer;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,11 +20,13 @@ public class User extends DateTimeAudit {
     private UUID id;
     @Column(unique = true)
     @NotNull
+    @ColumnTransformer(write = "LOWER(?)")
     private String email;
     @Column(unique = true)
     @NotNull
+    @ColumnTransformer(write = "LOWER(?)")
     private String username;
-
+    @NotNull
     private String password;
     private String name;
     @JsonManagedReference

@@ -30,7 +30,6 @@ public class AuthService {
     }
 
     public String authenticate(LoginRequest userRequest) {
-        System.out.println(userRequest.toString());
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userRequest.username(), userRequest.password()));
         return tokenService.generateToken(authentication);
     }

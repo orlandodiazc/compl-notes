@@ -55,7 +55,7 @@ public class NoteService {
     }
 
     UserNotesResponse findAll(String username) {
-        return userRepository.findByUsername(username, UserNotesResponse.class)
+        return userRepository.findByUsernameIgnoreCase(username, UserNotesResponse.class)
                 .orElseThrow(() -> new EntityNotFoundException("username", username));
     }
 

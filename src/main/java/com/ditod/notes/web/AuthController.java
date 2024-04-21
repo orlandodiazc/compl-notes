@@ -3,6 +3,7 @@ package com.ditod.notes.web;
 import com.ditod.notes.domain.exception.EntityAlreadyExistsException;
 import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.domain.user.dto.UserBaseResponse;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -31,14 +32,26 @@ public class AuthController {
             @RequestBody LoginRequest userRequest,
             HttpServletResponse response) {
         String jwtToken = authService.authenticate(userRequest);
-        authService.addJwtCookieToResponse(response, jwtToken, userRequest.remember() ? 86400 : 0);
+        authService.addJwtCookieToResponse(response, jwtToken, userRequest.remember() ? 86400 : -1);
         return ResponseEntity.ok(new AuthUserResponse(userService.findByUsername(userRequest.username(), UserBaseResponse.class)));
     }
 
+    @PostMapping("/logout")
+    private ResponseEntity<Void> logout(HttpServletResponse response) {
+        Cookie jwtTokenCookie = new Cookie("jwt", null);
+        jwtTokenCookie.setMaxAge(0);
+        jwtTokenCookie.setSecure(true);
+        jwtTokenCookie.setHttpOnly(true);
+        jwtTokenCookie.setPath("/");
+        response.addCookie(jwtTokenCookie);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/signup")
-    private ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest,
+    private ResponseEntity<AuthUserResponse> signup(
+            @RequestBody SignupRequest signupRequest,
             HttpServletResponse response) {
-        if (!userService.existsByUsername(signupRequest.username())) {
+        if (userService.existsByUsername(signupRequest.username())) {
             throw new EntityAlreadyExistsException("user", "username");
         }
 

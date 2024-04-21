@@ -45,7 +45,7 @@ public class DataLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         File ditodImageFile = new File(IMAGES_DIRECTORY + "/user/ditod.png");
         byte[] ditodImageContent = Files.readAllBytes(ditodImageFile.toPath());
-        User ditod = new User("ditod@test.com", "ditod", passwordEncoder.encode("123456"), "Orlando Diaz");
+        User ditod = new User("Ditod@test.com", "Ditod", passwordEncoder.encode("123456"), "Orlando Diaz");
         UserImage ditodImage = new UserImage("Dito's profile picture", MediaType.IMAGE_PNG.toString(), ditodImageContent, ditod);
 
         Note ditodNote = new Note("Koalas", "Koalas are great", ditod);
