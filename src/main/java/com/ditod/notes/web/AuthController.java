@@ -1,30 +1,41 @@
 package com.ditod.notes.web;
 
 import com.ditod.notes.domain.exception.EntityAlreadyExistsException;
+import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.domain.user.dto.UserBaseResponse;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthService authService;
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthService authService, UserService userService,
+            UserRepository userRepository) {
         this.authService = authService;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/user")
-    ResponseEntity<?> authUser(JwtAuthenticationToken token) {
+    ResponseEntity<AuthUserResponse> authUser(JwtAuthenticationToken token,
+            HttpServletResponse response) {
         if (token == null || !token.isAuthenticated())
             return ResponseEntity.ok(new AuthUserResponse(null));
-        return ResponseEntity.ok(new AuthUserResponse(userService.findByUsername(token.getName(), UserBaseResponse.class)));
+        Optional<UserBaseResponse> user = userRepository.findByUsernameIgnoreCase(token.getName(), UserBaseResponse.class);
+        if (user.isEmpty()) {
+            authService.updateJwtCookieInResponse(response, null, 0);
+            return ResponseEntity.ok(new AuthUserResponse(null));
+        }
+        return ResponseEntity.ok(new AuthUserResponse(user.get()));
     }
 
     @PostMapping("/login")
@@ -32,18 +43,13 @@ public class AuthController {
             @RequestBody LoginRequest userRequest,
             HttpServletResponse response) {
         String jwtToken = authService.authenticate(userRequest);
-        authService.addJwtCookieToResponse(response, jwtToken, userRequest.remember() ? 86400 : -1);
+        authService.updateJwtCookieInResponse(response, jwtToken, userRequest.remember() ? 86400 : -1);
         return ResponseEntity.ok(new AuthUserResponse(userService.findByUsername(userRequest.username(), UserBaseResponse.class)));
     }
 
     @PostMapping("/logout")
     private ResponseEntity<Void> logout(HttpServletResponse response) {
-        Cookie jwtTokenCookie = new Cookie("jwt", null);
-        jwtTokenCookie.setMaxAge(0);
-        jwtTokenCookie.setSecure(true);
-        jwtTokenCookie.setHttpOnly(true);
-        jwtTokenCookie.setPath("/");
-        response.addCookie(jwtTokenCookie);
+        authService.updateJwtCookieInResponse(response, null, 0);
         return ResponseEntity.ok().build();
     }
 
@@ -57,7 +63,7 @@ public class AuthController {
 
         authService.signup(signupRequest);
         String jwtToken = authService.authenticate(new LoginRequest(signupRequest.username(), signupRequest.password(), true));
-        authService.addJwtCookieToResponse(response, jwtToken, 86400);
+        authService.updateJwtCookieInResponse(response, jwtToken, 86400);
         return ResponseEntity.ok(new AuthUserResponse(userService.findByUsername(signupRequest.username(), UserBaseResponse.class)));
     }
 }

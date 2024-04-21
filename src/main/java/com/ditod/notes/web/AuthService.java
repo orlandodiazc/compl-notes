@@ -38,7 +38,7 @@ public class AuthService {
         userService.save(new User(user.email(), user.username(), passwordEncoder.encode(user.password()), user.name()));
     }
 
-    public void addJwtCookieToResponse(HttpServletResponse response,
+    public void updateJwtCookieInResponse(HttpServletResponse response,
             String jwtToken, int maxAge) {
         Cookie jwtTokenCookie = new Cookie("jwt", jwtToken);
         jwtTokenCookie.setMaxAge(maxAge);
