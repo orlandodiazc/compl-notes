@@ -1,5 +1,6 @@
 package com.ditod.notes.domain.user_image;
 
+import com.ditod.notes.domain.exception.EntityNotFoundException;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,15 +13,16 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/user-images")
 public class UserImageController {
-    private final UserImageService userImageService;
+    private final UserImageRepository userImageRepository;
 
-    public UserImageController(UserImageService userImageService) {
-        this.userImageService = userImageService;
+    public UserImageController(UserImageRepository userImageRepository) {
+        this.userImageRepository = userImageRepository;
     }
 
     @GetMapping("/{imageId}")
     ResponseEntity<?> oneUserImage(@PathVariable UUID imageId) {
-        UserImage userImage = userImageService.findById(imageId);
+        UserImage userImage = userImageRepository.findById(imageId)
+                .orElseThrow(() -> new EntityNotFoundException("user image", imageId));
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.parseMediaType(userImage.getContentType()));
         responseHeaders.setContentLength(userImage.getBlob().length);

@@ -1,6 +1,8 @@
 package com.ditod.notes.web;
 
 import com.ditod.notes.auth.TokenService;
+import com.ditod.notes.domain.role.Role;
+import com.ditod.notes.domain.role.RoleRepository;
 import com.ditod.notes.domain.user.User;
 import com.ditod.notes.domain.user.UserService;
 import jakarta.servlet.http.Cookie;
@@ -11,21 +13,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
     private final PasswordEncoder passwordEncoder;
-
+    private final RoleRepository roleRepository;
     private final UserService userService;
 
     public AuthService(AuthenticationManager authenticationManager,
             TokenService tokenService, PasswordEncoder passwordEncoder,
-            UserService userService) {
+            RoleRepository roleRepository, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
         this.userService = userService;
     }
 
@@ -35,7 +40,8 @@ public class AuthService {
     }
 
     public void signup(SignupRequest user) {
-        userService.save(new User(user.email(), user.username(), passwordEncoder.encode(user.password()), user.name()));
+        List<Role> roles = List.of(roleRepository.findByName("user"));
+        userService.save(new User(user.email(), user.username(), passwordEncoder.encode(user.password()), user.name(), roles));
     }
 
     public void updateJwtCookieInResponse(HttpServletResponse response,

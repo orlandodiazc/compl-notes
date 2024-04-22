@@ -9,21 +9,21 @@ import java.util.UUID;
 public interface NoteSummaryResponse {
     @NotNull UUID getId();
 
-    String getTitle();
+    @NotNull String getTitle();
 
-    String getContent();
+    @NotNull String getContent();
 
     @NotNull OwnerSummary getOwner();
 
     @NotNull Instant getUpdatedAt();
 
-    @NotNull List<ImageSummary> getImages();
+    @NotNull List<NoteImageSummary> getImages();
 
     interface OwnerSummary {
         @NotNull UUID getId();
     }
 
-    interface ImageSummary {
+    interface NoteImageSummary {
         @NotNull UUID getId();
 
         String getAltText();

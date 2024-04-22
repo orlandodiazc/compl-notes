@@ -12,7 +12,7 @@ public interface UserNotesResponse extends UserBaseResponse {
     interface NoteSummary {
         @NotNull UUID getId();
 
-        String getTitle();
+        @NotNull String getTitle();
     }
 
 }

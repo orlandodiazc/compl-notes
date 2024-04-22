@@ -1,4 +1,4 @@
-package com.ditod.notes.domain.note.dto;
+package com.ditod.notes.domain.note_image.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 

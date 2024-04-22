@@ -1,9 +1,9 @@
 package com.ditod.notes.domain.note;
 
 import com.ditod.notes.domain.exception.EntityNotFoundException;
-import com.ditod.notes.domain.note.dto.NoteImageRequest;
 import com.ditod.notes.domain.note.dto.NoteSummaryResponse;
 import com.ditod.notes.domain.note_image.NoteImage;
+import com.ditod.notes.domain.note_image.dto.NoteImageRequest;
 import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user.dto.UserNotesResponse;
 import org.springframework.stereotype.Service;

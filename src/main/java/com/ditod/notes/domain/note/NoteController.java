@@ -4,7 +4,7 @@ import com.ditod.notes.domain.note.dto.NoteRequest;
 import com.ditod.notes.domain.note.dto.NoteSummaryResponse;
 import com.ditod.notes.domain.note.dto.NoteUsernameAndIdResponse;
 import com.ditod.notes.domain.note_image.NoteImage;
-import com.ditod.notes.domain.note_image.NoteImageService;
+import com.ditod.notes.domain.note_image.NoteImageRepository;
 import com.ditod.notes.domain.user.User;
 import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.domain.user.dto.UserNotesResponse;
@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 public class NoteController {
     private final NoteService noteService;
     private final UserService userService;
-    private final NoteImageService noteImageService;
+    private final NoteImageRepository noteImageRepository;
 
     public NoteController(NoteService noteService, UserService userService,
-            NoteImageService noteImageService) {
+            NoteImageRepository noteImageRepository) {
         this.noteService = noteService;
         this.userService = userService;
-        this.noteImageService = noteImageService;
+        this.noteImageRepository = noteImageRepository;
     }
 
     @GetMapping
@@ -49,7 +49,7 @@ public class NoteController {
         User user = userService.findByUsername(username, User.class);
         Note savedNote = noteService.save(new Note(note.getTitle(), note.getContent(), user));
         List<NoteImage> images = noteService.convertMultipartFilesToNoteImage(note.getImages(), savedNote);
-        noteImageService.save(images);
+        noteImageRepository.saveAll(images);
         return ResponseEntity.ok(new NoteUsernameAndIdResponse(savedNote.getId(), savedNote.getOwner()
                 .getUsername()));
     }
@@ -73,14 +73,14 @@ public class NoteController {
             note.setContent(newNote.getContent());
             List<NoteImage> imageUpdates = noteService.convertMultipartFilesToNoteImage(newNote.getImages(), note);
             if (imageUpdates.isEmpty()) {
-                noteImageService.deleteByNote(note);
+                noteImageRepository.deleteByNote(note);
             } else {
-                noteImageService.deleteByIdNotIn(imageUpdates.stream()
+                noteImageRepository.deleteByIdNotIn(imageUpdates.stream()
                         .map(NoteImage::getId)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
             }
-            noteImageService.save(imageUpdates);
+            noteImageRepository.saveAll(imageUpdates);
             return noteService.save(note);
         }).orElseGet(() -> {
             Note createdNote = noteService.save(new Note(newNote.getTitle(), newNote.getContent(), owner));
