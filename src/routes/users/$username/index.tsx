@@ -43,7 +43,7 @@ export default function UserProfileRoute() {
         <div className="relative w-52">
           <div className="absolute -top-40">
             <div className="relative">
-              <UserAvatar user={data} className="w-52 h-52" />
+              <UserAvatar user={data} className="w-52 h-52 text-7xl" />
             </div>
           </div>
         </div>

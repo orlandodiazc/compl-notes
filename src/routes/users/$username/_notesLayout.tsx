@@ -29,7 +29,10 @@ export default function NotesRoute() {
               params={{ username }}
               className="flex flex-col items-center justify-center gap-2 bg-muted pb-4 pl-8 pr-4 pt-12 lg:flex-row lg:justify-start lg:gap-4"
             >
-              <UserAvatar user={data} className="h-16 w-16 lg:h-24 lg:w-24" />
+              <UserAvatar
+                user={data}
+                className="h-16 w-16 lg:h-24 lg:w-24 text-4xl"
+              />
               <h1 className="text-center text-base font-bold md:text-lg lg:text-left lg:text-2xl">
                 {ownerDisplayName}'s Notes
               </h1>
