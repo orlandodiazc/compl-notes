@@ -1,4 +1,5 @@
 import { SearchBar } from "@/components/search-bar";
+import Spinner from "@/components/spinner";
 import UserAvatar from "@/components/user-avatar";
 import { usersQuery } from "@/lib/api/queryOptions";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -36,7 +37,7 @@ function UsersRoute() {
 function UserList() {
   const search = Route.useSearch();
   const { data, isLoading } = useSuspenseQuery(usersQuery(search.filter));
-  if (isLoading) return <h1>loading</h1>;
+  if (isLoading) return <Spinner loading={isLoading} />;
   return (
     <>
       {data.length ? (
