@@ -17,6 +17,9 @@ export interface paths {
   "/auth/signup": {
     post: operations["signup"];
   };
+  "/auth/logout": {
+    post: operations["logout"];
+  };
   "/auth/login": {
     post: operations["login"];
   };
@@ -49,7 +52,6 @@ export interface components {
       file?: string;
     };
     NoteRequest: {
-      id?: string;
       title: string;
       content: string;
       images?: components["schemas"]["NoteImageRequest"][];
@@ -68,15 +70,20 @@ export interface components {
       agreeToTermsOfServiceAndPrivacyPolicy?: boolean;
       passwordsMatch?: boolean;
     };
-    LoginRequest: {
-      username: string;
-      password: string;
-      remember?: boolean;
-    };
     AuthUserResponse: {
-      user?: components["schemas"]["UserBaseResponse"];
+      user?: components["schemas"]["UserAuthDto"];
     };
-    UserBaseResponse: {
+    PermissionSummary: {
+      access?: string;
+      action?: string;
+      entity?: string;
+    };
+    RoleSummary: {
+      name?: string;
+      permissions?: components["schemas"]["PermissionSummary"][];
+    };
+    UserAuthDto: {
+      roles?: components["schemas"]["RoleSummary"][];
       name?: string;
       /** Format: uuid */
       id: string;
@@ -86,6 +93,11 @@ export interface components {
     UserImageSummary: {
       /** Format: uuid */
       id: string;
+    };
+    LoginRequest: {
+      username: string;
+      password: string;
+      remember?: boolean;
     };
     UserFilteredResponse: {
       name?: string;
@@ -105,7 +117,7 @@ export interface components {
       image?: components["schemas"]["UserImageSummary"];
     };
     NoteSummary: {
-      title?: string;
+      title: string;
       /** Format: uuid */
       id: string;
     };
@@ -117,18 +129,18 @@ export interface components {
       username: string;
       image?: components["schemas"]["UserImageSummary"];
     };
-    ImageSummary: {
+    NoteImageSummary: {
       /** Format: uuid */
       id: string;
       altText?: string;
     };
     NoteSummaryResponse: {
-      title?: string;
+      title: string;
       /** Format: uuid */
       id: string;
-      content?: string;
+      content: string;
       owner: components["schemas"]["OwnerSummary"];
-      images: components["schemas"]["ImageSummary"][];
+      images: components["schemas"]["NoteImageSummary"][];
       /** Format: date-time */
       updatedAt: string;
     };
@@ -171,8 +183,8 @@ export interface operations {
         newNote: components["schemas"]["NoteRequest"];
       };
       path: {
-        noteId: string;
         username: string;
+        noteId: string;
       };
     };
     responses: {
@@ -187,8 +199,8 @@ export interface operations {
   deleteNote: {
     parameters: {
       path: {
-        noteId: string;
         username: string;
+        noteId: string;
       };
     };
     responses: {
@@ -241,8 +253,16 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": Record<string, never>;
+          "*/*": components["schemas"]["AuthUserResponse"];
         };
+      };
+    };
+  };
+  logout: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
       };
     };
   };
@@ -326,7 +346,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": Record<string, never>;
+          "*/*": components["schemas"]["AuthUserResponse"];
         };
       };
     };

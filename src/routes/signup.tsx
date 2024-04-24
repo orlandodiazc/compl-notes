@@ -1,3 +1,4 @@
+import { useAuth } from "@/auth";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
@@ -59,6 +60,7 @@ type SignupForm = z.infer<typeof SignupFormSchema>;
 export default function SignupRoute() {
   const { mutate, status } = useSignupMutation();
   const navigate = Route.useNavigate();
+  const { setUser } = useAuth();
 
   const form = useZodForm({
     schema: SignupFormSchema,
@@ -74,7 +76,8 @@ export default function SignupRoute() {
 
   function onSubmit(values: SignupForm) {
     mutate(values, {
-      onSuccess() {
+      onSuccess(data) {
+        setUser(data.user);
         navigate({ to: "/" });
       },
       onError(error) {

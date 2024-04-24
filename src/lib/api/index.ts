@@ -35,10 +35,6 @@ export function fetchFilteredUsers(
   return fetcher("/users?" + new URLSearchParams({ filter: filter ?? "" }));
 }
 
-export function fetchAuthUser(): Promise<ApiSchema["AuthUserResponse"]> {
-  return fetcher("/auth/user", { credentials: "include" });
-}
-
 export function fetchUser(
   username: string,
 ): Promise<ApiSchema["UserSummaryResponse"]> {

@@ -1,10 +1,15 @@
 import { useNewNoteMutation } from "@/lib/api/queryOptions";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import NoteForm from "./-note-form";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/users/$username/_notesLayout/notes/new")(
   {
+    beforeLoad: ({ context: { auth }, location }) => {
+      if (!auth?.isAuthenticated) {
+        throw redirect({ to: "/login", search: { redirect: location.href } });
+      }
+    },
     component: NoteNew,
   },
 );

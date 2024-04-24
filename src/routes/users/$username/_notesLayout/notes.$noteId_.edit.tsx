@@ -1,12 +1,17 @@
 import { noteQuery, usePutNoteMutation } from "@/lib/api/queryOptions";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import NoteForm from "./-note-form";
 import { toast } from "sonner";
 
 export const Route = createFileRoute(
   "/users/$username/_notesLayout/notes/$noteId/edit",
 )({
+  beforeLoad: ({ context: { auth }, location }) => {
+    if (!auth?.isAuthenticated) {
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
+  },
   component: NoteEdit,
   loader: ({ params, context: { queryClient } }) => {
     return queryClient.ensureQueryData(noteQuery(params));
