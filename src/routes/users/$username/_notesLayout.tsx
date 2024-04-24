@@ -1,4 +1,5 @@
 import { useAuth } from "@/auth";
+import { userHasPermission } from "@/auth/helpers";
 import { Icon } from "@/components/ui/icon";
 import UserAvatar from "@/components/user-avatar";
 import { notesQuery } from "@/lib/api/queryOptions";
@@ -17,6 +18,10 @@ export default function NotesRoute() {
   const { data } = useSuspenseQuery(notesQuery(username));
   const { user } = useAuth();
   const isOwner = user?.id === data.id;
+  const canCreate = userHasPermission(
+    user,
+    isOwner ? "CREATE:NOTE:OWN" : "CREATE:NOTE:ANY",
+  );
   const ownerDisplayName = data.name ?? data.username;
 
   return (
@@ -38,7 +43,7 @@ export default function NotesRoute() {
               </h1>
             </Link>
             <ul className="overflow-y-auto overflow-x-hidden pb-12">
-              {isOwner && (
+              {canCreate && (
                 <li className="p-1 pr-0">
                   <Link
                     to="/users/$username/notes/new"
