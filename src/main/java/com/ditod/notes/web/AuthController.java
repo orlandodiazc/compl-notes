@@ -3,7 +3,7 @@ package com.ditod.notes.web;
 import com.ditod.notes.domain.exception.EntityAlreadyExistsException;
 import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user.UserService;
-import com.ditod.notes.domain.user.dto.UserBaseResponse;
+import com.ditod.notes.domain.user.dto.AuthUserDto;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -28,9 +28,9 @@ public class AuthController {
     @GetMapping("/user")
     ResponseEntity<AuthUserResponse> authUser(Authentication auth,
             HttpServletResponse response) {
-        if (!auth.isAuthenticated())
+        if (auth == null || !auth.isAuthenticated())
             return ResponseEntity.ok(new AuthUserResponse(null));
-        Optional<UserBaseResponse> user = userRepository.findByUsername(auth.getName(), UserBaseResponse.class);
+        Optional<AuthUserDto> user = userRepository.findByUsername(auth.getName(), AuthUserDto.class);
         if (user.isEmpty()) {
             authService.updateJwtCookieInResponse(response, null, 0);
             return ResponseEntity.ok(new AuthUserResponse(null));
@@ -44,7 +44,7 @@ public class AuthController {
             HttpServletResponse response) {
         String jwtToken = authService.authenticate(userRequest);
         authService.updateJwtCookieInResponse(response, jwtToken, userRequest.remember() ? 86400 : -1);
-        return ResponseEntity.ok(new AuthUserResponse(userService.findByUsername(userRequest.username(), UserBaseResponse.class)));
+        return ResponseEntity.ok(new AuthUserResponse(userService.findByUsername(userRequest.username(), AuthUserDto.class)));
     }
 
     @PostMapping("/logout")
@@ -64,6 +64,6 @@ public class AuthController {
         authService.signup(signupRequest);
         String jwtToken = authService.authenticate(new LoginRequest(signupRequest.username(), signupRequest.password(), true));
         authService.updateJwtCookieInResponse(response, jwtToken, 86400);
-        return ResponseEntity.ok(new AuthUserResponse(userService.findByUsername(signupRequest.username(), UserBaseResponse.class)));
+        return ResponseEntity.ok(new AuthUserResponse(userService.findByUsername(signupRequest.username(), AuthUserDto.class)));
     }
 }

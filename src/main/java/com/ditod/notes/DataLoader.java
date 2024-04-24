@@ -65,9 +65,9 @@ public class DataLoader implements ApplicationRunner {
             }
         }
 
-        List<Permission> permissionsAnyAccess = permissionRepository.findAllByAccess("ANY");
+        List<Permission> permissionsAllAccess = permissionRepository.findAll();
         List<Permission> permissionsOwnAccess = permissionRepository.findAllByAccess("OWN");
-        Role adminRole = new Role("ROLE_ADMIN", permissionsAnyAccess);
+        Role adminRole = new Role("ROLE_ADMIN", permissionsAllAccess);
         Role userRole = new Role("ROLE_USER", permissionsOwnAccess);
         roleRepository.save(adminRole);
         roleRepository.save(userRole);
@@ -84,9 +84,9 @@ public class DataLoader implements ApplicationRunner {
         NoteImage ditodNoteImage = new NoteImage("Dito's note picture", MediaType.IMAGE_PNG.toString(), ditodNoteImageContent, ditodNote);
 
 
-        User pedro = new User("pedro@test.com", "pedro", passwordEncoder.encode("123456"), "Pedro Diaz", List.of(userRole));
+        User pedro = new User("pedro@test.com", "pedro", passwordEncoder.encode("123456"), "Pedro Patin", List.of(userRole));
         userRepository.save(pedro);
-        User pablo = new User("pablo@test.com", "pablo", passwordEncoder.encode("123456"), "Pablo Diaz", List.of(userRole));
+        User pablo = new User("pablo@test.com", "pablo", passwordEncoder.encode("123456"), "Pablo Barra", List.of(userRole));
         userRepository.save(pablo);
 
         userRepository.save(ditod);

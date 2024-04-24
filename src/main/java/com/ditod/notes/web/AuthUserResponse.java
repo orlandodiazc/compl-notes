@@ -1,6 +1,6 @@
 package com.ditod.notes.web;
 
-import com.ditod.notes.domain.user.dto.UserBaseResponse;
+import com.ditod.notes.domain.user.dto.AuthUserDto;
 
-public record AuthUserResponse(UserBaseResponse user) {
+public record AuthUserResponse(AuthUserDto user) {
 }

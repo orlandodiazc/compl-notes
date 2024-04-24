@@ -2,7 +2,7 @@ package com.ditod.notes.domain.user.dto;
 
 import java.util.List;
 
-public interface UserAuthDto extends UserBaseResponse {
+public interface AuthUserDto extends UserBaseResponse {
     List<RoleSummary> getRoles();
 
     interface RoleSummary {
