@@ -6,7 +6,7 @@ import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.domain.user.dto.UserBaseResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -26,11 +26,11 @@ public class AuthController {
     }
 
     @GetMapping("/user")
-    ResponseEntity<AuthUserResponse> authUser(JwtAuthenticationToken token,
+    ResponseEntity<AuthUserResponse> authUser(Authentication auth,
             HttpServletResponse response) {
-        if (token == null || !token.isAuthenticated())
+        if (!auth.isAuthenticated())
             return ResponseEntity.ok(new AuthUserResponse(null));
-        Optional<UserBaseResponse> user = userRepository.findByUsernameIgnoreCase(token.getName(), UserBaseResponse.class);
+        Optional<UserBaseResponse> user = userRepository.findByUsername(auth.getName(), UserBaseResponse.class);
         if (user.isEmpty()) {
             authService.updateJwtCookieInResponse(response, null, 0);
             return ResponseEntity.ok(new AuthUserResponse(null));
@@ -57,7 +57,7 @@ public class AuthController {
     private ResponseEntity<AuthUserResponse> signup(
             @RequestBody SignupRequest signupRequest,
             HttpServletResponse response) {
-        if (userService.existsByUsername(signupRequest.username())) {
+        if (userRepository.existsByUsernameIgnoreCase(signupRequest.username())) {
             throw new EntityAlreadyExistsException("user", "username");
         }
 

@@ -1,10 +1,9 @@
 package com.ditod.notes.web;
 
 import com.ditod.notes.auth.TokenService;
-import com.ditod.notes.domain.role.Role;
 import com.ditod.notes.domain.role.RoleRepository;
 import com.ditod.notes.domain.user.User;
-import com.ditod.notes.domain.user.UserService;
+import com.ditod.notes.domain.user.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,16 +21,16 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     public AuthService(AuthenticationManager authenticationManager,
             TokenService tokenService, PasswordEncoder passwordEncoder,
-            RoleRepository roleRepository, UserService userService) {
+            RoleRepository roleRepository, UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
-        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     public String authenticate(LoginRequest userRequest) {
@@ -40,8 +39,7 @@ public class AuthService {
     }
 
     public void signup(SignupRequest user) {
-        List<Role> roles = List.of(roleRepository.findByName("user"));
-        userService.save(new User(user.email(), user.username(), passwordEncoder.encode(user.password()), user.name(), roles));
+        userRepository.save(new User(user.email(), user.username(), passwordEncoder.encode(user.password()), user.name(), List.of(roleRepository.findByName("ROLE_USER"))));
     }
 
     public void updateJwtCookieInResponse(HttpServletResponse response,

@@ -11,6 +11,7 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -26,6 +27,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
@@ -34,9 +36,9 @@ import java.util.List;
 
 @Configuration
 public class SecurityConfig {
-
     private final JpaUserDetailsService jpaUserDetailsService;
     private final RsaKeyProperties rsaKeys;
+
 
     public SecurityConfig(JpaUserDetailsService jpaUserDetailsService,
             RsaKeyProperties rsaKeys) {
@@ -64,9 +66,23 @@ public class SecurityConfig {
         http.formLogin(AbstractHttpConfigurer::disable);
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         http.authenticationProvider(authenticationProvider());
-        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/logout")
+                .authenticated()
+                .requestMatchers("/auth/*")
+                .permitAll()
+                .requestMatchers(HttpMethod.POST, "/users/{username}/notes/**")
+                .access(new WebExpressionAuthorizationManager("hasAuthority('SCOPE_CREATE:NOTE:ANY') or (hasAuthority('SCOPE_CREATE:NOTE:OWN') and #username == authentication.name)"))
+                .requestMatchers(HttpMethod.PUT, "/users/{username}/notes/**")
+                .access(new WebExpressionAuthorizationManager("hasAuthority('SCOPE_UPDATE:NOTE:ANY') or (hasAuthority('SCOPE_UPDATE:NOTE:OWN') and #username == authentication.name)"))
+                .requestMatchers(HttpMethod.DELETE, "/users/{username}/notes/**")
+                .access(new WebExpressionAuthorizationManager("hasAuthority('SCOPE_DELETE:NOTE:ANY') or (hasAuthority('SCOPE_DELETE:NOTE:OWN') and #username == authentication.name)"))
+                .requestMatchers(HttpMethod.GET)
+                .permitAll()
+                .anyRequest()
+                .authenticated());
         return http.build();
     }
+
 
     @Bean
     JwtDecoder jwtDecoder() {

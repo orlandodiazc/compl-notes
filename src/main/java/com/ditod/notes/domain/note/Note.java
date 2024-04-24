@@ -55,28 +55,28 @@ public class Note extends DateTimeAudit {
         return title;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public List<NoteImage> getImages() {
-        return images;
-    }
-
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getContent() {
+        return content;
     }
 
     public void setContent(String content) {
         this.content = content;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public List<NoteImage> getImages() {
+        return images;
     }
 
     public void setImages(List<NoteImage> images) {

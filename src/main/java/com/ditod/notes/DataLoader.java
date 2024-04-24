@@ -26,6 +26,7 @@ import java.util.List;
 @Profile("dev")
 @Component
 public class DataLoader implements ApplicationRunner {
+    static final String IMAGES_DIRECTORY = "src/test/java/com/ditod/notes/fixtures/images";
     private final UserRepository userRepository;
     private final UserImageRepository userImageRepository;
     private final NoteRepository noteRepository;
@@ -33,8 +34,6 @@ public class DataLoader implements ApplicationRunner {
     private final PermissionRepository permissionRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-
-    static final String IMAGES_DIRECTORY = "src/test/java/com/ditod/notes/fixtures/images";
 
     public DataLoader(UserRepository userRepository,
             UserImageRepository userImageRepository,
@@ -66,11 +65,13 @@ public class DataLoader implements ApplicationRunner {
             }
         }
 
-        List<Permission> permissionsAnyAccess = permissionRepository.findAllByAccess("any");
-        List<Permission> permissionsOwnAccess = permissionRepository.findAllByAccess("own");
+        List<Permission> permissionsAnyAccess = permissionRepository.findAllByAccess("ANY");
+        List<Permission> permissionsOwnAccess = permissionRepository.findAllByAccess("OWN");
         Role adminRole = new Role("ROLE_ADMIN", permissionsAnyAccess);
+        Role userRole = new Role("ROLE_USER", permissionsOwnAccess);
         roleRepository.save(adminRole);
-        roleRepository.save(new Role("ROLE_USER", permissionsOwnAccess));
+        roleRepository.save(userRole);
+
 
         File ditodImageFile = new File(IMAGES_DIRECTORY + "/user/ditod.png");
         byte[] ditodImageContent = Files.readAllBytes(ditodImageFile.toPath());
@@ -81,6 +82,12 @@ public class DataLoader implements ApplicationRunner {
         File ditodNoteImageFile = new File(IMAGES_DIRECTORY + "/ditod-notes/cute-koala.png");
         byte[] ditodNoteImageContent = Files.readAllBytes(ditodNoteImageFile.toPath());
         NoteImage ditodNoteImage = new NoteImage("Dito's note picture", MediaType.IMAGE_PNG.toString(), ditodNoteImageContent, ditodNote);
+
+
+        User pedro = new User("pedro@test.com", "pedro", passwordEncoder.encode("123456"), "Pedro Diaz", List.of(userRole));
+        userRepository.save(pedro);
+        User pablo = new User("pablo@test.com", "pablo", passwordEncoder.encode("123456"), "Pablo Diaz", List.of(userRole));
+        userRepository.save(pablo);
 
         userRepository.save(ditod);
         userImageRepository.save(ditodImage);

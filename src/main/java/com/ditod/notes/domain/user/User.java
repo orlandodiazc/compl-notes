@@ -75,8 +75,16 @@ public class User extends DateTimeAudit {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -91,28 +99,20 @@ public class User extends DateTimeAudit {
         return name;
     }
 
-    public List<Note> getNotes() {
-        return notes;
-    }
-
-    public UserImage getImage() {
-        return image;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
+    public List<Note> getNotes() {
+        return notes;
+    }
+
     public void setNotes(List<Note> notes) {
         this.notes = notes;
+    }
+
+    public UserImage getImage() {
+        return image;
     }
 
     public void setImage(UserImage image) {

@@ -27,6 +27,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     List<UserFilteredResponse> findFilteredUsers(
             @Param("term") String searchQuery, Pageable pageable);
 
+    <T> Optional<T> findByUsername(String username, Class<T> type);
+
     <T> Optional<T> findByUsernameIgnoreCase(String username, Class<T> type);
 
     boolean existsByUsernameIgnoreCase(String username);

@@ -8,13 +8,11 @@ import com.ditod.notes.domain.note_image.NoteImageRepository;
 import com.ditod.notes.domain.user.User;
 import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.domain.user.dto.UserNotesResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -45,8 +43,8 @@ public class NoteController {
     @PostMapping
     ResponseEntity<NoteUsernameAndIdResponse> newNote(
             @Valid @ModelAttribute NoteRequest note,
-            @PathVariable String username, HttpServletRequest request) {
-        User user = userService.findByUsername(username, User.class);
+            @PathVariable String username) {
+        User user = userService.findByUsername(username);
         Note savedNote = noteService.save(new Note(note.getTitle(), note.getContent(), user));
         List<NoteImage> images = noteService.convertMultipartFilesToNoteImage(note.getImages(), savedNote);
         noteImageRepository.saveAll(images);
@@ -55,9 +53,9 @@ public class NoteController {
     }
 
     @DeleteMapping("/{noteId}")
-    ResponseEntity<Void> deleteNote(@PathVariable UUID noteId,
-            @PathVariable String username) {
-        // Path variable must check for authorization
+    ResponseEntity<Void> deleteNote(@PathVariable String username,
+            @PathVariable UUID noteId) {
+        userService.findByUsername(username);
         noteService.deleteById(noteId);
         return ResponseEntity.noContent().build();
     }
@@ -65,8 +63,8 @@ public class NoteController {
     @PutMapping("/{noteId}")
     ResponseEntity<NoteUsernameAndIdResponse> replaceNote(
             @Valid @ModelAttribute NoteRequest newNote,
-            @PathVariable UUID noteId, @PathVariable String username) {
-        User owner = userService.findByUsername(username, User.class);
+            @PathVariable String username, @PathVariable UUID noteId) {
+        User owner = userService.findByUsername(username);
 
         Note replacedOrNewNote = noteService.findNoteById(noteId).map(note -> {
             note.setTitle(newNote.getTitle());
@@ -77,7 +75,6 @@ public class NoteController {
             } else {
                 noteImageRepository.deleteByIdNotIn(imageUpdates.stream()
                         .map(NoteImage::getId)
-                        .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
             }
             noteImageRepository.saveAll(imageUpdates);

@@ -3,55 +3,75 @@ package com.ditod.notes.domain.note;
 import com.ditod.notes.domain.exception.EntityNotFoundException;
 import com.ditod.notes.domain.note.dto.NoteSummaryResponse;
 import com.ditod.notes.domain.note_image.NoteImage;
+import com.ditod.notes.domain.note_image.NoteImageRepository;
 import com.ditod.notes.domain.note_image.dto.NoteImageRequest;
 import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user.dto.UserNotesResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class NoteService {
 
     private final UserRepository userRepository;
     private final NoteRepository noteRepository;
+    private final NoteImageRepository noteImageRepository;
 
     public NoteService(UserRepository userRepository,
-            NoteRepository noteRepository) {
+            NoteRepository noteRepository,
+            NoteImageRepository noteImageRepository) {
         this.userRepository = userRepository;
         this.noteRepository = noteRepository;
+        this.noteImageRepository = noteImageRepository;
     }
 
-    public List<NoteImage> convertMultipartFilesToNoteImage(
+    List<NoteImage> convertMultipartFilesToNoteImage(
             List<NoteImageRequest> images, Note note) {
 
-        return Optional.ofNullable(images)
-                .map(Collection::stream)
-                .orElseGet(Stream::empty)
-                .map(i -> {
-                    try {
-                        if (i.getFile() != null && !i.getFile().isEmpty()) {
-                            if (i.getId() != null) {
-                                return new NoteImage(i.getId(), i.getAltText(), i.getFile()
-                                        .getContentType(), i.getFile()
-                                        .getBytes(), note);
-                            } else {
-                                return new NoteImage(i.getAltText(), i.getFile()
-                                        .getContentType(), i.getFile()
-                                        .getBytes(), note);
-                            }
-                        } else if (i.getId() != null) {
-                            return new NoteImage(i.getId(), i.getAltText(), note);
-                        }
-                        return null;
-
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }).filter(Objects::nonNull)
+        return images.stream()
+                .map(image -> processNoteImage(image, note))
+                .filter(Objects::nonNull)
                 .toList();
+    }
+
+    private NoteImage processNoteImage(NoteImageRequest requestImage,
+            Note note) {
+        try {
+            if (requestImage.getId() != null) {
+                return updateNoteImage(requestImage);
+            } else if (requestImage.getFile() != null && !requestImage.getFile()
+                    .isEmpty()) {
+                return createNoteImage(requestImage, note);
+            }
+            return null;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private NoteImage updateNoteImage(
+            NoteImageRequest requestImage) throws IOException {
+        NoteImage noteImageToUpdate = noteImageRepository.findById(requestImage.getId())
+                .orElseThrow(() -> new EntityNotFoundException("image", requestImage.getId()));
+        noteImageToUpdate.setAltText(requestImage.getAltText());
+        if (requestImage.getFile() != null && !requestImage.getFile()
+                .isEmpty()) {
+            noteImageToUpdate.setContentType(requestImage.getFile()
+                    .getContentType());
+            noteImageToUpdate.setBlob(requestImage.getFile().getBytes());
+        }
+        return noteImageToUpdate;
+    }
+
+    private NoteImage createNoteImage(NoteImageRequest requestImage,
+            Note note) throws IOException {
+        return new NoteImage(requestImage.getAltText(), requestImage.getFile()
+                .getContentType(), requestImage.getFile().getBytes(), note);
     }
 
     UserNotesResponse findAll(String username) {

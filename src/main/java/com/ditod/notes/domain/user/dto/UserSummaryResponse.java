@@ -5,6 +5,5 @@ import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
 public interface UserSummaryResponse extends UserBaseResponse {
-    @NotNull
-    Instant getCreatedAt();
+    @NotNull Instant getCreatedAt();
 }

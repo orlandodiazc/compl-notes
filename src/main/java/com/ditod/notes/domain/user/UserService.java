@@ -28,16 +28,12 @@ public class UserService {
     }
 
     public <T> T findByUsername(String username, Class<T> type) {
-        return userRepository.findByUsernameIgnoreCase(username, type)
+        return userRepository.findByUsername(username, type)
                 .orElseThrow(() -> new EntityNotFoundException("username", username));
     }
 
-    public boolean existsByUsername(String username) {
-        return userRepository.existsByUsernameIgnoreCase(username);
-
-    }
-
-    public User save(User user) {
-        return userRepository.save(user);
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username, User.class)
+                .orElseThrow(() -> new EntityNotFoundException("username", username));
     }
 }

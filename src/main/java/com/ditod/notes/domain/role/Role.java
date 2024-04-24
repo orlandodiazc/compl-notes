@@ -5,14 +5,13 @@ import com.ditod.notes.domain.permission.Permission;
 import com.ditod.notes.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-public class Role extends DateTimeAudit implements GrantedAuthority {
+public class Role extends DateTimeAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -76,8 +75,4 @@ public class Role extends DateTimeAudit implements GrantedAuthority {
         this.permissions = permissions;
     }
 
-    @Override
-    public String getAuthority() {
-        return name;
-    }
 }

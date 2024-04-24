@@ -6,11 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public interface UserFilteredResponse {
-    @NotNull
-    UUID getId();
+    @NotNull UUID getId();
 
-    @NotNull
-    String getUsername();
+    @NotNull String getUsername();
 
     String getName();
 

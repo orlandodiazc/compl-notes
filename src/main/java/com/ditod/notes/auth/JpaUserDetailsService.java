@@ -1,5 +1,6 @@
 package com.ditod.notes.auth;
 
+import com.ditod.notes.domain.exception.EntityNotFoundException;
 import com.ditod.notes.domain.user.AuthUser;
 import com.ditod.notes.domain.user.User;
 import com.ditod.notes.domain.user.UserRepository;
@@ -22,6 +23,6 @@ public class JpaUserDetailsService implements UserDetailsService {
             String username) throws UsernameNotFoundException {
         return userRepository.findByUsernameIgnoreCase(username, User.class)
                 .map(AuthUser::new)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found: " + username));
+                .orElseThrow(() -> new EntityNotFoundException("username", username));
     }
 }

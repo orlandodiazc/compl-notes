@@ -44,28 +44,28 @@ public class UserImage extends DateTimeAudit {
         return altText;
     }
 
-    public String getContentType() {
-        return contentType;
-    }
-
-    public byte[] getBlob() {
-        return blob;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
     public void setAltText(String altText) {
         this.altText = altText;
+    }
+
+    public String getContentType() {
+        return contentType;
     }
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
 
+    public byte[] getBlob() {
+        return blob;
+    }
+
     public void setBlob(byte[] blob) {
         this.blob = blob;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public void setUser(User user) {
