@@ -6,7 +6,8 @@ export default function UserAvatar({
   user,
   className,
 }: {
-  user: ApiSchema["UserBaseResponse"] & ApiSchema["UserFilteredResponse"];
+  user: ApiSchema["AuthUserResponse"]["user"] &
+    ApiSchema["UserFilteredResponse"];
   className?: string;
 }) {
   return (
