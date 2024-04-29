@@ -12,14 +12,15 @@ import com.ditod.notes.domain.user.User;
 import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user_image.UserImage;
 import com.ditod.notes.domain.user_image.UserImageRepository;
+import net.datafaker.Faker;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -50,6 +51,14 @@ public class DataLoader implements ApplicationRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
+    private byte[] readFileBytes(File file) {
+        try {
+            return Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         List<String> entities = List.of("USER", "NOTE");
@@ -73,25 +82,61 @@ public class DataLoader implements ApplicationRunner {
         roleRepository.save(userRole);
 
 
-        File ditodImageFile = new File(IMAGES_DIRECTORY + "/user/ditod.png");
-        byte[] ditodImageContent = Files.readAllBytes(ditodImageFile.toPath());
-        User ditod = new User("ditod@test.com", "ditod", passwordEncoder.encode("123456"), "Orlando Diaz", List.of(adminRole));
-        UserImage ditodImage = new UserImage("Dito's profile picture", MediaType.IMAGE_PNG.toString(), ditodImageContent, ditod);
+        List<ImageFile> noteImagesFile = List.of(new ImageFile("a nice country house", new File(IMAGES_DIRECTORY + "/notes/0.png")), new ImageFile("a city scape", new File(IMAGES_DIRECTORY + "/notes/1.png")), new ImageFile("a sunrise", new File(IMAGES_DIRECTORY + "/notes/2.png")));
+        List<ImageBytes> noteImages = noteImagesFile.stream()
+                .map(i -> new ImageBytes(i.altText(), readFileBytes(i.file())))
+                .toList();
 
-        Note ditodNote = new Note("Koalas", "Koalas are great", ditod);
+        Faker faker = new Faker();
+
+        for (int i = 0; i < 3; i++) {
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            String username = (faker.letterify("??") + firstName.substring(0, 3) + lastName.substring(0, 3)).toLowerCase();
+            String name = firstName + " " + lastName;
+            String email = username + "@example.com";
+
+            User newUser = new User(email, username, passwordEncoder.encode(username), name, List.of(userRole));
+            File userImageFile = new File(IMAGES_DIRECTORY + "/user/" + i + ".jpg");
+            byte[] userImageContent = readFileBytes(userImageFile);
+            UserImage newUserImage = new UserImage(username, Files.probeContentType(userImageFile.toPath()), userImageContent, newUser);
+
+            userRepository.save(newUser);
+            userImageRepository.save(newUserImage);
+            String noteContent = faker.lorem().paragraph();
+            String noteTitle = faker.lorem().sentence();
+            for (int j = 0; j < faker.number().numberBetween(1, 3); j++) {
+                Note newNote = new Note(noteTitle, noteContent.substring(0, Math.min(100, noteContent.length())), newUser);
+                byte[] newNoteImageContent = noteImages.get(j).file();
+                NoteImage newNoteImage = new NoteImage(noteImagesFile.get(j)
+                        .altText(), Files.probeContentType(noteImagesFile.get(j)
+                        .file()
+                        .toPath()), newNoteImageContent, newNote);
+                noteRepository.save(newNote);
+                noteImageRepository.save(newNoteImage);
+            }
+
+        }
+
+        File ditodImageFile = new File(IMAGES_DIRECTORY + "/user/ditod.jpg");
+        byte[] ditodImageContent = readFileBytes(ditodImageFile);
+        User ditod = new User("ditod@example.com", "ditod", passwordEncoder.encode("123456"), "Orlando Diaz", List.of(adminRole));
+        UserImage ditodImage = new UserImage("Dito's profile picture", Files.probeContentType(ditodImageFile.toPath()), ditodImageContent, ditod);
+
+        Note ditodNote = new Note("Tiger", "Tigers are great", ditod);
         File ditodNoteImageFile = new File(IMAGES_DIRECTORY + "/ditod-notes/cute-koala.png");
-        byte[] ditodNoteImageContent = Files.readAllBytes(ditodNoteImageFile.toPath());
-        NoteImage ditodNoteImage = new NoteImage("Dito's note picture", MediaType.IMAGE_PNG.toString(), ditodNoteImageContent, ditodNote);
-
-
-        User pedro = new User("pedro@test.com", "pedro", passwordEncoder.encode("123456"), "Pedro Patin", List.of(userRole));
-        userRepository.save(pedro);
-        User pablo = new User("pablo@test.com", "pablo", passwordEncoder.encode("123456"), "Pablo Barra", List.of(userRole));
-        userRepository.save(pablo);
+        byte[] ditodNoteImageContent = readFileBytes(ditodNoteImageFile);
+        NoteImage ditodNoteImage = new NoteImage("Cute looking koala", Files.probeContentType(ditodNoteImageFile.toPath()), ditodNoteImageContent, ditodNote);
 
         userRepository.save(ditod);
         userImageRepository.save(ditodImage);
         noteRepository.save(ditodNote);
         noteImageRepository.save(ditodNoteImage);
+    }
+
+    record ImageFile(String altText, File file) {
+    }
+
+    record ImageBytes(String altText, byte[] file) {
     }
 }
