@@ -31,6 +31,8 @@ import org.springframework.security.web.access.expression.WebExpressionAuthoriza
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
@@ -49,29 +51,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http) throws Exception {
-        http.cors(c -> {
-            c.configurationSource(request -> {
-                CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(List.of("https://compl-notes.odiaz.com.co"));
-                config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-                config.setAllowedHeaders(List.of("*"));
-                config.setAllowCredentials(true);
-                return config;
-            });
-        });
-        CookieCsrfTokenRepository tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
-        tokenRepository.setCookieCustomizer(c -> c.sameSite("none")
-                .secure(true)
-                .httpOnly(false));
 
-        http.csrf((csrf) -> csrf.csrfTokenRepository(tokenRepository)
+        http.cors(Customizer.withDefaults());
+        http.csrf((csrf) -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
         http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.formLogin(AbstractHttpConfigurer::disable);
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         http.authenticationProvider(authenticationProvider());
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/logout")
+        http.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.OPTIONS, "/**")
+                .permitAll()
+                .requestMatchers("/auth/logout")
                 .authenticated()
                 .requestMatchers("/auth/*")
                 .permitAll()
@@ -86,6 +77,19 @@ public class SecurityConfig {
                 .anyRequest()
                 .authenticated());
         return http.build();
+    }
+
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("https://compl-notes.odiaz.com.co"));
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 
