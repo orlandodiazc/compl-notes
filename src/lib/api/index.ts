@@ -22,7 +22,7 @@ export async function fetcher(...args: Parameters<typeof fetch>) {
   try {
     data = await response.json();
   } catch (e) {
-    console.error(e);
+    console.error(response);
     throw response;
   }
   if (!response.ok) throw data;
