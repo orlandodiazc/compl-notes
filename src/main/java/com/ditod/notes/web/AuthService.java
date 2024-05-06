@@ -1,6 +1,7 @@
 package com.ditod.notes.web;
 
 import com.ditod.notes.auth.TokenService;
+import com.ditod.notes.config.ProtectorProperties;
 import com.ditod.notes.domain.role.RoleRepository;
 import com.ditod.notes.domain.user.User;
 import com.ditod.notes.domain.user.UserRepository;
@@ -16,6 +17,8 @@ import java.util.List;
 
 @Service
 public class AuthService {
+
+    private final ProtectorProperties protectorProperties;
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
@@ -23,9 +26,11 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
-    public AuthService(AuthenticationManager authenticationManager,
+    public AuthService(ProtectorProperties protectorProperties,
+            AuthenticationManager authenticationManager,
             TokenService tokenService, PasswordEncoder passwordEncoder,
             RoleRepository roleRepository, UserRepository userRepository) {
+        this.protectorProperties = protectorProperties;
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
@@ -45,6 +50,7 @@ public class AuthService {
     public void updateJwtCookieInResponse(HttpServletResponse response,
             String jwtToken, int maxAge) {
         Cookie jwtTokenCookie = new Cookie("jwt", jwtToken);
+        jwtTokenCookie.setDomain(protectorProperties.csrfCookieDomain());
         jwtTokenCookie.setMaxAge(maxAge);
         jwtTokenCookie.setSecure(true);
         jwtTokenCookie.setHttpOnly(true);

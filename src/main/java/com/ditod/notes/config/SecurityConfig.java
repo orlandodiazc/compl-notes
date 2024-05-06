@@ -40,12 +40,14 @@ import java.util.List;
 public class SecurityConfig {
     private final JpaUserDetailsService jpaUserDetailsService;
     private final RsaKeyProperties rsaKeys;
+    private final ProtectorProperties protectorProperties;
 
 
     public SecurityConfig(JpaUserDetailsService jpaUserDetailsService,
-            RsaKeyProperties rsaKeys) {
+            RsaKeyProperties rsaKeys, ProtectorProperties protectorProperties) {
         this.jpaUserDetailsService = jpaUserDetailsService;
         this.rsaKeys = rsaKeys;
+        this.protectorProperties = protectorProperties;
     }
 
     @Bean
@@ -53,8 +55,7 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
         var CsrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
         CsrfTokenRepository.setCookieCustomizer(c -> c.secure(true)
-                .httpOnly(false)
-                .domain("odiaz.com.co")
+                .httpOnly(false).domain(protectorProperties.csrfCookieDomain())
                 .path("/"));
 
         http.cors(Customizer.withDefaults());
@@ -88,7 +89,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://compl-notes.odiaz.com.co"));
+        configuration.setAllowedOrigins(List.of(protectorProperties.corsAllowedOrigin()));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
