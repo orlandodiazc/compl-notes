@@ -18,13 +18,12 @@ export default function UserProfileRoute() {
   const { username } = Route.useParams();
   const navigate = Route.useNavigate();
   const { data } = useSuspenseQuery(userQuery(username));
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
 
   const { mutate } = useLogoutMutation();
   function handleLogout() {
     mutate(undefined, {
       onSuccess() {
-        setUser(undefined);
         navigate({ to: "/" });
       },
     });

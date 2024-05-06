@@ -2,6 +2,7 @@ import { queryClient } from "@/main";
 import { queryOptions, useMutation } from "@tanstack/react-query";
 import {
   deleteNote,
+  fetchAuthUser,
   fetchFilteredUsers,
   fetchNote,
   fetchNotes,
@@ -13,6 +14,13 @@ import {
   putNote,
 } from ".";
 import { ApiProblemDetail } from "./apiSchema";
+
+export const authUserQuery = () =>
+  queryOptions({
+    queryFn: fetchAuthUser,
+    queryKey: ["auth", "user"],
+    staleTime: Infinity,
+  });
 
 export const usersQuery = (filter?: string) =>
   queryOptions({
@@ -45,7 +53,9 @@ export const useLoginMutation = () => {
     onError(error: Response) {
       return error;
     },
-
+    onSuccess(data) {
+      queryClient.setQueryData(authUserQuery().queryKey, data);
+    },
     throwOnError: false,
   });
 };
@@ -54,12 +64,18 @@ export const useLogoutMutation = () => {
   return useMutation({
     mutationKey: ["auth", "logout"],
     mutationFn: postLogout,
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: authUserQuery().queryKey });
+    },
   });
 };
 
 export const useSignupMutation = () => {
   return useMutation({
     mutationFn: postSignup,
+    onSuccess(data) {
+      queryClient.setQueryData(authUserQuery().queryKey, data);
+    },
     onError(error: ApiProblemDetail) {
       return error;
     },

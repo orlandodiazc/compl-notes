@@ -7,7 +7,6 @@ function getCsrfToken():
   | Record<"X-XSRF-TOKEN", string>
   | Record<string, never> {
   const token = Cookies.get("XSRF-TOKEN");
-  console.log(token);
   if (!token) return {};
   return { "X-XSRF-TOKEN": token };
 }
@@ -34,6 +33,10 @@ export function fetchFilteredUsers(
   filter?: string,
 ): Promise<ApiSchema["UserFilteredResponse"][]> {
   return fetcher("/users?" + new URLSearchParams({ filter: filter ?? "" }));
+}
+
+export function fetchAuthUser(): Promise<ApiSchema["AuthUserResponse"]> {
+  return fetcher("/auth/user", { credentials: "include" });
 }
 
 export function fetchUser(

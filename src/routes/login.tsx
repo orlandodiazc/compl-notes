@@ -1,4 +1,3 @@
-import { useAuth } from "@/auth";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
@@ -49,13 +48,10 @@ export default function LoginPage() {
     defaultValues: { username: "", password: "", remember: false },
   });
 
-  const { setUser } = useAuth();
   const rootError = form.formState.errors.root;
-
   function onSubmit(values: LoginForm) {
     mutate(values, {
-      onSuccess(data) {
-        setUser(data.user);
+      onSuccess() {
         navigate({ to: redirect });
       },
       onError(response: Response) {
