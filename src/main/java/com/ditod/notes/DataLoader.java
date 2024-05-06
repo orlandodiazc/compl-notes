@@ -61,6 +61,7 @@ public class DataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        // PRobable use for Domain Object Security (ACLs)
         List<String> entities = List.of("USER", "NOTE");
         List<String> actions = List.of("CREATE", "READ", "UPDATE", "DELETE");
         List<String> accesses = List.of("OWN", "ANY");
@@ -92,7 +93,7 @@ public class DataLoader implements ApplicationRunner {
         for (int i = 0; i < 3; i++) {
             String firstName = faker.name().firstName();
             String lastName = faker.name().lastName();
-            String username = (faker.letterify("??") + firstName.substring(0, 3) + lastName.substring(0, 3)).toLowerCase();
+            String username = (faker.letterify("??") + firstName.substring(0, Math.min(3, firstName.length())) + lastName.substring(0, Math.min(3, lastName.length()))).toLowerCase();
             String name = firstName + " " + lastName;
             String email = username + "@example.com";
 
@@ -103,10 +104,12 @@ public class DataLoader implements ApplicationRunner {
 
             userRepository.save(newUser);
             userImageRepository.save(newUserImage);
-            String noteContent = faker.lorem().paragraph();
-            String noteTitle = faker.lorem().sentence();
-            for (int j = 0; j < faker.number().numberBetween(1, 3); j++) {
-                Note newNote = new Note(noteTitle, noteContent.substring(0, Math.min(100, noteContent.length())), newUser);
+
+            for (int j = 0; j < faker.number()
+                    .numberBetween(1, noteImagesFile.size()); j++) {
+                String noteContent = faker.lorem().paragraph();
+                String noteTitle = faker.lorem().sentence();
+                Note newNote = new Note(noteTitle.substring(0, Math.min(10, noteContent.length())), noteContent.substring(0, Math.min(100, noteContent.length())), newUser);
                 byte[] newNoteImageContent = noteImages.get(j).file();
                 NoteImage newNoteImage = new NoteImage(noteImagesFile.get(j)
                         .altText(), Files.probeContentType(noteImagesFile.get(j)
@@ -118,20 +121,20 @@ public class DataLoader implements ApplicationRunner {
 
         }
 
-        File ditodImageFile = new File(IMAGES_DIRECTORY + "/user/ditod.jpg");
-        byte[] ditodImageContent = readFileBytes(ditodImageFile);
-        User ditod = new User("ditod@example.com", "ditod", passwordEncoder.encode("123456"), "Orlando Diaz", List.of(adminRole));
-        UserImage ditodImage = new UserImage("Dito's profile picture", Files.probeContentType(ditodImageFile.toPath()), ditodImageContent, ditod);
+        File adminImageFile = new File(IMAGES_DIRECTORY + "/user/admin.jpg");
+        byte[] adminImageContent = readFileBytes(adminImageFile);
+        User admin = new User("admin@example.com", "admin", passwordEncoder.encode("123456"), "Orlando Diaz", List.of(adminRole));
+        UserImage adminImage = new UserImage("Dito's profile picture", Files.probeContentType(adminImageFile.toPath()), adminImageContent, admin);
 
-        Note ditodNote = new Note("Tiger", "Tigers are great", ditod);
-        File ditodNoteImageFile = new File(IMAGES_DIRECTORY + "/ditod-notes/cute-koala.png");
-        byte[] ditodNoteImageContent = readFileBytes(ditodNoteImageFile);
-        NoteImage ditodNoteImage = new NoteImage("Cute looking koala", Files.probeContentType(ditodNoteImageFile.toPath()), ditodNoteImageContent, ditodNote);
+        Note adminNote = new Note("Tiger", "Tigers are great", admin);
+        File adminNoteImageFile = new File(IMAGES_DIRECTORY + "/admin-notes/cute-koala.png");
+        byte[] adminNoteImageContent = readFileBytes(adminNoteImageFile);
+        NoteImage adminNoteImage = new NoteImage("Cute looking koala", Files.probeContentType(adminNoteImageFile.toPath()), adminNoteImageContent, adminNote);
 
-        userRepository.save(ditod);
-        userImageRepository.save(ditodImage);
-        noteRepository.save(ditodNote);
-        noteImageRepository.save(ditodNoteImage);
+        userRepository.save(admin);
+        userImageRepository.save(adminImage);
+        noteRepository.save(adminNote);
+        noteImageRepository.save(adminNoteImage);
     }
 
     record ImageFile(String altText, File file) {
