@@ -7,6 +7,7 @@ function getCsrfToken():
   | Record<"X-XSRF-TOKEN", string>
   | Record<string, never> {
   const token = Cookies.get("XSRF-TOKEN");
+  console.log(token);
   if (!token) return {};
   return { "X-XSRF-TOKEN": token };
 }
