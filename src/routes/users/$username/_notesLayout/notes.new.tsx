@@ -21,7 +21,7 @@ export default function NoteNew() {
   function handleSubmit(formData: FormData) {
     mutate(formData, {
       onSuccess: () => {
-        toast(`Succesfully created ${username}' note!`);
+        toast.success("Your note has been created successfully!");
         navigate({
           to: "/users/$username/notes",
           params: { username },

@@ -32,7 +32,7 @@ export default function NoteRoute() {
   function handleDeleteClick() {
     mutate(params, {
       onSuccess: () => {
-        toast(`Succesfully deleted ${params.username}'s note`);
+        toast.success("Your note has been deleted successfully!");
         navigate({
           to: "/users/$username/notes",
           params: { username: params.username },

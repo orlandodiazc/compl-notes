@@ -26,7 +26,7 @@ export default function NoteEdit() {
   function handleSubmit(formData: FormData) {
     mutate(formData, {
       onSuccess: () => {
-        toast(`Succesfully edited ${params.username}'s note!`);
+        toast.success("Your note has been edited successfully!");
         navigate({
           to: "/users/$username/notes/$noteId",
           params,
