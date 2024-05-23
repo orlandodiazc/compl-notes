@@ -16,7 +16,6 @@ import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
-@Profile("dev")
+
 @Component
 public class DataLoader implements ApplicationRunner {
     @Value("${data-loader.images.directory}")
@@ -63,7 +62,7 @@ public class DataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        // PRobable use for Domain Object Security (ACLs)
+        // Probable use for Domain Object Security (ACLs)
         List<String> entities = List.of("USER", "NOTE");
         List<String> actions = List.of("CREATE", "READ", "UPDATE", "DELETE");
         List<String> accesses = List.of("OWN", "ANY");

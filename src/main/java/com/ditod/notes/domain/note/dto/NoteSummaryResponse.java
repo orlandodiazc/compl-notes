@@ -1,31 +1,18 @@
 package com.ditod.notes.domain.note.dto;
 
+import com.ditod.notes.domain.note_image.NoteImage;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-public interface NoteSummaryResponse {
-    @NotNull UUID getId();
-
-    @NotNull String getTitle();
-
-    @NotNull String getContent();
-
-    @NotNull OwnerSummary getOwner();
-
-    @NotNull Instant getUpdatedAt();
-
-    @NotNull List<NoteImageSummary> getImages();
-
-    interface OwnerSummary {
-        @NotNull UUID getId();
-    }
-
-    interface NoteImageSummary {
-        @NotNull UUID getId();
-
-        String getAltText();
+public record NoteSummaryResponse(@NotNull UUID id, @NotNull String title,
+                                  @NotNull String content,
+                                  @NotNull OwnerSummary owner,
+                                  @NotNull Instant createdAt,
+                                  @NotNull Instant updatedAt,
+                                  @NotNull List<NoteImage> images) {
+    public record OwnerSummary(@NotNull UUID id) {
     }
 }

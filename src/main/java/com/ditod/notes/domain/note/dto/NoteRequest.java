@@ -1,16 +1,17 @@
 package com.ditod.notes.domain.note.dto;
 
 import com.ditod.notes.domain.note_image.dto.NoteImageRequest;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
 public class NoteRequest {
-    @NotBlank(message = "Title is required")
+    // TODO: Change default messages, for dry annotations
+    @NotNull(message = "Title is required")
     @Size(min = 1, max = 100, message = "Title length must be between 1 and 100 characters")
     private String title;
-    @NotBlank(message = "Content is required")
+    @NotNull(message = "Content is required")
     @Size(min = 1, max = 10000, message = "Content length must be between 1 and 10000 characters")
     private String content;
     @Size(max = 5, message = "The maximum number of images is 5")

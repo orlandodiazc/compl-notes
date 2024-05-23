@@ -3,6 +3,7 @@ package com.ditod.notes.domain.note_image;
 import com.ditod.notes.domain.DateTimeAudit;
 import com.ditod.notes.domain.note.Note;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,14 +11,17 @@ import java.util.UUID;
 
 @Entity
 public class NoteImage extends DateTimeAudit {
+    @NotNull
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String altText;
     @NotNull
+    @JsonIgnore
     private String contentType;
     @NotNull
+    @JsonIgnore
     private byte[] blob;
     @NotNull
     @ManyToOne

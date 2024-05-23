@@ -2,7 +2,6 @@ package com.ditod.notes.domain.note;
 
 import com.ditod.notes.domain.note.dto.NoteRequest;
 import com.ditod.notes.domain.note.dto.NoteSummaryResponse;
-import com.ditod.notes.domain.note.dto.NoteUsernameAndIdResponse;
 import com.ditod.notes.domain.note_image.NoteImage;
 import com.ditod.notes.domain.note_image.NoteImageRepository;
 import com.ditod.notes.domain.user.User;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users/{username}/notes")
@@ -36,20 +34,20 @@ public class NoteController {
     }
 
     @GetMapping("/{noteId}")
-    ResponseEntity<NoteSummaryResponse> oneNote(@PathVariable UUID noteId) {
+    ResponseEntity<NoteSummaryResponse> getNote(@PathVariable UUID noteId) {
         return ResponseEntity.ok(noteService.findNoteSummaryById(noteId));
     }
 
     @PostMapping
-    ResponseEntity<NoteUsernameAndIdResponse> newNote(
+    ResponseEntity<NoteSummaryResponse> createNote(
             @Valid @ModelAttribute NoteRequest note,
             @PathVariable String username) {
         User user = userService.findByUsername(username);
         Note savedNote = noteService.save(new Note(note.getTitle(), note.getContent(), user));
         List<NoteImage> images = noteService.convertMultipartFilesToNoteImage(note.getImages(), savedNote);
         noteImageRepository.saveAll(images);
-        return ResponseEntity.ok(new NoteUsernameAndIdResponse(savedNote.getId(), savedNote.getOwner()
-                .getUsername()));
+        return ResponseEntity.ok(new NoteSummaryResponse(savedNote.getId(), savedNote.getTitle(), savedNote.getContent(), new NoteSummaryResponse.OwnerSummary(savedNote.getOwner()
+                .getId()), savedNote.getCreatedAt(), savedNote.getUpdatedAt(), savedNote.getImages()));
     }
 
     @DeleteMapping("/{noteId}")
@@ -61,31 +59,14 @@ public class NoteController {
     }
 
     @PutMapping("/{noteId}")
-    ResponseEntity<NoteUsernameAndIdResponse> replaceNote(
+    ResponseEntity<NoteSummaryResponse> updateNote(
             @Valid @ModelAttribute NoteRequest newNote,
             @PathVariable String username, @PathVariable UUID noteId) {
         User owner = userService.findByUsername(username);
 
-        Note replacedOrNewNote = noteService.findNoteById(noteId).map(note -> {
-            note.setTitle(newNote.getTitle());
-            note.setContent(newNote.getContent());
-            List<NoteImage> imageUpdates = noteService.convertMultipartFilesToNoteImage(newNote.getImages(), note);
-            if (imageUpdates.isEmpty()) {
-                noteImageRepository.deleteByNote(note);
-            } else {
-                noteImageRepository.deleteByIdNotIn(imageUpdates.stream()
-                        .map(NoteImage::getId)
-                        .collect(Collectors.toList()));
-            }
-            noteImageRepository.saveAll(imageUpdates);
-            return noteService.save(note);
-        }).orElseGet(() -> {
-            Note createdNote = noteService.save(new Note(newNote.getTitle(), newNote.getContent(), owner));
-            createdNote.setImages(noteService.convertMultipartFilesToNoteImage(newNote.getImages(), createdNote));
-            return noteService.save(createdNote);
-        });
+        Note replacedOrNewNote = noteService.updateNote(newNote, noteId, owner);
 
-        return ResponseEntity.ok(new NoteUsernameAndIdResponse(replacedOrNewNote.getId(), replacedOrNewNote.getOwner()
-                .getUsername()));
+        return ResponseEntity.ok(new NoteSummaryResponse(replacedOrNewNote.getId(), replacedOrNewNote.getTitle(), replacedOrNewNote.getContent(), new NoteSummaryResponse.OwnerSummary(replacedOrNewNote.getOwner()
+                .getId()), replacedOrNewNote.getCreatedAt(), replacedOrNewNote.getUpdatedAt(), replacedOrNewNote.getImages()));
     }
 }
