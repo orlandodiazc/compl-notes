@@ -19,13 +19,13 @@ public class UserController {
     }
 
     @GetMapping
-    ResponseEntity<List<UserFilteredResponse>> filteredUsers(
+    ResponseEntity<List<UserFilteredResponse>> listUsers(
             @RequestParam(required = false, defaultValue = "") String filter) {
         return ResponseEntity.ok(userService.findFilteredUsers(filter));
     }
 
     @GetMapping("/{username}")
-    ResponseEntity<UserSummaryResponse> oneUser(@PathVariable String username) {
+    ResponseEntity<UserSummaryResponse> getUser(@PathVariable String username) {
         return ResponseEntity.ok(userService.findByUsername(username, UserSummaryResponse.class));
 
     }

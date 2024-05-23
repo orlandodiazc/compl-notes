@@ -6,4 +6,6 @@ import java.time.Instant;
 
 public interface UserSummaryResponse extends UserBaseResponse {
     @NotNull Instant getCreatedAt();
+
+    @NotNull Instant getUpdatedAt();
 }

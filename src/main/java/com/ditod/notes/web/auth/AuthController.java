@@ -29,7 +29,7 @@ public class AuthController {
     }
 
     @GetMapping("/user")
-    ResponseEntity<AuthUserResponse> authUser(Authentication auth,
+    ResponseEntity<AuthUserResponse> getAuthUser(Authentication auth,
             HttpServletResponse response) {
         if (auth == null || !auth.isAuthenticated())
             return ResponseEntity.ok(new AuthUserResponse(null));
