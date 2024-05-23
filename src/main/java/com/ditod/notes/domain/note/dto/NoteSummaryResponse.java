@@ -7,12 +7,20 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-public record NoteSummaryResponse(@NotNull UUID id, @NotNull String title,
-                                  @NotNull String content,
-                                  @NotNull OwnerSummary owner,
-                                  @NotNull Instant createdAt,
-                                  @NotNull Instant updatedAt,
-                                  @NotNull List<NoteImage> images) {
-    public record OwnerSummary(@NotNull UUID id) {
+public interface NoteSummaryResponse {
+    @NotNull UUID getId();
+
+    @NotNull String getTitle();
+
+    @NotNull String getContent();
+
+    @NotNull OwnerSummary getOwner();
+
+    @NotNull Instant getUpdatedAt();
+
+    @NotNull List<NoteImage> getImages();
+
+    interface OwnerSummary {
+        @NotNull UUID getId();
     }
 }

@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 public class NoteRequest {
-    // TODO: Change default messages, for dry annotations
     @NotNull(message = "Title is required")
     @Size(min = 1, max = 100, message = "Title length must be between 1 and 100 characters")
     private String title;

@@ -41,15 +41,13 @@ public class NoteController {
     }
 
     @PostMapping
-    ResponseEntity<NoteSummaryResponse> createNote(
-            @Valid @ModelAttribute NoteRequest note,
+    ResponseEntity<Note> createNote(@Valid @ModelAttribute NoteRequest note,
             @PathVariable String username) {
         User user = userService.findByUsername(username);
         Note savedNote = noteService.save(new Note(note.getTitle(), note.getContent(), user));
         List<NoteImage> images = noteService.convertMultipartFilesToNoteImage(note.getImages(), savedNote);
         noteImageRepository.saveAll(images);
-        return ResponseEntity.ok(new NoteSummaryResponse(savedNote.getId(), savedNote.getTitle(), savedNote.getContent(), new NoteSummaryResponse.OwnerSummary(savedNote.getOwner()
-                .getId()), savedNote.getCreatedAt(), savedNote.getUpdatedAt(), savedNote.getImages()));
+        return ResponseEntity.ok(savedNote);
     }
 
     @DeleteMapping("/{noteId}")
@@ -61,14 +59,10 @@ public class NoteController {
     }
 
     @PutMapping("/{noteId}")
-    ResponseEntity<NoteSummaryResponse> updateNote(
-            @Valid @ModelAttribute NoteRequest newNote,
+    ResponseEntity<Note> updateNote(@Valid @ModelAttribute NoteRequest newNote,
             @PathVariable String username, @PathVariable UUID noteId) {
         User owner = userService.findByUsername(username);
-
         Note replacedOrNewNote = noteService.updateNote(newNote, noteId, owner);
-
-        return ResponseEntity.ok(new NoteSummaryResponse(replacedOrNewNote.getId(), replacedOrNewNote.getTitle(), replacedOrNewNote.getContent(), new NoteSummaryResponse.OwnerSummary(replacedOrNewNote.getOwner()
-                .getId()), replacedOrNewNote.getCreatedAt(), replacedOrNewNote.getUpdatedAt(), replacedOrNewNote.getImages()));
+        return ResponseEntity.ok(replacedOrNewNote);
     }
 }
