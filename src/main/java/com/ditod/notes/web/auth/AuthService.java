@@ -1,10 +1,12 @@
-package com.ditod.notes.web;
+package com.ditod.notes.web.auth;
 
 import com.ditod.notes.auth.TokenService;
 import com.ditod.notes.config.ProtectorProperties;
 import com.ditod.notes.domain.role.RoleRepository;
 import com.ditod.notes.domain.user.User;
 import com.ditod.notes.domain.user.UserRepository;
+import com.ditod.notes.web.auth.dto.LoginRequest;
+import com.ditod.notes.web.auth.dto.SignupRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;

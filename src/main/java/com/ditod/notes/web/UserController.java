@@ -1,5 +1,6 @@
-package com.ditod.notes.domain.user;
+package com.ditod.notes.web;
 
+import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.domain.user.dto.UserFilteredResponse;
 import com.ditod.notes.domain.user.dto.UserSummaryResponse;
 import org.springframework.http.ResponseEntity;

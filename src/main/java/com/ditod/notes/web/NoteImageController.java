@@ -1,6 +1,8 @@
-package com.ditod.notes.domain.note_image;
+package com.ditod.notes.web;
 
 import com.ditod.notes.domain.exception.EntityNotFoundException;
+import com.ditod.notes.domain.note_image.NoteImage;
+import com.ditod.notes.domain.note_image.NoteImageRepository;
 import com.ditod.notes.utils.ImageUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.ditod.notes.web;
+package com.ditod.notes.web.auth.dto;
 
 
 import jakarta.validation.constraints.NotBlank;

@@ -34,12 +34,12 @@ public class NoteService {
     }
 
 
-    UserNotesResponse findAll(String username) {
+    public UserNotesResponse findAll(String username) {
         return userRepository.findByUsernameIgnoreCase(username, UserNotesResponse.class)
                 .orElseThrow(() -> new EntityNotFoundException("username", username));
     }
 
-    NoteSummaryResponse findNoteSummaryById(UUID noteId) {
+    public NoteSummaryResponse findNoteSummaryById(UUID noteId) {
         return noteRepository.findById(noteId, NoteSummaryResponse.class)
                 .orElseThrow(() -> new EntityNotFoundException("note", noteId));
     }
@@ -77,7 +77,7 @@ public class NoteService {
         });
     }
 
-    List<NoteImage> convertMultipartFilesToNoteImage(
+    public List<NoteImage> convertMultipartFilesToNoteImage(
             List<NoteImageRequest> images, Note note) {
 
         return images.stream()

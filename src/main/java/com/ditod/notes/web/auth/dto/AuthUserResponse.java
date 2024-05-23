@@ -1,4 +1,4 @@
-package com.ditod.notes.web;
+package com.ditod.notes.web.auth.dto;
 
 import com.ditod.notes.domain.user.dto.AuthUserDto;
 

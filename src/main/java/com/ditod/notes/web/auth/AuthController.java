@@ -1,9 +1,12 @@
-package com.ditod.notes.web;
+package com.ditod.notes.web.auth;
 
 import com.ditod.notes.domain.exception.EntityAlreadyExistsException;
 import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.domain.user.dto.AuthUserDto;
+import com.ditod.notes.web.auth.dto.AuthUserResponse;
+import com.ditod.notes.web.auth.dto.LoginRequest;
+import com.ditod.notes.web.auth.dto.SignupRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

@@ -1,5 +1,7 @@
-package com.ditod.notes.domain.note;
+package com.ditod.notes.web;
 
+import com.ditod.notes.domain.note.Note;
+import com.ditod.notes.domain.note.NoteService;
 import com.ditod.notes.domain.note.dto.NoteRequest;
 import com.ditod.notes.domain.note.dto.NoteSummaryResponse;
 import com.ditod.notes.domain.note_image.NoteImage;

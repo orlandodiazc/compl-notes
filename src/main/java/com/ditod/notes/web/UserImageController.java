@@ -1,6 +1,8 @@
-package com.ditod.notes.domain.user_image;
+package com.ditod.notes.web;
 
 import com.ditod.notes.domain.exception.EntityNotFoundException;
+import com.ditod.notes.domain.user_image.UserImage;
+import com.ditod.notes.domain.user_image.UserImageRepository;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
