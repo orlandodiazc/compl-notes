@@ -13,6 +13,7 @@ import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user_image.UserImage;
 import com.ditod.notes.domain.user_image.UserImageRepository;
 import net.datafaker.Faker;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
@@ -27,7 +28,8 @@ import java.util.List;
 @Profile("dev")
 @Component
 public class DataLoader implements ApplicationRunner {
-    static final String IMAGES_DIRECTORY = "src/test/java/com/ditod/notes/fixtures/images";
+    @Value("${data-loader.images.directory}")
+    private String IMAGES_DIRECTORY;
     private final UserRepository userRepository;
     private final UserImageRepository userImageRepository;
     private final NoteRepository noteRepository;
