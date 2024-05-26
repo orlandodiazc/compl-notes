@@ -7,6 +7,7 @@ import com.ditod.notes.domain.user.dto.AuthUserDto;
 import com.ditod.notes.web.auth.dto.AuthUserResponse;
 import com.ditod.notes.web.auth.dto.LoginRequest;
 import com.ditod.notes.web.auth.dto.SignupRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ public class AuthController {
     private final UserService userService;
     private final UserRepository userRepository;
 
+
     public AuthController(AuthService authService, UserService userService,
             UserRepository userRepository) {
         this.authService = authService;
@@ -34,39 +36,33 @@ public class AuthController {
         if (auth == null || !auth.isAuthenticated())
             return ResponseEntity.ok(new AuthUserResponse(null));
         Optional<AuthUserDto> user = userRepository.findByUsername(auth.getName(), AuthUserDto.class);
-        if (user.isEmpty()) {
-            authService.updateJwtCookieInResponse(response, null, 0);
-            return ResponseEntity.ok(new AuthUserResponse(null));
-        }
-        return ResponseEntity.ok(new AuthUserResponse(user.get()));
+        return user.map(authUserDto -> ResponseEntity.ok(new AuthUserResponse(authUserDto)))
+                .orElseGet(() -> ResponseEntity.ok(new AuthUserResponse(null)));
     }
 
     @PostMapping("/login")
     private ResponseEntity<AuthUserResponse> login(
-            @RequestBody LoginRequest userRequest,
+            @RequestBody LoginRequest userRequest, HttpServletRequest request,
             HttpServletResponse response) {
-        String jwtToken = authService.authenticate(userRequest);
-        authService.updateJwtCookieInResponse(response, jwtToken, userRequest.remember() ? 86400 : -1);
+        authService.authenticate(userRequest, request, response);
         return ResponseEntity.ok(new AuthUserResponse(userService.findByUsername(userRequest.username(), AuthUserDto.class)));
     }
 
     @PostMapping("/logout")
-    private ResponseEntity<Void> logout(HttpServletResponse response) {
-        authService.updateJwtCookieInResponse(response, null, 0);
+    private ResponseEntity<Void> logout(HttpServletRequest request) {
+        authService.logout(request);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signup")
     private ResponseEntity<AuthUserResponse> signup(
             @RequestBody SignupRequest signupRequest,
-            HttpServletResponse response) {
+            HttpServletRequest request, HttpServletResponse response) {
         if (userRepository.existsByUsernameIgnoreCase(signupRequest.username())) {
             throw new EntityAlreadyExistsException("user", "username");
         }
-
         authService.signup(signupRequest);
-        String jwtToken = authService.authenticate(new LoginRequest(signupRequest.username(), signupRequest.password(), true));
-        authService.updateJwtCookieInResponse(response, jwtToken, 86400);
+        authService.authenticate(new LoginRequest(signupRequest.username(), signupRequest.password(), false), request, response);
         return ResponseEntity.ok(new AuthUserResponse(userService.findByUsername(signupRequest.username(), AuthUserDto.class)));
     }
 }

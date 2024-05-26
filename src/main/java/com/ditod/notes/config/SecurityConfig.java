@@ -3,12 +3,6 @@ package com.ditod.notes.config;
 import com.ditod.notes.auth.JpaUserDetailsService;
 import com.ditod.notes.protection.CsrfCookieFilter;
 import com.ditod.notes.protection.SpaCsrfTokenRequestHandler;
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,14 +12,8 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -39,14 +27,12 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
     private final JpaUserDetailsService jpaUserDetailsService;
-    private final RsaKeyProperties rsaKeys;
+
     private final ProtectorProperties protectorProperties;
 
-
     public SecurityConfig(JpaUserDetailsService jpaUserDetailsService,
-            RsaKeyProperties rsaKeys, ProtectorProperties protectorProperties) {
+            ProtectorProperties protectorProperties) {
         this.jpaUserDetailsService = jpaUserDetailsService;
-        this.rsaKeys = rsaKeys;
         this.protectorProperties = protectorProperties;
     }
 
@@ -55,16 +41,13 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
         var CsrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
         CsrfTokenRepository.setCookieCustomizer(c -> c.secure(true)
-                .httpOnly(false).domain(protectorProperties.csrfCookieDomain())
+                .httpOnly(false)
+                .domain(protectorProperties.csrfCookieDomain())
                 .path("/"));
-
         http.cors(Customizer.withDefaults());
         http.csrf((csrf) -> csrf.csrfTokenRepository(CsrfTokenRepository)
                         .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
-        http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.formLogin(AbstractHttpConfigurer::disable);
-        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         http.authenticationProvider(authenticationProvider());
         http.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.OPTIONS, "/**")
                 .permitAll()
@@ -85,7 +68,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -96,20 +78,6 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-
-    @Bean
-    JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(rsaKeys.publicKey()).build();
-    }
-
-    @Bean
-    JwtEncoder jwtEncoder() {
-        JWK jwk = new RSAKey.Builder(rsaKeys.publicKey()).privateKey(rsaKeys.privateKey())
-                .build();
-        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-        return new NimbusJwtEncoder(jwks);
     }
 
     @Bean
