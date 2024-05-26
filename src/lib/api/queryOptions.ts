@@ -1,3 +1,4 @@
+import { useAuth } from "@/auth";
 import { queryClient } from "@/main";
 import { queryOptions, useMutation } from "@tanstack/react-query";
 import {
@@ -20,6 +21,7 @@ export const authUserQuery = () =>
     queryFn: fetchAuthUser,
     queryKey: ["auth", "user"],
     staleTime: Infinity,
+    throwOnError: false,
   });
 
 export const usersQuery = (filter?: string) =>
@@ -47,6 +49,7 @@ export const noteQuery = (params: { username: string; noteId: string }) =>
   });
 
 export const useLoginMutation = () => {
+  const { setUser } = useAuth();
   return useMutation({
     mutationKey: ["auth", "login"],
     mutationFn: postLogin,
@@ -54,27 +57,29 @@ export const useLoginMutation = () => {
       return error;
     },
     onSuccess(data) {
-      queryClient.setQueryData(authUserQuery().queryKey, data);
+      setUser(data.user);
     },
     throwOnError: false,
   });
 };
 
 export const useLogoutMutation = () => {
+  const { setUser } = useAuth();
   return useMutation({
     mutationKey: ["auth", "logout"],
     mutationFn: postLogout,
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: authUserQuery().queryKey });
+      setUser(undefined);
     },
   });
 };
 
 export const useSignupMutation = () => {
+  const { setUser } = useAuth();
   return useMutation({
     mutationFn: postSignup,
     onSuccess(data) {
-      queryClient.setQueryData(authUserQuery().queryKey, data);
+      setUser(data.user);
     },
     onError(error: ApiProblemDetail) {
       return error;

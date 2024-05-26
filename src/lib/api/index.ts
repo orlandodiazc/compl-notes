@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import { ApiSchema } from "./apiSchema";
 
-export const API_BASEURL = import.meta.env.VITE_API_BASEURL;
+export const API_BASEURL = import.meta.env.VITE_API_BASE_URL;
 
 function getCsrfToken():
   | Record<"X-XSRF-TOKEN", string>
@@ -13,11 +13,7 @@ function getCsrfToken():
 
 export async function fetcher(...args: Parameters<typeof fetch>) {
   const [url, opts] = args;
-  const response = await fetch(
-    `${API_BASEURL}${url}`,
-
-    opts,
-  );
+  const response = await fetch(`${API_BASEURL}${url}`, opts);
   let data;
   try {
     data = await response.json();
@@ -100,7 +96,7 @@ export function newNote({
 }: {
   username: string;
   formData: FormData;
-}): Promise<ApiSchema["NoteUsernameAndIdResponse"]> {
+}): Promise<ApiSchema["NoteSummaryResponse"]> {
   return fetcher("/users/" + username + "/notes", {
     method: "POST",
     body: formData,
@@ -121,10 +117,11 @@ export function postLogin(
 }
 
 export async function postLogout() {
+  console.log(getCsrfToken());
   const response = await fetch(API_BASEURL + "/auth/logout", {
     method: "POST",
     credentials: "include",
-    headers: { ...getCsrfToken() },
+    headers: getCsrfToken(),
   });
   if (!response.ok) throw response;
 }

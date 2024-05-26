@@ -6,13 +6,13 @@
 
 export interface paths {
   "/users/{username}/notes/{noteId}": {
-    get: operations["oneNote"];
-    put: operations["replaceNote"];
+    get: operations["getNote"];
+    put: operations["updateNote"];
     delete: operations["deleteNote"];
   };
   "/users/{username}/notes": {
     get: operations["allNotes"];
-    post: operations["newNote"];
+    post: operations["createNote"];
   };
   "/auth/signup": {
     post: operations["signup"];
@@ -24,19 +24,19 @@ export interface paths {
     post: operations["login"];
   };
   "/users": {
-    get: operations["filteredUsers"];
+    get: operations["listUsers"];
   };
   "/users/{username}": {
-    get: operations["oneUser"];
+    get: operations["getUser"];
   };
   "/user-images/{imageId}": {
-    get: operations["oneUserImage"];
+    get: operations["getUserImage"];
   };
   "/note-images/{imageId}": {
-    get: operations["oneNoteImage"];
+    get: operations["getNoteImage"];
   };
   "/auth/user": {
-    get: operations["authUser"];
+    get: operations["getAuthUser"];
   };
 }
 
@@ -56,10 +56,79 @@ export interface components {
       content: string;
       images?: components["schemas"]["NoteImageRequest"][];
     };
-    NoteUsernameAndIdResponse: {
+    Note: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: uuid */
+      id?: string;
+      title?: string;
+      content: string;
+      owner: components["schemas"]["User"];
+      images: components["schemas"]["NoteImage"][];
+    };
+    NoteImage: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
       /** Format: uuid */
       id: string;
+      altText?: string;
+      note: components["schemas"]["Note"];
+    };
+    Permission: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: uuid */
+      id?: string;
+      action: string;
+      entity: string;
+      access: string;
+      description: string;
+      roles?: components["schemas"]["Role"][];
+      authority?: string;
+    };
+    Role: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: uuid */
+      id?: string;
+      name: string;
+      description: string;
+      users: components["schemas"]["User"][];
+      permissions: components["schemas"]["Permission"][];
+    };
+    User: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: uuid */
+      id?: string;
+      email: string;
       username: string;
+      name?: string;
+      notes: components["schemas"]["Note"][];
+      image?: components["schemas"]["UserImage"];
+      roles: components["schemas"]["Role"][];
+    };
+    UserImage: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: uuid */
+      id?: string;
+      altText?: string;
+      contentType: string;
+      blob: string[];
+      user: components["schemas"]["User"];
     };
     SignupRequest: {
       username: string;
@@ -70,8 +139,16 @@ export interface components {
       agreeToTermsOfServiceAndPrivacyPolicy?: boolean;
       passwordsMatch?: boolean;
     };
+    AuthUserDto: {
+      roles?: components["schemas"]["RoleSummary"][];
+      name?: string;
+      /** Format: uuid */
+      id: string;
+      username: string;
+      image?: components["schemas"]["UserImageSummary"];
+    };
     AuthUserResponse: {
-      user?: components["schemas"]["UserAuthDto"];
+      user?: components["schemas"]["AuthUserDto"];
     };
     PermissionSummary: {
       access?: string;
@@ -81,14 +158,6 @@ export interface components {
     RoleSummary: {
       name?: string;
       permissions?: components["schemas"]["PermissionSummary"][];
-    };
-    UserAuthDto: {
-      roles?: components["schemas"]["RoleSummary"][];
-      name?: string;
-      /** Format: uuid */
-      id: string;
-      username: string;
-      image?: components["schemas"]["UserImageSummary"];
     };
     UserImageSummary: {
       /** Format: uuid */
@@ -110,6 +179,8 @@ export interface components {
     UserSummaryResponse: {
       /** Format: date-time */
       createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
       name?: string;
       /** Format: uuid */
       id: string;
@@ -129,18 +200,13 @@ export interface components {
       username: string;
       image?: components["schemas"]["UserImageSummary"];
     };
-    NoteImageSummary: {
-      /** Format: uuid */
-      id: string;
-      altText?: string;
-    };
     NoteSummaryResponse: {
       title: string;
       /** Format: uuid */
       id: string;
       content: string;
       owner: components["schemas"]["OwnerSummary"];
-      images: components["schemas"]["NoteImageSummary"][];
+      images: components["schemas"]["NoteImage"][];
       /** Format: date-time */
       updatedAt: string;
     };
@@ -162,7 +228,7 @@ export type external = Record<string, never>;
 
 export interface operations {
 
-  oneNote: {
+  getNote: {
     parameters: {
       path: {
         noteId: string;
@@ -177,7 +243,7 @@ export interface operations {
       };
     };
   };
-  replaceNote: {
+  updateNote: {
     parameters: {
       query: {
         newNote: components["schemas"]["NoteRequest"];
@@ -191,7 +257,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["NoteUsernameAndIdResponse"];
+          "*/*": components["schemas"]["Note"];
         };
       };
     };
@@ -225,7 +291,7 @@ export interface operations {
       };
     };
   };
-  newNote: {
+  createNote: {
     parameters: {
       query: {
         note: components["schemas"]["NoteRequest"];
@@ -238,7 +304,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["NoteUsernameAndIdResponse"];
+          "*/*": components["schemas"]["Note"];
         };
       };
     };
@@ -281,7 +347,7 @@ export interface operations {
       };
     };
   };
-  filteredUsers: {
+  listUsers: {
     parameters: {
       query?: {
         filter?: string;
@@ -296,7 +362,7 @@ export interface operations {
       };
     };
   };
-  oneUser: {
+  getUser: {
     parameters: {
       path: {
         username: string;
@@ -311,7 +377,7 @@ export interface operations {
       };
     };
   };
-  oneUserImage: {
+  getUserImage: {
     parameters: {
       path: {
         imageId: string;
@@ -321,12 +387,12 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": Record<string, never>;
+          "*/*": string[];
         };
       };
     };
   };
-  oneNoteImage: {
+  getNoteImage: {
     parameters: {
       path: {
         imageId: string;
@@ -336,12 +402,12 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": Record<string, never>;
+          "*/*": string[];
         };
       };
     };
   };
-  authUser: {
+  getAuthUser: {
     responses: {
       /** @description OK */
       200: {

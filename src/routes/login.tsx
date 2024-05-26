@@ -52,7 +52,7 @@ export default function LoginPage() {
   function onSubmit(values: LoginForm) {
     mutate(values, {
       onSuccess() {
-        navigate({ to: redirect });
+        navigate({ to: redirect || "/" });
       },
       onError(response: Response) {
         if (response.status === 401) {
