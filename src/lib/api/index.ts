@@ -1,9 +1,9 @@
 import Cookies from "js-cookie";
 import { ApiSchema } from "./apiSchema";
 
-export const API_BASEURL = import.meta.env.VITE_API_BASE_URL;
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-function getCsrfToken():
+function getCsrfTokenCookie():
   | Record<"X-XSRF-TOKEN", string>
   | Record<string, never> {
   const token = Cookies.get("XSRF-TOKEN");
@@ -13,7 +13,7 @@ function getCsrfToken():
 
 export async function fetcher(...args: Parameters<typeof fetch>) {
   const [url, opts] = args;
-  const response = await fetch(`${API_BASEURL}${url}`, opts);
+  const response = await fetch(`${API_BASE_URL}${url}`, opts);
   let data;
   try {
     data = await response.json();
@@ -65,11 +65,11 @@ export async function deleteNote({
   noteId: string;
 }) {
   const response = await fetch(
-    API_BASEURL + "/users/" + username + "/notes/" + noteId,
+    API_BASE_URL + "/users/" + username + "/notes/" + noteId,
     {
       method: "DELETE",
       credentials: "include",
-      headers: { ...getCsrfToken() },
+      headers: getCsrfTokenCookie(),
     },
   );
   if (!response.ok) throw response;
@@ -83,10 +83,10 @@ export function putNote({
   formData: FormData;
 }) {
   return fetcher("/users/" + username + "/notes/" + noteId, {
-    method: "put",
+    method: "PUT",
     body: formData,
     credentials: "include",
-    headers: { ...getCsrfToken() },
+    headers: getCsrfTokenCookie(),
   });
 }
 
@@ -101,7 +101,7 @@ export function newNote({
     method: "POST",
     body: formData,
     credentials: "include",
-    headers: { ...getCsrfToken() },
+    headers: getCsrfTokenCookie(),
   });
 }
 
@@ -112,16 +112,15 @@ export function postLogin(
     method: "POST",
     body: JSON.stringify(loginRequest),
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...getCsrfToken() },
+    headers: { "Content-Type": "application/json", ...getCsrfTokenCookie() },
   });
 }
 
 export async function postLogout() {
-  console.log(getCsrfToken());
-  const response = await fetch(API_BASEURL + "/auth/logout", {
+  const response = await fetch(API_BASE_URL + "/auth/logout", {
     method: "POST",
     credentials: "include",
-    headers: getCsrfToken(),
+    headers: getCsrfTokenCookie(),
   });
   if (!response.ok) throw response;
 }
@@ -133,6 +132,6 @@ export function postSignup(
     method: "POST",
     body: JSON.stringify(signupRequest),
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...getCsrfToken() },
+    headers: { "Content-Type": "application/json", ...getCsrfTokenCookie() },
   });
 }
