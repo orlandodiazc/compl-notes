@@ -147,7 +147,7 @@ export default function NoteForm({
                 {imageList.map((image, index) => (
                   <li
                     key={image.id}
-                    className="relative border-b-2 border-muted-foreground"
+                    className="relative border-b-2 border-muted-foreground py-2"
                   >
                     <button
                       className="text-foreground-destructive absolute right-0 top-0"
