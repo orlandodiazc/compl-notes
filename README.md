@@ -1,59 +1,94 @@
 # Compl Notes <a name="about-project"></a>
 
-**Compl Notes** is a full-stack application to track your own notes and those of your friends, built with React and Spring.
+**Compl Notes** is a full-stack application designed for tracking your notes and those of your friends.
 
 [Live Site](https://compl-notes.odiaz.com.co/)
+
+## Key Features <a name="key-features"></a>
+
+- User registration and login capabilities
+- Admin functionality (email: `admin@example.com`, password: `123456`)
+- Public access to read notes
+- Users can create, update, and delete their own notes
+- Admins have full CRUD access to all users' notes
+- Supports image uploading and management for all notes
+- Includes swagger docs built with `springdoc`
 
 ## Built With <a name="built-with"></a>
 
 This project was created using:
 
-#### Frontend
+### Backend
 
-  <ul>
-    <li>TypeScript</li>
-    <li>React</li>
-    <li>Tanstack Router</li>
-    <li>TailwindCSS</li>
-  </ul>
+#### Server
 
-#### Backend
+- Spring Boot
+- Spring Security
+- Spring Data
+- Java Bean Validation
+- Springdoc
 
-  <ul>
-    <li>Spring Boot</li>
-    <li>Spring Security</li>
-  </ul>
+#### Database
+
+- PostgreSQL
+
+### Frontend
+
+- TypeScript
+- React
+- Tanstack Router and Query
+- TailwindCSS
+- React Hook Form
 
 ## Screenshots
 
-#### Desktop
+### Desktop
 
 ![Desktop screenshot](https://raw.githubusercontent.com/orlandodiazc/space-x-travelers/main/public/opengraph-image.webp)
 
-#### Mobile
+### Mobile
 
 ## Getting Started <a name="getting-started"></a>
 
-To get a local copy up and running, follow these steps.
+Clone the repository into your machine (Or download the .zip file and extract).
+
+```shell
+git clone https://github.com/orlandodiazc/compl-notes
+```
+
+To get a local copy up and running, you can either use docker or local development:
 
 ### Docker
 
-Requires the docker engine and docker compose:
+#### Prerequisites
 
-To run it:
+- [Install Docker](https://docs.docker.com/get-docker/)
+- [Install Compose Plugin](https://docs.docker.com/compose/install/)
+
+#### Usage
 
 ```shell
+cd compl-notes
 docker compose up
 ```
 
 ### Local
 
-For the backend it requires Java 17 JDK and for the frontend node and pnpm.
+#### Prerequisites
 
-To run it locally simply:
+- Java 17 JDK [Temurin](https://adoptium.net/es/temurin/releases/?version=17&package=jdk) and [SDKMAN](https://sdkman.io/install) are recommended
+- [PostgreSQL](https://www.postgresql.org/)
+- [Node.js](https://nodejs.org/en/) ([Volta](https://volta.sh/) is recommended)
+- [pnpm](https://pnpm.io/es/) or npm
+
+#### Setup
+
+You'll need to configure the user and password for the database in the [application properties](backend/src/main/resources/application.properties).
+
+#### Usage
 
 ```shell
-cd backend
+cd compl-notes/backend
 ./mvnw spring-boot:run
 cd ../frontend
 pnpm install
@@ -66,8 +101,6 @@ pnpm dev
 
 - GitHub: [@orlandodiazc](https://github.com/orlandodiazc)
 - LinkedIn: [Orlando Diaz Conde](www.linkedin.com/in/orlando-diaz-conde)
-
-<!-- FUTURE FEATURES -->
 
 ## ⭐️ Show your support <a name="support"></a>
 
