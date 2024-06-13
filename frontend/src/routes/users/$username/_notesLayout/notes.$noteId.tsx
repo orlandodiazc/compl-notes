@@ -52,7 +52,7 @@ export default function NoteRoute() {
                 <a href={getNoteImgSrc(image.id)}>
                   <img
                     src={getNoteImgSrc(image.id)}
-                    alt={image.altText ?? ""}
+                    alt={image.altText}
                     className="h-32 w-32 rounded-lg object-cover"
                   />
                 </a>

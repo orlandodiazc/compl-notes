@@ -207,8 +207,8 @@ function ImageChooser({ index }: { index: number }) {
   const defaultValues = form.formState.defaultValues?.images?.[index];
   const initialId = defaultValues?.id;
   const existingImage = Boolean(initialId);
-  const [previewImage, setPreviewImage] = useState<string | null>(
-    initialId ? getNoteImgSrc(initialId) : null,
+  const [previewImage, setPreviewImage] = useState<string | undefined>(
+    getNoteImgSrc(initialId),
   );
 
   return (
@@ -263,7 +263,7 @@ function ImageChooser({ index }: { index: number }) {
                           };
                           reader.readAsDataURL(file);
                         } else {
-                          setPreviewImage(null);
+                          setPreviewImage(undefined);
                         }
                         onChange(file);
                       }}
