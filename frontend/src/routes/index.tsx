@@ -7,7 +7,7 @@ export const Route = createFileRoute("/")({
 function RootIndexRoute() {
   return (
     <div className="container text-center">
-      <h1 className="my-8 text-h1">Compl Notes</h1>
+      <h1 className="my-8 text-h2 sm:text-h1">Compl Notes</h1>
       <p>
         <span className="inline-flex items-center justify-center gap-2 rounded-xl bg-muted px-8 py-4 text-body-lg text-muted-foreground">
           <span>Built with Conform, Tanstack Router and Tanstack Query</span>

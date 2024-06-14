@@ -19,8 +19,8 @@ function UsersRoute() {
   const navigate = useNavigate({ from: Route.fullPath });
   const search = Route.useSearch();
   return (
-    <main className="container my-20 flex flex-col items-center justify-center gap-6">
-      <h1 className="text-h1">Compl Notes Users</h1>
+    <main className="container py-5 sm:py-10 flex flex-col items-center justify-center gap-6">
+      <h1 className="text-h2 sm:text-h1">Compl Notes Users</h1>
       <div className="w-full max-w-3xl ">
         <SearchBar
           handleChange={(term) => navigate({ search: { filter: term } })}

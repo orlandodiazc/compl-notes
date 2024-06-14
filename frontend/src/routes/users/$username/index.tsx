@@ -39,11 +39,14 @@ export default function UserProfileRoute() {
           content={`Profile of ${userDisplayName} on Compl Notes`}
         />
       </Helmet>
-      <div className="container flex flex-col items-center rounded-3xl bg-muted p-12 mt-4">
-        <div className="relative w-52">
-          <div className="absolute -top-40">
+      <div className="container flex flex-col items-center rounded-3xl bg-muted p-8 pt-4 sm:p-12 mt-4">
+        <div className="relative w-36 sm:w-52">
+          <div className="absolute -top-28 sm:-top-40">
             <div className="relative">
-              <UserAvatar user={data} className="w-52 h-52 text-7xl" />
+              <UserAvatar
+                user={data}
+                className="w-36 h-36 sm:w-52 sm:h-52 text-7xl"
+              />
             </div>
           </div>
         </div>

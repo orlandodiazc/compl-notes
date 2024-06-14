@@ -22,9 +22,9 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { z } from "zod";
 
 const titleMinLength = 1;
-const titleMaxLength = 100;
+const titleMaxLength = 50;
 const contentMinLength = 1;
-const contentMaxLength = 10000;
+const contentMaxLength = 1000;
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 1; // 1MB
 
@@ -104,11 +104,11 @@ export default function NoteForm({
   const imagesError = form.formState.errors.images;
 
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0 py-4 px-3">
       <Form {...form}>
         <form
           method="PUT"
-          className="flex h-full flex-col gap-y-4 overflow-y-auto overflow-x-hidden px-10 pb-28 pt-12"
+          className="flex h-full flex-col gap-y-4 overflow-y-auto overflow-x-hidden pb-24 px-2 md:px-4 md:pt-2"
           onSubmit={form.handleSubmit(onSubmit)}
           id="note-editor"
         >
@@ -185,7 +185,7 @@ export default function NoteForm({
           </div>
         </form>
       </Form>
-      <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 rounded-lg bg-muted/80 p-4 pl-5 shadow-xl shadow-accent backdrop-blur-sm md:gap-4 md:pl-7 justify-end">
+      <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 rounded-lg bg-muted/80 p-4 pl-5 backdrop-blur-sm md:gap-4 md:pl-7 justify-end">
         <Button onClick={() => form.reset()} variant="destructive" type="reset">
           Reset
         </Button>
@@ -214,7 +214,7 @@ function ImageChooser({ index }: { index: number }) {
   return (
     <div>
       <div className="flex gap-3">
-        <div className="flex w-full gap-3">
+        <div className="flex flex-col min-[500px]:flex-row w-full gap-3">
           <div className="relative h-32 w-32">
             <FormField
               control={form.control}

@@ -30,7 +30,7 @@ function RootRoute() {
           content="Effortlessly track your own notes and those of your friends."
         />
       </Helmet>
-      <header className="container mx-auto py-4">
+      <header className="container mx-auto py-2 sm:py-4">
         <nav className="flex items-center justify-between gap-6">
           <Link to="/">
             <div className="font-light">compl</div>
@@ -49,7 +49,7 @@ function RootRoute() {
                     params={{ username: user.username }}
                     className="flex items-center gap-2"
                   >
-                    <UserAvatar user={user} className="h-8 w-8" />
+                    <UserAvatar user={user} className="h-7 w-7 sm:h-8 sm:w-8" />
                     <span className="hidden text-body-sm font-bold sm:block">
                       {user.name ?? user.username}
                     </span>
@@ -71,7 +71,7 @@ function RootRoute() {
         <Outlet />
       </div>
 
-      <footer className="container py-4 flex justify-between items-center">
+      <footer className="container py-3 sm:py-4 flex justify-between items-center">
         <p className="text-body-xs">Built with React and Spring Boot.</p>
         <ThemeToggle />
       </footer>
