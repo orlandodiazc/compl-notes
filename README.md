@@ -7,7 +7,7 @@
 ## Key Features <a name="key-features"></a>
 
 - User registration and login capabilities
-- Admin functionality (email: `admin@example.com`, password: `123456`)
+- Admin functionality (username: `admin`, password: `123456`)
 - Public access to read notes
 - Users can create, update, and delete their own notes
 - Admins have full CRUD access to all users' notes
@@ -44,9 +44,11 @@ This project was created using:
 
 ### Desktop
 
-![Desktop screenshot](https://raw.githubusercontent.com/orlandodiazc/space-x-travelers/main/public/opengraph-image.webp)
+<img src="frontend/public/opengraph-image.webp" height=500/>
 
 ### Mobile
+
+<img src="frontend/public/mobile_screenshot.webp" height=500/>
 
 ## Getting Started <a name="getting-started"></a>
 
@@ -76,10 +78,10 @@ docker compose up
 
 #### Prerequisites
 
-- Java 17 JDK [Temurin](https://adoptium.net/es/temurin/releases/?version=17&package=jdk) and [SDKMAN](https://sdkman.io/install) are recommended
+- Java 17 JDK ([Temurin](https://adoptium.net/temurin/releases/?version=17&package=jdk) and [SDKMAN](https://sdkman.io/install) are recommended)
 - [PostgreSQL](https://www.postgresql.org/)
 - [Node.js](https://nodejs.org/en/) ([Volta](https://volta.sh/) is recommended)
-- [pnpm](https://pnpm.io/es/) or npm
+- [pnpm](https://pnpm.io/installation) or npm
 
 #### Setup
 
