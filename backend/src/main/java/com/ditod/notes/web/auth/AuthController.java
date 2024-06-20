@@ -7,6 +7,8 @@ import com.ditod.notes.domain.user.dto.AuthUserDto;
 import com.ditod.notes.web.auth.dto.AuthUserResponse;
 import com.ditod.notes.web.auth.dto.LoginRequest;
 import com.ditod.notes.web.auth.dto.SignupRequest;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "authentication", description = "Manages login, registration and logout")
 public class AuthController {
     private final AuthService authService;
     private final UserService userService;

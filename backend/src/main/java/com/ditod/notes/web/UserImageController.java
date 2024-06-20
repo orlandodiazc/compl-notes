@@ -4,6 +4,9 @@ import com.ditod.notes.domain.exception.EntityNotFoundException;
 import com.ditod.notes.domain.user_image.UserImage;
 import com.ditod.notes.domain.user_image.UserImageRepository;
 import com.ditod.notes.utils.ImageUtils;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/user-images")
+@Tag(name = "user image", description = "Acces user images")
 public class UserImageController {
     private final UserImageRepository userImageRepository;
     private final ImageUtils imageUtils;

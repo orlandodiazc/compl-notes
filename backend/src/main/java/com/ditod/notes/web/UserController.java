@@ -3,6 +3,9 @@ package com.ditod.notes.web;
 import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.domain.user.dto.UserFilteredResponse;
 import com.ditod.notes.domain.user.dto.UserSummaryResponse;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@Tag(name = "user", description = "Everything about users")
 public class UserController {
 
     private final UserService userService;

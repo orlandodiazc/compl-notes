@@ -4,6 +4,9 @@ import com.ditod.notes.domain.exception.EntityNotFoundException;
 import com.ditod.notes.domain.note_image.NoteImage;
 import com.ditod.notes.domain.note_image.NoteImageRepository;
 import com.ditod.notes.utils.ImageUtils;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/note-images")
+@Tag(name = "note image", description = "Access note images")
 public class NoteImageController {
     private final NoteImageRepository noteImageRepository;
     private final ImageUtils imageUtils;

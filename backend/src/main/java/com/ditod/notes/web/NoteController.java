@@ -9,6 +9,8 @@ import com.ditod.notes.domain.note_image.NoteImageRepository;
 import com.ditod.notes.domain.user.User;
 import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.domain.user.dto.UserNotesResponse;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/users/{username}/notes")
+@Tag(name = "note", description = "Access user notes")
 public class NoteController {
     private final NoteService noteService;
     private final UserService userService;
