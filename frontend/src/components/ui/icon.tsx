@@ -62,6 +62,7 @@ export function Icon({
 
 export const iconNames = [
   "check",
+  "info",
   "log-out",
   "moon",
   "plus",

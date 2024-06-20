@@ -8,6 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { StatusButton } from "@/components/ui/status-button";
 import { useLoginMutation } from "@/lib/api/queryOptions";
@@ -70,14 +71,28 @@ export default function LoginPage() {
         <title>Login to Compl Notes</title>
       </Helmet>
       <div className="mx-auto w-full max-w-md">
-        <div className="flex flex-col gap-3 text-center">
+        <div className="flex flex-col gap-3 text-center mb-3">
           <h1 className="text-h1">Welcome back!</h1>
-          <p className="text-body-md text-muted-foreground">
+          <p className="text-body-md text-muted-foreground mb-1">
             Please enter your details.
           </p>
         </div>
-        <div className="mt-16">
+        <div>
           <div className="mx-auto w-full max-w-md px-8">
+            <div className="rounded-md text-left bg-muted px-4 py-3 mb-2 text-body-xs">
+              <p className="mb-1 flex items-center gap-2">
+                <Icon name="info" size="sm" />
+                Login as admin using:
+              </p>
+              <ul className="ms-1 list-inside list-disc marker:w-3">
+                <li>
+                  Email: <span className="font-bold">admin@example.com</span>
+                </li>
+                <li>
+                  Password: <span className="font-bold">123456</span>
+                </li>
+              </ul>
+            </div>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
