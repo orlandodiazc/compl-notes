@@ -10,7 +10,9 @@ function RootIndexRoute() {
       <h1 className="my-8 text-h2 sm:text-h1">Compl Notes</h1>
       <p>
         <span className="inline-flex items-center justify-center gap-2 rounded-xl bg-muted px-8 py-4 text-body-lg text-muted-foreground">
-          <span>Built with Conform, Tanstack Router and Tanstack Query</span>
+          <span>
+            Effortlessly track your own notes and those of your friends.
+          </span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="inline h-6 w-6"

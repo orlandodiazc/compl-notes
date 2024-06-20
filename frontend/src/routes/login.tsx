@@ -86,7 +86,7 @@ export default function LoginPage() {
               </p>
               <ul className="ms-1 list-inside list-disc marker:w-3">
                 <li>
-                  Email: <span className="font-bold">admin@example.com</span>
+                  Username: <span className="font-bold">admin</span>
                 </li>
                 <li>
                   Password: <span className="font-bold">123456</span>
