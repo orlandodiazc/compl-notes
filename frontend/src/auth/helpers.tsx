@@ -1,4 +1,7 @@
-import { AuthContext } from ".";
+import { redirect } from "@tanstack/react-router";
+import { ApiSchema } from "@/lib/api/apiSchema";
+
+type AuthUser = ApiSchema["AuthUserResponse"]["user"];
 
 type Action = "CREATE" | "READ" | "UPDATE" | "DELETE";
 type Entity = "USER" | "NOTE";
@@ -18,8 +21,8 @@ function parsePermissionString(permissionString: PermissionString) {
   };
 }
 export function userHasPermission(
-  user: AuthContext["user"],
-  permission: PermissionString,
+  user: AuthUser,
+  permission: PermissionString
 ) {
   if (!user) return false;
   const { action, entity, access } = parsePermissionString(permission);
@@ -28,7 +31,27 @@ export function userHasPermission(
       (permission) =>
         permission.entity === entity &&
         permission.action === action &&
-        permission.access === access,
-    ),
+        permission.access === access
+    )
   );
+}
+
+export function requireAnonymous(user: AuthUser) {
+  if (user) {
+    throw redirect({ to: "/" });
+  }
+}
+
+export function requireAuthenticated(
+  user: AuthUser,
+  redirectTo: string
+): asserts user is NonNullable<AuthUser> {
+  if (!user) {
+    throw redirect({ to: "/login", search: { redirect: redirectTo } });
+  }
+}
+
+export function requireUserId(user: AuthUser, redirectTo: string) {
+  requireAuthenticated(user, redirectTo);
+  return user.id;
 }

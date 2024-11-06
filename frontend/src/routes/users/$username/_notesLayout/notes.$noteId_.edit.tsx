@@ -1,16 +1,16 @@
-import { noteQuery, usePutNoteMutation } from "@/lib/api/queryOptions";
+import { requireAuthenticated } from "@/auth/helpers";
+import { noteQuery } from "@/lib/api/queryOptions";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import NoteForm from "./-note-form";
+import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
+import NoteForm from "./-note-form";
+import { usePutNoteMutation } from "@/lib/api/mutations";
 
 export const Route = createFileRoute(
-  "/users/$username/_notesLayout/notes/$noteId/edit",
+  "/users/$username/_notesLayout/notes/$noteId/edit"
 )({
-  beforeLoad: ({ context: { auth }, location }) => {
-    if (!auth?.isAuthenticated) {
-      throw redirect({ to: "/login", search: { redirect: location.href } });
-    }
+  beforeLoad: ({ context, location }) => {
+    requireAuthenticated(context.authUser, location.href);
   },
   component: NoteEdit,
   loader: ({ params, context: { queryClient } }) => {
@@ -26,7 +26,7 @@ export default function NoteEdit() {
   function handleSubmit(formData: FormData) {
     mutate(formData, {
       onSuccess: () => {
-        toast.success("Your note has been edited successfully!");
+        toast.success("Your note has been edited!");
         navigate({
           to: "/users/$username/notes/$noteId",
           params,

@@ -23,6 +23,7 @@ public class NoteImage extends DateTimeAudit {
     @NotNull
     @JsonIgnore
     private byte[] blob;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "noteId")
@@ -32,16 +33,14 @@ public class NoteImage extends DateTimeAudit {
     public NoteImage() {
     }
 
-    public NoteImage(String altText, String contentType, byte[] blob,
-            Note note) {
+    public NoteImage(String altText, String contentType, byte[] blob, Note note) {
         this.altText = altText;
         this.contentType = contentType;
         this.blob = blob;
         this.note = note;
     }
 
-    public NoteImage(UUID id, String altText, String contentType, byte[] blob,
-            Note note) {
+    public NoteImage(UUID id, String altText, String contentType, byte[] blob, Note note) {
         this.id = id;
         this.altText = altText;
         this.contentType = contentType;
@@ -54,7 +53,6 @@ public class NoteImage extends DateTimeAudit {
         this.altText = altText;
         this.note = note;
     }
-
 
     public UUID getId() {
         return id;
@@ -90,6 +88,12 @@ public class NoteImage extends DateTimeAudit {
 
     public void setNote(Note note) {
         this.note = note;
+    }
+
+    @Override
+    public String toString() {
+        return "NoteImage{" + "id=" + id + ", altText='" + altText + '\'' + ", contentType='" + contentType + '\'' +
+                ", blobsize=" + blob.length + +'}';
     }
 }
 

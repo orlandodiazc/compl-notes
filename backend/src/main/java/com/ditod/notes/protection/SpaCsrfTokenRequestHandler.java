@@ -14,8 +14,7 @@ public final class SpaCsrfTokenRequestHandler extends CsrfTokenRequestAttributeH
     private final CsrfTokenRequestHandler delegate = new XorCsrfTokenRequestAttributeHandler();
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response,
-            Supplier<CsrfToken> csrfToken) {
+    public void handle(HttpServletRequest request, HttpServletResponse response, Supplier<CsrfToken> csrfToken) {
         /*
          * Always use XorCsrfTokenRequestAttributeHandler to provide BREACH protection of
          * the CsrfToken when it is rendered in the response body.
@@ -24,8 +23,7 @@ public final class SpaCsrfTokenRequestHandler extends CsrfTokenRequestAttributeH
     }
 
     @Override
-    public String resolveCsrfTokenValue(HttpServletRequest request,
-            CsrfToken csrfToken) {
+    public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
         /*
          * If the request contains a request header, use CsrfTokenRequestAttributeHandler
          * to resolve the CsrfToken. This applies when a single-page application includes

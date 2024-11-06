@@ -9,63 +9,63 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.ColumnTransformer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-public class User extends DateTimeAudit {
+public class User extends DateTimeAudit implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     @Column(unique = true)
     @NotNull
     @ColumnTransformer(write = "LOWER(?)")
     private String email;
+
     @Column(unique = true)
     @NotNull
     @ColumnTransformer(write = "LOWER(?)")
     private String username;
+
     @NotNull
     @JsonIgnore
     private String password;
+
     private String name;
+
     @NotNull
     @JsonManagedReference
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Note> notes = new ArrayList<>();
-    @JsonManagedReference
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
     private UserImage image;
+
     @NotNull
     @ManyToMany
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns =
+    @JoinColumn(name = "user_id"))
     private List<Role> roles = new ArrayList<>();
 
     public User() {
     }
 
-    public User(String email, String username, String password, String name,
-            List<Role> roles) {
+    public User(String email, String username, String password, String name, List<Role> roles, UserImage userImage) {
         this.email = email;
         this.username = username;
         this.password = password;
         this.name = name;
         this.roles = roles;
+        this.image = userImage;
     }
-
-    public User(UUID id, String email, String username, String password,
-            String name, List<Role> roles) {
-        this.id = id;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.roles = roles;
-    }
-
 
     public UUID getId() {
         return id;
@@ -79,16 +79,8 @@ public class User extends DateTimeAudit {
         this.email = email;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
@@ -125,5 +117,43 @@ public class User extends DateTimeAudit {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    @Override
+    public String getPassword() {return this.password;}
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream().map(Role::getPermissions).flatMap(Collection::stream).toList();
+    }
+
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", email='" + email + '\'' + ", username='" + username + '\'' + ", password='" + password + '\'' + ", name='" + name + '\'' + ", image=" + image + '}';
     }
 }

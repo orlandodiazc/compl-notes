@@ -1,20 +1,12 @@
-import { useAuth } from "@/auth";
-import { queryClient } from "@/main";
-import { queryOptions, useMutation } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 import {
-  deleteNote,
   fetchAuthUser,
   fetchFilteredUsers,
   fetchNote,
   fetchNotes,
+  fetchOnboardingEmail,
   fetchUser,
-  newNote,
-  postLogin,
-  postLogout,
-  postSignup,
-  putNote,
 } from ".";
-import { ApiProblemDetail } from "./apiSchema";
 
 export const authUserQuery = () =>
   queryOptions({
@@ -48,78 +40,7 @@ export const noteQuery = (params: { username: string; noteId: string }) =>
     queryFn: () => fetchNote(params),
   });
 
-export const useLoginMutation = () => {
-  const { setUser } = useAuth();
-  return useMutation({
-    mutationKey: ["auth", "login"],
-    mutationFn: postLogin,
-    onError(error: Response) {
-      return error;
-    },
-    onSuccess(data) {
-      setUser(data.user);
-    },
-    throwOnError: false,
-  });
-};
-
-export const useLogoutMutation = () => {
-  const { setUser } = useAuth();
-  return useMutation({
-    mutationKey: ["auth", "logout"],
-    mutationFn: postLogout,
-    onSuccess() {
-      setUser(undefined);
-    },
-  });
-};
-
-export const useSignupMutation = () => {
-  const { setUser } = useAuth();
-  return useMutation({
-    mutationFn: postSignup,
-    onSuccess(data) {
-      setUser(data.user);
-    },
-    onError(error: ApiProblemDetail) {
-      return error;
-    },
-    throwOnError: false,
-  });
-};
-
-export const useDeleteNoteMutation = (usernameInvalidateParam: string) => {
-  return useMutation({
-    mutationFn: deleteNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: notesQuery(usernameInvalidateParam).queryKey,
-      });
-    },
-  });
-};
-
-export const usePutNoteMutation = (params: {
-  username: string;
-  noteId: string;
-}) => {
-  return useMutation({
-    mutationFn: (formData: FormData) => putNote({ params, formData }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: noteQuery(params).queryKey,
-      });
-    },
-  });
-};
-
-export const useNewNoteMutation = (username: string) => {
-  return useMutation({
-    mutationFn: (formData: FormData) => newNote({ username, formData }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: notesQuery(username).queryKey,
-      });
-    },
-  });
-};
+export const onboardingEmailQuery = queryOptions({
+  queryKey: ["onboardingEmail"],
+  queryFn: fetchOnboardingEmail,
+});

@@ -1,16 +1,15 @@
+import { Toaster } from "@/components/ui/sonner";
+import "@fontsource-variable/hanken-grotesk";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "@fontsource-variable/hanken-grotesk";
-import "./index.css";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
-import { routeTree } from "./routeTree.gen";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ErrorPageComponent, NotFound } from "./components/errors";
 import { HelmetProvider } from "react-helmet-async";
-import { Icon } from "./components/ui/icon";
-import { AuthProvider, useAuth } from "./auth";
+import { ErrorPageComponent, NotFound } from "./components/errors";
 import { ThemeProvider } from "./components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
+import { Icon } from "./components/ui/icon";
+import "./index.css";
+import { routeTree } from "./routeTree.gen";
 
 export const queryClient = new QueryClient({
   defaultOptions: { mutations: { throwOnError: true } },
@@ -20,7 +19,7 @@ const router = createRouter({
   routeTree,
   context: {
     queryClient,
-    auth: undefined,
+    // auth: undefined!,
   },
   defaultPreload: "intent",
   defaultErrorComponent: ({ error }) => <ErrorPageComponent error={error} />,
@@ -43,8 +42,7 @@ declare module "@tanstack/react-router" {
 }
 
 function AuthRouter() {
-  const auth = useAuth();
-  return <RouterProvider router={router} context={{ auth }} />;
+  return <RouterProvider router={router} />;
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -52,12 +50,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
-          <AuthProvider>
-            <AuthRouter />
-          </AuthProvider>
+          <AuthRouter />
         </ThemeProvider>
       </QueryClientProvider>
     </HelmetProvider>
     <Toaster />
-  </React.StrictMode>,
+  </React.StrictMode>
 );

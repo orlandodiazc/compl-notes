@@ -24,27 +24,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
-
 @Component
+//@Profile("disable")
 public class DataLoader implements ApplicationRunner {
-    @Value("${data-loader.images.directory}")
-    private String IMAGES_DIRECTORY;
     private final UserRepository userRepository;
-    private final UserImageRepository userImageRepository;
     private final NoteRepository noteRepository;
     private final NoteImageRepository noteImageRepository;
     private final PermissionRepository permissionRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    @Value("${data-loader.images.directory}")
+    private String IMAGES_DIRECTORY;
 
-    public DataLoader(UserRepository userRepository,
-            UserImageRepository userImageRepository,
-            NoteRepository noteRepository,
-            NoteImageRepository noteImageRepository,
-            PermissionRepository permissionRepository,
-            RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public DataLoader(UserRepository userRepository, UserImageRepository userImageRepository,
+                      NoteRepository noteRepository, NoteImageRepository noteImageRepository,
+                      PermissionRepository permissionRepository, RoleRepository roleRepository,
+                      PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.userImageRepository = userImageRepository;
         this.noteRepository = noteRepository;
         this.noteImageRepository = noteImageRepository;
         this.permissionRepository = permissionRepository;
@@ -67,7 +63,6 @@ public class DataLoader implements ApplicationRunner {
         List<String> actions = List.of("CREATE", "READ", "UPDATE", "DELETE");
         List<String> accesses = List.of("OWN", "ANY");
 
-
         for (String entity : entities) {
             for (String action : actions) {
                 for (String access : accesses) {
@@ -83,64 +78,71 @@ public class DataLoader implements ApplicationRunner {
         roleRepository.save(adminRole);
         roleRepository.save(userRole);
 
+        //        List<ImageFile> noteImagesFile = List.of(
+        //                new ImageFile("a nice country house", new File(IMAGES_DIRECTORY + "/notes/0.png")),
+        //                new ImageFile("a city scape", new File(IMAGES_DIRECTORY + "/notes/1.png")),
+        //                new ImageFile("a sunrise", new File(IMAGES_DIRECTORY + "/notes/2.png")));
+        List<ImageFile> noteImagesFile = List.of(
+                new ImageFile("a nice country house", new File(IMAGES_DIRECTORY + "/notes/0.png"))
 
-        List<ImageFile> noteImagesFile = List.of(new ImageFile("a nice country house", new File(IMAGES_DIRECTORY + "/notes/0.png")), new ImageFile("a city scape", new File(IMAGES_DIRECTORY + "/notes/1.png")), new ImageFile("a sunrise", new File(IMAGES_DIRECTORY + "/notes/2.png")));
+        );
         List<ImageBytes> noteImages = noteImagesFile.stream()
-                .map(i -> new ImageBytes(i.altText(), readFileBytes(i.file())))
-                .toList();
+                                                    .map(i -> new ImageBytes(i.altText(), readFileBytes(i.file())))
+                                                    .toList();
 
         Faker faker = new Faker();
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             String firstName = faker.name().firstName();
             String lastName = faker.name().lastName();
-            String username = (faker.letterify("??") + firstName.substring(0, Math.min(3, firstName.length())) + lastName.substring(0, Math.min(3, lastName.length()))).toLowerCase();
+            String username = (faker.letterify("??") + firstName.substring(0, Math.min(3,
+                                                                                       firstName.length())) + lastName.substring(
+                    0, Math.min(3, lastName.length()))).toLowerCase();
             String name = firstName + " " + lastName;
             String email = username + "@example.com";
 
-            User newUser = new User(email, username, passwordEncoder.encode(username), name, List.of(userRole));
             File userImageFile = new File(IMAGES_DIRECTORY + "/user/" + i + ".jpg");
             byte[] userImageContent = readFileBytes(userImageFile);
-            UserImage newUserImage = new UserImage(username, Files.probeContentType(userImageFile.toPath()), userImageContent, newUser);
-
+            UserImage newUserImage = new UserImage(username, Files.probeContentType(userImageFile.toPath()),
+                                                   userImageContent, null);
+            User newUser = new User(email, username, passwordEncoder.encode(username), name, List.of(userRole),
+                                    newUserImage);
             userRepository.save(newUser);
-            userImageRepository.save(newUserImage);
 
-            for (int j = 0; j < faker.number()
-                    .numberBetween(1, noteImagesFile.size()); j++) {
+            for (int j = 0; j < faker.number().numberBetween(1, noteImagesFile.size()); j++) {
                 String noteContent = faker.lorem().paragraph();
                 String noteTitle = faker.lorem().sentence();
-                Note newNote = new Note(noteTitle.substring(0, Math.min(10, noteContent.length())), noteContent.substring(0, Math.min(100, noteContent.length())), newUser);
+                Note newNote = new Note(noteTitle.substring(0, Math.min(10, noteContent.length())),
+                                        noteContent.substring(0, Math.min(100, noteContent.length())), newUser);
                 byte[] newNoteImageContent = noteImages.get(j).file();
-                NoteImage newNoteImage = new NoteImage(noteImagesFile.get(j)
-                        .altText(), Files.probeContentType(noteImagesFile.get(j)
-                        .file()
-                        .toPath()), newNoteImageContent, newNote);
+                NoteImage newNoteImage = new NoteImage(noteImagesFile.get(j).altText(),
+                                                       Files.probeContentType(noteImagesFile.get(j).file().toPath()),
+                                                       newNoteImageContent, newNote);
                 noteRepository.save(newNote);
                 noteImageRepository.save(newNoteImage);
             }
-
         }
 
         File adminImageFile = new File(IMAGES_DIRECTORY + "/user/admin.jpg");
         byte[] adminImageContent = readFileBytes(adminImageFile);
-        User admin = new User("admin@example.com", "admin", passwordEncoder.encode("123456"), "Orlando Diaz", List.of(adminRole));
-        UserImage adminImage = new UserImage("Dito's profile picture", Files.probeContentType(adminImageFile.toPath()), adminImageContent, admin);
+        UserImage adminImage = new UserImage("Dito's profile picture", Files.probeContentType(adminImageFile.toPath()),
+                                             adminImageContent, null);
+        User admin = new User("admin@example.com", "admin", passwordEncoder.encode("123456"), "Orlando Diaz",
+                              List.of(adminRole), adminImage);
 
         Note adminNote = new Note("Tiger", "Tigers are great", admin);
         File adminNoteImageFile = new File(IMAGES_DIRECTORY + "/admin-notes/cute-koala.png");
         byte[] adminNoteImageContent = readFileBytes(adminNoteImageFile);
-        NoteImage adminNoteImage = new NoteImage("Cute looking koala", Files.probeContentType(adminNoteImageFile.toPath()), adminNoteImageContent, adminNote);
+        NoteImage adminNoteImage = new NoteImage("Cute looking koala",
+                                                 Files.probeContentType(adminNoteImageFile.toPath()),
+                                                 adminNoteImageContent, adminNote);
 
         userRepository.save(admin);
-        userImageRepository.save(adminImage);
         noteRepository.save(adminNote);
         noteImageRepository.save(adminNoteImage);
     }
 
-    record ImageFile(String altText, File file) {
-    }
+    record ImageFile(String altText, File file) {}
 
-    record ImageBytes(String altText, byte[] file) {
-    }
+    record ImageBytes(String altText, byte[] file) {}
 }

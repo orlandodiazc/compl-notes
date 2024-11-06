@@ -1,50 +1,39 @@
 import Cookies from "js-cookie";
+import ky from "ky";
 import { ApiSchema } from "./apiSchema";
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-function getCsrfTokenCookie():
-  | Record<"X-XSRF-TOKEN", string>
-  | Record<string, never> {
-  const token = Cookies.get("XSRF-TOKEN");
-  if (!token) return {};
-  return { "X-XSRF-TOKEN": token };
-}
+export const api = ky.create({
+  prefixUrl: API_BASE_URL,
+  credentials: "include",
+});
 
-export async function fetcher(...args: Parameters<typeof fetch>) {
-  const [url, opts] = args;
-  const response = await fetch(`${API_BASE_URL}${url}`, opts);
-  let data;
-  try {
-    data = await response.json();
-  } catch (e) {
-    console.error(response);
-    throw response;
-  }
-  if (!response.ok) throw data;
-  return data;
+export function getCsrfTokenHeader() {
+  const token = Cookies.get("XSRF-TOKEN");
+  return token ? { "X-XSRF-TOKEN": token } : {};
 }
 
 export function fetchFilteredUsers(
-  filter?: string,
+  filter?: string
 ): Promise<ApiSchema["UserFilteredResponse"][]> {
-  return fetcher("/users?" + new URLSearchParams({ filter: filter ?? "" }));
+  return api.get("users", { searchParams: { filter: filter ?? "" } }).json();
 }
 
 export function fetchAuthUser(): Promise<ApiSchema["AuthUserResponse"]> {
-  return fetcher("/auth/user", { credentials: "include" });
+  return api.get("users/me").json();
 }
 
 export function fetchUser(
-  username: string,
+  username: string
 ): Promise<ApiSchema["UserSummaryResponse"]> {
-  return fetcher("/users/" + username);
+  return api.get(`users/${username}`).json();
 }
 
 export function fetchNotes(
-  username: string,
+  username: string
 ): Promise<ApiSchema["UserNotesResponse"]> {
-  return fetcher("/users/" + username + "/notes");
+  return api.get(`users/${username}/notes`).json();
 }
 
 export function fetchNote({
@@ -54,7 +43,13 @@ export function fetchNote({
   username: string;
   noteId: string;
 }): Promise<ApiSchema["NoteSummaryResponse"]> {
-  return fetcher("/users/" + username + "/notes/" + noteId);
+  return api.get(`users/${username}/notes/${noteId}`).json();
+}
+
+export function fetchOnboardingEmail(): Promise<
+  ApiSchema["OnboardingResponse"]
+> {
+  return api.get("auth/onboarding").json();
 }
 
 export async function deleteNote({
@@ -64,15 +59,9 @@ export async function deleteNote({
   username: string;
   noteId: string;
 }) {
-  const response = await fetch(
-    API_BASE_URL + "/users/" + username + "/notes/" + noteId,
-    {
-      method: "DELETE",
-      credentials: "include",
-      headers: getCsrfTokenCookie(),
-    },
-  );
-  if (!response.ok) throw response;
+  await api.delete(`users/${username}/notes/${noteId}`, {
+    headers: getCsrfTokenHeader(),
+  });
 }
 
 export function putNote({
@@ -82,12 +71,12 @@ export function putNote({
   params: { username: string; noteId: string };
   formData: FormData;
 }) {
-  return fetcher("/users/" + username + "/notes/" + noteId, {
-    method: "PUT",
-    body: formData,
-    credentials: "include",
-    headers: getCsrfTokenCookie(),
-  });
+  return api
+    .put(`users/${username}/notes/${noteId}`, {
+      body: formData,
+      headers: getCsrfTokenHeader(),
+    })
+    .json();
 }
 
 export function newNote({
@@ -97,41 +86,63 @@ export function newNote({
   username: string;
   formData: FormData;
 }): Promise<ApiSchema["NoteSummaryResponse"]> {
-  return fetcher("/users/" + username + "/notes", {
-    method: "POST",
-    body: formData,
-    credentials: "include",
-    headers: getCsrfTokenCookie(),
-  });
+  return api
+    .post(`users/${username}/notes`, {
+      body: formData,
+      headers: getCsrfTokenHeader(),
+    })
+    .json();
 }
 
 export function postLogin(
-  loginRequest: ApiSchema["LoginRequest"],
+  loginRequest: ApiSchema["LoginRequest"]
 ): Promise<ApiSchema["AuthUserResponse"]> {
-  return fetcher("/auth/login", {
-    method: "POST",
-    body: JSON.stringify(loginRequest),
-    credentials: "include",
-    headers: { "Content-Type": "application/json", ...getCsrfTokenCookie() },
-  });
+  return api
+    .post("auth/login", {
+      json: loginRequest,
+      headers: getCsrfTokenHeader(),
+    })
+    .json();
 }
 
 export async function postLogout() {
-  const response = await fetch(API_BASE_URL + "/auth/logout", {
-    method: "POST",
-    credentials: "include",
-    headers: getCsrfTokenCookie(),
+  await api.post("auth/logout", {
+    headers: getCsrfTokenHeader(),
   });
-  if (!response.ok) throw response;
 }
 
-export function postSignup(
-  signupRequest: ApiSchema["SignupRequest"],
+export function postOnboarding(
+  onboardRequest: ApiSchema["OnboardingRequest"]
 ): Promise<ApiSchema["AuthUserResponse"]> {
-  return fetcher("/auth/signup", {
-    method: "POST",
-    body: JSON.stringify(signupRequest),
-    credentials: "include",
-    headers: { "Content-Type": "application/json", ...getCsrfTokenCookie() },
+  return api
+    .post("auth/onboarding", {
+      json: onboardRequest,
+      headers: getCsrfTokenHeader(),
+    })
+    .json();
+}
+
+export async function postSignup(signupRequest: ApiSchema["SignupRequest"]) {
+  await api.post("auth/signup", {
+    json: signupRequest,
+    headers: getCsrfTokenHeader(),
+  });
+}
+
+export async function postVerify(
+  VerifyRequestParams: ApiSchema["VerifyRequestParams"]
+) {
+  await api.post("auth/verify", {
+    searchParams: VerifyRequestParams,
+    headers: getCsrfTokenHeader(),
+  });
+}
+
+export async function postChangeEmail(
+  changeEmailRequest: ApiSchema["ChangeEmailRequest"]
+) {
+  await api.post("users/me/change-email", {
+    json: changeEmailRequest,
+    headers: getCsrfTokenHeader(),
   });
 }

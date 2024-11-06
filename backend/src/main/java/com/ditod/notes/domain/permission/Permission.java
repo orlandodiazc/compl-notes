@@ -85,9 +85,13 @@ public class Permission extends DateTimeAudit implements GrantedAuthority {
         this.roles = roles;
     }
 
-
     @Override
     public String getAuthority() {
         return action + ":" + entity + ":" + access;
+    }
+
+    @Override
+    public String toString() {
+        return "Permission{" + "description='" + description + '\'' + ", access='" + access + '\'' + ", entity='" + entity + '\'' + ", action='" + action + '\'' + ", id=" + id + '}';
     }
 }

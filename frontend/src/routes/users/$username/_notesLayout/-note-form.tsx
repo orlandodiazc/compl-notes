@@ -208,7 +208,7 @@ function ImageChooser({ index }: { index: number }) {
   const initialId = defaultValues?.id;
   const existingImage = Boolean(initialId);
   const [previewImage, setPreviewImage] = useState<string | undefined>(
-    getNoteImgSrc(initialId),
+    getNoteImgSrc(initialId)
   );
 
   return (

@@ -13,12 +13,19 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as VerifyImport } from './routes/verify'
 import { Route as SignupImport } from './routes/signup'
+import { Route as OnboardingImport } from './routes/onboarding'
 import { Route as LoginImport } from './routes/login'
 import { Route as IndexImport } from './routes/index'
 import { Route as UsersIndexImport } from './routes/users/index'
+import { Route as SettingsprofileLayoutImport } from './routes/settings_/_profileLayout'
 import { Route as UsersUsernameIndexImport } from './routes/users/$username/index'
 import { Route as UsersUsernameNotesLayoutImport } from './routes/users/$username/_notesLayout'
+import { Route as SettingsprofileLayoutProfileIndexImport } from './routes/settings_/_profileLayout/profile.index'
+import { Route as SettingsprofileLayoutProfilePhotoImport } from './routes/settings_/_profileLayout/profile.photo'
+import { Route as SettingsprofileLayoutProfilePasswordImport } from './routes/settings_/_profileLayout/profile.password'
+import { Route as SettingsprofileLayoutProfileChangeEmailImport } from './routes/settings_/_profileLayout/profile.change-email'
 import { Route as UsersUsernameNotesLayoutNotesIndexImport } from './routes/users/$username/_notesLayout/notes.index'
 import { Route as UsersUsernameNotesLayoutNotesNewImport } from './routes/users/$username/_notesLayout/notes.new'
 import { Route as UsersUsernameNotesLayoutNotesNoteIdImport } from './routes/users/$username/_notesLayout/notes.$noteId'
@@ -26,12 +33,28 @@ import { Route as UsersUsernameNotesLayoutNotesNoteIdEditImport } from './routes
 
 // Create Virtual Routes
 
+const SettingsImport = createFileRoute('/settings')()
 const UsersUsernameImport = createFileRoute('/users/$username')()
 
 // Create/Update Routes
 
+const SettingsRoute = SettingsImport.update({
+  path: '/settings',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const VerifyRoute = VerifyImport.update({
+  path: '/verify',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const SignupRoute = SignupImport.update({
   path: '/signup',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const OnboardingRoute = OnboardingImport.update({
+  path: '/onboarding',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -55,6 +78,11 @@ const UsersIndexRoute = UsersIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const SettingsprofileLayoutRoute = SettingsprofileLayoutImport.update({
+  id: '/_profileLayout',
+  getParentRoute: () => SettingsRoute,
+} as any)
+
 const UsersUsernameIndexRoute = UsersUsernameIndexImport.update({
   path: '/',
   getParentRoute: () => UsersUsernameRoute,
@@ -64,6 +92,30 @@ const UsersUsernameNotesLayoutRoute = UsersUsernameNotesLayoutImport.update({
   id: '/_notesLayout',
   getParentRoute: () => UsersUsernameRoute,
 } as any)
+
+const SettingsprofileLayoutProfileIndexRoute =
+  SettingsprofileLayoutProfileIndexImport.update({
+    path: '/profile/',
+    getParentRoute: () => SettingsprofileLayoutRoute,
+  } as any)
+
+const SettingsprofileLayoutProfilePhotoRoute =
+  SettingsprofileLayoutProfilePhotoImport.update({
+    path: '/profile/photo',
+    getParentRoute: () => SettingsprofileLayoutRoute,
+  } as any)
+
+const SettingsprofileLayoutProfilePasswordRoute =
+  SettingsprofileLayoutProfilePasswordImport.update({
+    path: '/profile/password',
+    getParentRoute: () => SettingsprofileLayoutRoute,
+  } as any)
+
+const SettingsprofileLayoutProfileChangeEmailRoute =
+  SettingsprofileLayoutProfileChangeEmailImport.update({
+    path: '/profile/change-email',
+    getParentRoute: () => SettingsprofileLayoutRoute,
+  } as any)
 
 const UsersUsernameNotesLayoutNotesIndexRoute =
   UsersUsernameNotesLayoutNotesIndexImport.update({
@@ -101,9 +153,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/onboarding': {
+      preLoaderRoute: typeof OnboardingImport
+      parentRoute: typeof rootRoute
+    }
     '/signup': {
       preLoaderRoute: typeof SignupImport
       parentRoute: typeof rootRoute
+    }
+    '/verify': {
+      preLoaderRoute: typeof VerifyImport
+      parentRoute: typeof rootRoute
+    }
+    '/settings': {
+      preLoaderRoute: typeof SettingsImport
+      parentRoute: typeof rootRoute
+    }
+    '/settings/_profileLayout': {
+      preLoaderRoute: typeof SettingsprofileLayoutImport
+      parentRoute: typeof SettingsRoute
     }
     '/users/': {
       preLoaderRoute: typeof UsersIndexImport
@@ -120,6 +188,22 @@ declare module '@tanstack/react-router' {
     '/users/$username/': {
       preLoaderRoute: typeof UsersUsernameIndexImport
       parentRoute: typeof UsersUsernameImport
+    }
+    '/settings/_profileLayout/profile/change-email': {
+      preLoaderRoute: typeof SettingsprofileLayoutProfileChangeEmailImport
+      parentRoute: typeof SettingsprofileLayoutImport
+    }
+    '/settings/_profileLayout/profile/password': {
+      preLoaderRoute: typeof SettingsprofileLayoutProfilePasswordImport
+      parentRoute: typeof SettingsprofileLayoutImport
+    }
+    '/settings/_profileLayout/profile/photo': {
+      preLoaderRoute: typeof SettingsprofileLayoutProfilePhotoImport
+      parentRoute: typeof SettingsprofileLayoutImport
+    }
+    '/settings/_profileLayout/profile/': {
+      preLoaderRoute: typeof SettingsprofileLayoutProfileIndexImport
+      parentRoute: typeof SettingsprofileLayoutImport
     }
     '/users/$username/_notesLayout/notes/$noteId': {
       preLoaderRoute: typeof UsersUsernameNotesLayoutNotesNoteIdImport
@@ -145,7 +229,17 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
   LoginRoute,
+  OnboardingRoute,
   SignupRoute,
+  VerifyRoute,
+  SettingsRoute.addChildren([
+    SettingsprofileLayoutRoute.addChildren([
+      SettingsprofileLayoutProfileChangeEmailRoute,
+      SettingsprofileLayoutProfilePasswordRoute,
+      SettingsprofileLayoutProfilePhotoRoute,
+      SettingsprofileLayoutProfileIndexRoute,
+    ]),
+  ]),
   UsersIndexRoute,
   UsersUsernameRoute.addChildren([
     UsersUsernameNotesLayoutRoute.addChildren([

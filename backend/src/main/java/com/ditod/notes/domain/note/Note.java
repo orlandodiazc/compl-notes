@@ -26,19 +26,13 @@ public class Note extends DateTimeAudit {
     @JoinColumn(name = "ownerId")
     @JsonBackReference
     private User owner;
+
     @NotNull
-    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL)
     @JsonManagedReference
+    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoteImage> images = new ArrayList<>();
 
     public Note() {
-    }
-
-    public Note(UUID id, String title, String content, User owner) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.owner = owner;
     }
 
     public Note(String title, String content, User owner) {
@@ -81,5 +75,10 @@ public class Note extends DateTimeAudit {
 
     public void setImages(List<NoteImage> images) {
         this.images = images;
+    }
+
+    @Override
+    public String toString() {
+        return "Note{" + "images=" + images + '}';
     }
 }

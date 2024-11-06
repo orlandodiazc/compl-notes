@@ -1,8 +1,9 @@
-import { useAuth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import UserAvatar from "@/components/user-avatar";
-import { useLogoutMutation, userQuery } from "@/lib/api/queryOptions";
+import { useLogoutMutation } from "@/lib/api/mutations";
+import { userQuery } from "@/lib/api/queryOptions";
+import { useAuthUser } from "@/routes/__root";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Helmet } from "react-helmet-async";
@@ -18,7 +19,7 @@ export default function UserProfileRoute() {
   const { username } = Route.useParams();
   const navigate = Route.useNavigate();
   const { data } = useSuspenseQuery(userQuery(username));
-  const { user } = useAuth();
+  const user = useAuthUser();
 
   const { mutate } = useLogoutMutation();
   function handleLogout() {
@@ -71,11 +72,27 @@ export default function UserProfileRoute() {
               </Button>
             </div>
           ) : null}
-          <Button asChild>
-            <Link to="/users/$username/notes" params={{ username }}>
-              {userDisplayName}'s notes
-            </Link>
-          </Button>
+
+          <div className="mt-2 flex gap-4">
+            {isLoggedInUser ? (
+              <>
+                <Button asChild>
+                  <Link to="/users/$username/notes" params={{ username }}>
+                    My notes
+                  </Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/settings/profile">Edit profile</Link>
+                </Button>
+              </>
+            ) : (
+              <Button asChild>
+                <Link to="/users/$username/notes" params={{ username }}>
+                  {userDisplayName}'s notes
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </main>

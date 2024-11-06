@@ -1,3 +1,4 @@
+import { requireAnonymous } from "@/auth/helpers";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
@@ -11,10 +12,10 @@ import {
 import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { StatusButton } from "@/components/ui/status-button";
-import { useLoginMutation } from "@/lib/api/queryOptions";
+import { useLoginMutation } from "@/lib/api/mutations";
 import { useZodForm } from "@/lib/misc";
 import { PasswordSchema, UsernameSchema } from "@/lib/validation/user";
-import { Link, createFileRoute, redirect } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { Helmet } from "react-helmet-async";
 import { z } from "zod";
 
@@ -22,10 +23,8 @@ export const Route = createFileRoute("/login")({
   validateSearch: z.object({
     redirect: z.string().catch("/"),
   }),
-  beforeLoad: ({ context: { auth } }) => {
-    if (auth?.isAuthenticated) {
-      throw redirect({ to: "/" });
-    }
+  beforeLoad: ({ context }) => {
+    requireAnonymous(context.authUser);
   },
   component: LoginPage,
 });

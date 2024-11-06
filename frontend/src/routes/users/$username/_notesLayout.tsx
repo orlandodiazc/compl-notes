@@ -1,8 +1,8 @@
-import { useAuth } from "@/auth";
 import { userHasPermission } from "@/auth/helpers";
 import { Icon } from "@/components/ui/icon";
 import UserAvatar from "@/components/user-avatar";
 import { notesQuery } from "@/lib/api/queryOptions";
+import { useAuthUser } from "@/routes/__root";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
 
@@ -13,14 +13,14 @@ export const Route = createFileRoute("/users/$username/_notesLayout")({
   },
 });
 
-export default function NotesRoute() {
+function NotesRoute() {
   const { username } = Route.useParams();
   const { data } = useSuspenseQuery(notesQuery(username));
-  const { user } = useAuth();
+  const user = useAuthUser();
   const isOwner = user?.id === data.id;
   const canCreate = userHasPermission(
     user,
-    isOwner ? "CREATE:NOTE:OWN" : "CREATE:NOTE:ANY",
+    isOwner ? "CREATE:NOTE:OWN" : "CREATE:NOTE:ANY"
   );
   const ownerDisplayName = data.name ?? data.username;
 

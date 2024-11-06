@@ -1,28 +1,37 @@
-import { AuthContext, useAuth } from "@/auth";
 import ThemeToggle from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import UserAvatar from "@/components/user-avatar";
-import { QueryClient } from "@tanstack/react-query";
+import { authUserQuery } from "@/lib/api/queryOptions";
+import { QueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import {
   Link,
   Outlet,
+  ScrollRestoration,
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { Helmet } from "react-helmet-async";
 
 interface RouterContext {
   queryClient: QueryClient;
-  auth: AuthContext | undefined;
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+  async beforeLoad({ context }) {
+    const { user } = await context.queryClient.ensureQueryData(authUserQuery());
+    return { authUser: user };
+  },
   component: RootRoute,
 });
 
+export function useAuthUser() {
+  return useSuspenseQuery(authUserQuery()).data.user;
+}
+
 function RootRoute() {
-  const { user } = useAuth();
+  const user = useAuthUser();
   return (
     <>
+      <ScrollRestoration />
       <Helmet>
         <title>Compl Notes</title>
         <meta

@@ -15,18 +15,14 @@ public class ImageUtils {
 
     public ImageUtils() {
         this.responseHeaders = new HttpHeaders();
-        this.responseHeaders.setCacheControl(CacheControl.maxAge(Duration.ofDays(365))
-                .cachePublic()
-                .immutable());
+        this.responseHeaders.setCacheControl(CacheControl.maxAge(Duration.ofDays(365)).cachePublic().immutable());
     }
 
-    public HttpHeaders getImageResponseHeaders(UUID imageId, String contentType,
-            int contentLength) {
+    public HttpHeaders getImageResponseHeaders(UUID imageId, String contentType, int contentLength) {
         responseHeaders.setContentType(MediaType.parseMediaType(contentType));
         responseHeaders.setContentLength(contentLength);
-        responseHeaders.setContentDisposition(ContentDisposition.builder("inline")
-                .filename(imageId.toString())
-                .build());
+        responseHeaders.setContentDisposition(
+                ContentDisposition.builder("inline").filename(imageId.toString()).build());
         return responseHeaders;
     }
 }

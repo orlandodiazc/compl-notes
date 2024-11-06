@@ -1,14 +1,15 @@
-import { useAuth } from "@/auth";
 import { userHasPermission } from "@/auth/helpers";
 import { Button } from "@/components/ui/button";
-import { noteQuery, useDeleteNoteMutation } from "@/lib/api/queryOptions";
+import { useDeleteNoteMutation } from "@/lib/api/mutations";
+import { noteQuery } from "@/lib/api/queryOptions";
 import { getNoteImgSrc } from "@/lib/utils";
+import { useAuthUser } from "@/routes/__root";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 export const Route = createFileRoute(
-  "/users/$username/_notesLayout/notes/$noteId",
+  "/users/$username/_notesLayout/notes/$noteId"
 )({
   component: NoteRoute,
   loader: ({ params, context: { queryClient } }) => {
@@ -22,17 +23,17 @@ export default function NoteRoute() {
   const { data } = useSuspenseQuery(noteQuery(params));
   const { mutate, isPending } = useDeleteNoteMutation(params.username);
 
-  const { user } = useAuth();
+  const user = useAuthUser();
   const isOwner = user?.id === data.owner.id;
   const canDelete = userHasPermission(
     user,
-    isOwner ? "DELETE:NOTE:OWN" : "DELETE:NOTE:ANY",
+    isOwner ? "DELETE:NOTE:OWN" : "DELETE:NOTE:ANY"
   );
   const displayBar = canDelete || isOwner;
   function handleDeleteClick() {
     mutate(params, {
       onSuccess: () => {
-        toast.success("Your note has been deleted successfully!");
+        toast.success("Your note has been deleted!");
         navigate({
           to: "/users/$username/notes",
           params: { username: params.username },
@@ -52,7 +53,7 @@ export default function NoteRoute() {
                 <li key={image.id}>
                   <a href={getNoteImgSrc(image.id)}>
                     <img
-                      src={getNoteImgSrc(image.id)}
+                      src={getNoteImgSrc(image.id + "?" + image.updatedAt)}
                       alt={image.altText}
                       className="h-32 w-32 rounded-lg object-cover"
                     />

@@ -6,12 +6,13 @@ import com.ditod.notes.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-public class Role extends DateTimeAudit {
+public class Role extends DateTimeAudit implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,7 +29,8 @@ public class Role extends DateTimeAudit {
     private List<User> users = new ArrayList<>();
     @NotNull
     @ManyToMany
-    @JoinTable(name = "role_permission", joinColumns = @JoinColumn(name = "permission_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "role_permission", joinColumns = @JoinColumn(name = "permission_id"), inverseJoinColumns =
+    @JoinColumn(name = "role_id"))
     private List<Permission> permissions;
 
     public Role() {
@@ -75,4 +77,9 @@ public class Role extends DateTimeAudit {
         this.permissions = permissions;
     }
 
+    @Override
+    public String toString() {
+        return "Role{" + "id=" + id + ", name='" + name + '\'' + ", description='" + description + '\'' + ", " +
+                "permissions=" + permissions + '}';
+    }
 }

@@ -2,14 +2,14 @@ package com.ditod.notes.domain.user_image;
 
 import com.ditod.notes.domain.DateTimeAudit;
 import com.ditod.notes.domain.user.User;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
-public class UserImage extends DateTimeAudit {
+public class UserImage extends DateTimeAudit implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -19,17 +19,14 @@ public class UserImage extends DateTimeAudit {
     private String contentType;
     @NotNull
     private byte[] blob;
-    @NotNull
-    @OneToOne
-    @JoinColumn(name = "userId")
-    @JsonBackReference
+
+    @OneToOne(mappedBy = "image")
     private User user;
 
     public UserImage() {
     }
 
-    public UserImage(String altText, String contentType, byte[] blob,
-            User user) {
+    public UserImage(String altText, String contentType, @NotNull byte[] blob, User user) {
         this.altText = altText;
         this.contentType = contentType;
         this.blob = blob;
@@ -70,5 +67,10 @@ public class UserImage extends DateTimeAudit {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "UserImage{" + "id=" + id + ", altText='" + altText + '\'' + ", contentType='" + contentType + '\'' + '}';
     }
 }

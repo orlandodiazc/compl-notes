@@ -1,17 +1,16 @@
-import { useNewNoteMutation } from "@/lib/api/queryOptions";
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import NoteForm from "./-note-form";
+import { requireAuthenticated } from "@/auth/helpers";
+import { useNewNoteMutation } from "@/lib/api/mutations";
+import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
+import NoteForm from "./-note-form";
 
 export const Route = createFileRoute("/users/$username/_notesLayout/notes/new")(
   {
-    beforeLoad: ({ context: { auth }, location }) => {
-      if (!auth?.isAuthenticated) {
-        throw redirect({ to: "/login", search: { redirect: location.href } });
-      }
+    beforeLoad: ({ context, location }) => {
+      requireAuthenticated(context.authUser, location.href);
     },
     component: NoteNew,
-  },
+  }
 );
 
 export default function NoteNew() {
@@ -21,7 +20,7 @@ export default function NoteNew() {
   function handleSubmit(formData: FormData) {
     mutate(formData, {
       onSuccess: () => {
-        toast.success("Your note has been created successfully!");
+        toast.success("Your note has been created!");
         navigate({
           to: "/users/$username/notes",
           params: { username },

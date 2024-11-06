@@ -1,6 +1,7 @@
 package com.ditod.notes.domain.exception;
 
 import org.springframework.http.*;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,9 +21,9 @@ public class RestExceptionControllerAdvice extends ResponseEntityExceptionHandle
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex, HttpHeaders headers,
-            HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers, HttpStatusCode status,
+                                                                  WebRequest request) {
         HashMap<String, List<String>> errors = new HashMap<>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             String fieldName = error.getField();
@@ -33,19 +34,20 @@ public class RestExceptionControllerAdvice extends ResponseEntityExceptionHandle
         }
         ProblemDetail problemDetail = ex.getBody();
         problemDetail.setProperty("errors", errors);
-        return ResponseEntity.status(problemDetail.getStatus())
-                .body(problemDetail);
+        return ResponseEntity.status(problemDetail.getStatus()).body(problemDetail);
     }
-
 
     @ExceptionHandler({EntityAlreadyExistsException.class})
-    public ProblemDetail exceptionAlreadyExistsHandler(
-            EntityAlreadyExistsException ex) {
-        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        HashMap<String, String> errors = new HashMap<>();
-        errors.put(ex.getField(), ex.getMessage());
-        problemDetail.setProperty("errors", errors);
-        return problemDetail;
+    public ResponseEntity<ProblemDetail> exceptionAlreadyExistsHandler(EntityAlreadyExistsException ex) {
+        return ResponseEntity.badRequest()
+                             .body(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
 
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<ProblemDetail> handleAuthenticationException(Exception ex) {
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED,
+                                                                    "Invalid username or password. Please try again."));
+    }
 }

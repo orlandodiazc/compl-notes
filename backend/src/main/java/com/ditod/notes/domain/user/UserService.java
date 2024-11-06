@@ -1,7 +1,7 @@
 package com.ditod.notes.domain.user;
 
 import com.ditod.notes.domain.exception.EntityNotFoundException;
-import com.ditod.notes.domain.user.dto.UserFilteredResponse;
+import com.ditod.notes.web.user.dto.UserFilteredResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,7 @@ public class UserService {
     }
 
     public User findById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("username", id));
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("username", id));
     }
 
     public List<UserFilteredResponse> findFilteredUsers(String search) {
@@ -29,11 +28,19 @@ public class UserService {
 
     public <T> T findByUsername(String username, Class<T> type) {
         return userRepository.findByUsername(username, type)
-                .orElseThrow(() -> new EntityNotFoundException("username", username));
+                             .orElseThrow(() -> new EntityNotFoundException("username", username));
     }
+
+    //    public <T> Optional<T> findByUsername(String username, Class<T> type) {
+    //        return userRepository.findByUsername(username, type);
+    //    }
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username, User.class)
-                .orElseThrow(() -> new EntityNotFoundException("username", username));
+                             .orElseThrow(() -> new EntityNotFoundException("username", username));
+    }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsernameIgnoreCase(username);
     }
 }

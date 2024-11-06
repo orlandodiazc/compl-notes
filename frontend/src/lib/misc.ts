@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { UseFormProps, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -8,7 +8,7 @@ import { z } from "zod";
  */
 function debounce<Callback extends (...args: Parameters<Callback>) => void>(
   fn: Callback,
-  delay: number,
+  delay: number
 ) {
   let timer: ReturnType<typeof setTimeout> | null = null;
   return (...args: Parameters<Callback>) => {
@@ -33,16 +33,16 @@ export function useDebounce<
     () =>
       debounce(
         (...args: Parameters<Callback>) => callbackRef.current(...args),
-        delay,
+        delay
       ),
-    [delay],
+    [delay]
   );
 }
 
 export function useZodForm<TSchema extends z.ZodType>(
   props: Omit<UseFormProps<TSchema["_input"]>, "resolver"> & {
     schema: TSchema;
-  },
+  }
 ) {
   const form = useForm<TSchema["_input"]>({
     mode: "onTouched",
@@ -51,4 +51,46 @@ export function useZodForm<TSchema extends z.ZodType>(
   });
 
   return form;
+}
+
+function callAll<Args extends Array<unknown>>(
+  ...fns: Array<((...args: Args) => unknown) | undefined>
+) {
+  return (...args: Args) => fns.forEach((fn) => fn?.(...args));
+}
+
+export function useDoubleCheck() {
+  const [doubleCheck, setDoubleCheck] = useState(false);
+
+  function getButtonProps(
+    props?: React.ButtonHTMLAttributes<HTMLButtonElement>
+  ) {
+    const onBlur: React.ButtonHTMLAttributes<HTMLButtonElement>["onBlur"] =
+      () => setDoubleCheck(false);
+
+    const onClick: React.ButtonHTMLAttributes<HTMLButtonElement>["onClick"] =
+      doubleCheck
+        ? undefined
+        : (e) => {
+            e.preventDefault();
+            setDoubleCheck(true);
+          };
+
+    const onKeyUp: React.ButtonHTMLAttributes<HTMLButtonElement>["onKeyUp"] = (
+      e
+    ) => {
+      if (e.key === "Escape") {
+        setDoubleCheck(false);
+      }
+    };
+
+    return {
+      ...props,
+      onBlur: callAll(onBlur, props?.onBlur),
+      onClick: callAll(onClick, props?.onClick),
+      onKeyUp: callAll(onKeyUp, props?.onKeyUp),
+    };
+  }
+
+  return { doubleCheck, getButtonProps };
 }
