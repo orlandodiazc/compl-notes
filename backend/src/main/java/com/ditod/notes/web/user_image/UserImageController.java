@@ -63,10 +63,9 @@ public class UserImageController {
             Optional.ofNullable(user.getImage()).ifPresentOrElse(image -> {
                 image.setBlob(imageBlob);
                 image.setContentType(file.getContentType());
-            }, () -> {
-                user.setImage(
-                        new UserImage(user.getUsername() + "'s profile photo", file.getContentType(), imageBlob, null));
-            });
+            }, () -> user.setImage(
+                    new UserImage(user.getUsername() + "'s profile photo", file.getContentType(),
+                                  imageBlob, null)));
             userRepository.save(user);
             return ResponseEntity.ok().build();
         } catch (IOException e) {

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.SQLException;
 import java.util.UUID;
 
 @RestController
@@ -27,7 +26,7 @@ public class NoteImageController {
     }
 
     @GetMapping("/{imageId}")
-    ResponseEntity<byte[]> getNoteImage(@PathVariable UUID imageId) throws SQLException {
+    ResponseEntity<byte[]> getNoteImage(@PathVariable UUID imageId) {
         NoteImage userImage = noteImageRepository.findById(imageId)
                                                  .orElseThrow(() -> new EntityDoesNotExistException("note image", imageId));
 

@@ -2,7 +2,6 @@ package com.ditod.notes.web.auth;
 
 import com.ditod.notes.domain.role.RoleRepository;
 import com.ditod.notes.domain.user.User;
-import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.web.auth.dto.LoginRequest;
 import com.ditod.notes.web.auth.dto.SignupRequest;

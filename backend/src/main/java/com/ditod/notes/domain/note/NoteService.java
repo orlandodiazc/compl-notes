@@ -1,11 +1,9 @@
 package com.ditod.notes.domain.note;
 
 import com.ditod.notes.domain.exception.EntityDoesNotExistException;
-import com.ditod.notes.domain.exception.UserDoesNotExistException;
 import com.ditod.notes.domain.note_image.NoteImage;
 import com.ditod.notes.domain.note_image.NoteImageRepository;
 import com.ditod.notes.domain.user.User;
-import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.web.note.dto.NoteRequest;
 import com.ditod.notes.web.note.dto.NoteSummaryResponse;

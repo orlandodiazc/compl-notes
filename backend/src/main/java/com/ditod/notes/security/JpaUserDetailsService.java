@@ -1,8 +1,6 @@
 package com.ditod.notes.security;
 
-import com.ditod.notes.domain.exception.UserDoesNotExistException;
 import com.ditod.notes.domain.user.AuthUser;
-import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
