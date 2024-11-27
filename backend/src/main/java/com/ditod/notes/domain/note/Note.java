@@ -17,20 +17,21 @@ public class Note extends DateTimeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     @NotNull
     private String title;
     @NotNull
     private String content;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "ownerId")
     @JsonBackReference
     private User owner;
 
-    @NotNull
     @JsonManagedReference
-    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<NoteImage> images = new ArrayList<>();
+    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL)
+    private List<NoteImage> images;
 
     public Note() {
     }
@@ -79,6 +80,6 @@ public class Note extends DateTimeAudit {
 
     @Override
     public String toString() {
-        return "Note{" + "images=" + images + '}';
+        return "Note{" + "title='" + title + '\'' + ", content='" + content + '\'' + ", owner=" + owner + '}';
     }
 }

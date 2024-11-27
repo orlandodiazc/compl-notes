@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-public class User extends DateTimeAudit implements UserDetails {
+public class User extends DateTimeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -38,12 +38,12 @@ public class User extends DateTimeAudit implements UserDetails {
     @JsonIgnore
     private String password;
 
+    @NotNull
     private String name;
 
-    @NotNull
     @JsonManagedReference
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private List<Note> notes = new ArrayList<>();
+    private List<Note> notes;
 
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "image_id", referencedColumnName = "id")
@@ -51,14 +51,14 @@ public class User extends DateTimeAudit implements UserDetails {
 
     @NotNull
     @ManyToMany
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns =
-    @JoinColumn(name = "user_id"))
-    private List<Role> roles = new ArrayList<>();
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<Role> roles;
 
     public User() {
     }
 
-    public User(String email, String username, String password, String name, List<Role> roles, UserImage userImage) {
+    public User(String email, String username, String password, String name, List<Role> roles,
+                UserImage userImage) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -71,27 +71,39 @@ public class User extends DateTimeAudit implements UserDetails {
         return id;
     }
 
-    public String getEmail() {
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public @NotNull String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(@NotNull String email) {
         this.email = email;
     }
 
-    public void setUsername(String username) {
+    public @NotNull String getUsername() {
+        return username;
+    }
+
+    public void setUsername(@NotNull String username) {
         this.username = username;
     }
 
-    public void setPassword(String password) {
+    public @NotNull String getPassword() {
+        return password;
+    }
+
+    public void setPassword(@NotNull String password) {
         this.password = password;
     }
 
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(@NotNull String name) {
         this.name = name;
     }
 
@@ -111,45 +123,13 @@ public class User extends DateTimeAudit implements UserDetails {
         this.image = image;
     }
 
-    public List<Role> getRoles() {
+    public @NotNull List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(
+            @NotNull List<Role> roles) {
         this.roles = roles;
-    }
-
-    @Override
-    public String getPassword() {return this.password;}
-
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(Role::getPermissions).flatMap(Collection::stream).toList();
     }
 
     @Override

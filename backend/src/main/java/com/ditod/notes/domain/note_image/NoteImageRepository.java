@@ -8,10 +8,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface NoteImageRepository extends JpaRepository<NoteImage, UUID> {
-
-    @Transactional
-    void deleteByIdNotIn(List<UUID> id);
-
     @Transactional
     void deleteByNote(Note note);
+    @Transactional
+    void deleteByNoteAndIdNotIn(Note note, List<UUID> collect);
 }

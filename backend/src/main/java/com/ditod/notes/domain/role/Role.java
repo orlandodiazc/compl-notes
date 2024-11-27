@@ -24,9 +24,10 @@ public class Role extends DateTimeAudit implements Serializable {
 
     @NotNull
     private String description = "";
-    @NotNull
+
     @ManyToMany(mappedBy = "roles")
-    private List<User> users = new ArrayList<>();
+    private List<User> users;
+
     @NotNull
     @ManyToMany
     @JoinTable(name = "role_permission", joinColumns = @JoinColumn(name = "permission_id"), inverseJoinColumns =
@@ -79,7 +80,11 @@ public class Role extends DateTimeAudit implements Serializable {
 
     @Override
     public String toString() {
-        return "Role{" + "id=" + id + ", name='" + name + '\'' + ", description='" + description + '\'' + ", " +
-                "permissions=" + permissions + '}';
+        return "Role{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", permissions=" + permissions +
+                '}';
     }
 }

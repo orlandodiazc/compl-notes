@@ -78,16 +78,14 @@ public class DataLoader implements ApplicationRunner {
         roleRepository.save(adminRole);
         roleRepository.save(userRole);
 
-        //        List<ImageFile> noteImagesFile = List.of(
-        //                new ImageFile("a nice country house", new File(IMAGES_DIRECTORY + "/notes/0.png")),
-        //                new ImageFile("a city scape", new File(IMAGES_DIRECTORY + "/notes/1.png")),
-        //                new ImageFile("a sunrise", new File(IMAGES_DIRECTORY + "/notes/2.png")));
         List<ImageFile> noteImagesFile = List.of(
                 new ImageFile("a nice country house", new File(IMAGES_DIRECTORY + "/notes/0.png"))
 
         );
         List<ImageBytes> noteImages = noteImagesFile.stream()
-                                                    .map(i -> new ImageBytes(i.altText(), readFileBytes(i.file())))
+                                                    .map(i -> new ImageBytes(i.altText(),
+                                                                             readFileBytes(
+                                                                                     i.file())))
                                                     .toList();
 
         Faker faker = new Faker();
@@ -103,9 +101,11 @@ public class DataLoader implements ApplicationRunner {
 
             File userImageFile = new File(IMAGES_DIRECTORY + "/user/" + i + ".jpg");
             byte[] userImageContent = readFileBytes(userImageFile);
-            UserImage newUserImage = new UserImage(username, Files.probeContentType(userImageFile.toPath()),
+            UserImage newUserImage = new UserImage(username,
+                                                   Files.probeContentType(userImageFile.toPath()),
                                                    userImageContent, null);
-            User newUser = new User(email, username, passwordEncoder.encode(username), name, List.of(userRole),
+            User newUser = new User(email, username, passwordEncoder.encode(username), name,
+                                    List.of(userRole),
                                     newUserImage);
             userRepository.save(newUser);
 
@@ -113,10 +113,14 @@ public class DataLoader implements ApplicationRunner {
                 String noteContent = faker.lorem().paragraph();
                 String noteTitle = faker.lorem().sentence();
                 Note newNote = new Note(noteTitle.substring(0, Math.min(10, noteContent.length())),
-                                        noteContent.substring(0, Math.min(100, noteContent.length())), newUser);
+                                        noteContent.substring(0,
+                                                              Math.min(100, noteContent.length())),
+                                        newUser);
                 byte[] newNoteImageContent = noteImages.get(j).file();
                 NoteImage newNoteImage = new NoteImage(noteImagesFile.get(j).altText(),
-                                                       Files.probeContentType(noteImagesFile.get(j).file().toPath()),
+                                                       Files.probeContentType(
+                                                               noteImagesFile.get(j).file()
+                                                                             .toPath()),
                                                        newNoteImageContent, newNote);
                 noteRepository.save(newNote);
                 noteImageRepository.save(newNoteImage);
@@ -125,16 +129,19 @@ public class DataLoader implements ApplicationRunner {
 
         File adminImageFile = new File(IMAGES_DIRECTORY + "/user/admin.jpg");
         byte[] adminImageContent = readFileBytes(adminImageFile);
-        UserImage adminImage = new UserImage("Dito's profile picture", Files.probeContentType(adminImageFile.toPath()),
+        UserImage adminImage = new UserImage("Dito's profile picture",
+                                             Files.probeContentType(adminImageFile.toPath()),
                                              adminImageContent, null);
-        User admin = new User("admin@example.com", "admin", passwordEncoder.encode("123456"), "Orlando Diaz",
+        User admin = new User("admin@example.com", "admin", passwordEncoder.encode("123456"),
+                              "Orlando Diaz",
                               List.of(adminRole), adminImage);
 
         Note adminNote = new Note("Tiger", "Tigers are great", admin);
         File adminNoteImageFile = new File(IMAGES_DIRECTORY + "/admin-notes/cute-koala.png");
         byte[] adminNoteImageContent = readFileBytes(adminNoteImageFile);
         NoteImage adminNoteImage = new NoteImage("Cute looking koala",
-                                                 Files.probeContentType(adminNoteImageFile.toPath()),
+                                                 Files.probeContentType(
+                                                         adminNoteImageFile.toPath()),
                                                  adminNoteImageContent, adminNote);
 
         userRepository.save(admin);
@@ -142,7 +149,9 @@ public class DataLoader implements ApplicationRunner {
         noteImageRepository.save(adminNoteImage);
     }
 
-    record ImageFile(String altText, File file) {}
+    record ImageFile(String altText, File file) {
+    }
 
-    record ImageBytes(String altText, byte[] file) {}
+    record ImageBytes(String altText, byte[] file) {
+    }
 }

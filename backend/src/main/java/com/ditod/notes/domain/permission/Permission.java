@@ -12,7 +12,6 @@ import java.util.UUID;
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"action", "entity", "access"}))
 public class Permission extends DateTimeAudit implements GrantedAuthority {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -92,6 +91,12 @@ public class Permission extends DateTimeAudit implements GrantedAuthority {
 
     @Override
     public String toString() {
-        return "Permission{" + "description='" + description + '\'' + ", access='" + access + '\'' + ", entity='" + entity + '\'' + ", action='" + action + '\'' + ", id=" + id + '}';
+        return "Permission{" +
+                "id=" + id +
+                ", action='" + action + '\'' +
+                ", entity='" + entity + '\'' +
+                ", access='" + access + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

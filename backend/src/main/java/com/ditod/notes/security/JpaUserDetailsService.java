@@ -1,8 +1,9 @@
-package com.ditod.notes.auth;
+package com.ditod.notes.security;
 
-import com.ditod.notes.domain.exception.EntityNotFoundException;
-import com.ditod.notes.domain.user.User;
+import com.ditod.notes.domain.exception.UserDoesNotExistException;
+import com.ditod.notes.domain.user.AuthUser;
 import com.ditod.notes.domain.user.UserRepository;
+import com.ditod.notes.domain.user.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,15 +12,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class JpaUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public JpaUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public JpaUserDetailsService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsernameIgnoreCase(username, User.class)
-                             .orElseThrow(() -> new EntityNotFoundException("username", username));
+        return new AuthUser(userService.findByUsername(username));
     }
 }

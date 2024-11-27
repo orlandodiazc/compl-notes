@@ -14,7 +14,8 @@ public class UserImage extends DateTimeAudit implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String altText;
+    private String altText = "";
+
     @NotNull
     private String contentType;
     @NotNull
@@ -71,6 +72,11 @@ public class UserImage extends DateTimeAudit implements Serializable {
 
     @Override
     public String toString() {
-        return "UserImage{" + "id=" + id + ", altText='" + altText + '\'' + ", contentType='" + contentType + '\'' + '}';
+        return "UserImage{" +
+                "id=" + id +
+                ", altText='" + altText + '\'' +
+                ", contentType='" + contentType + '\'' +
+                ", user=" + user +
+                '}';
     }
 }

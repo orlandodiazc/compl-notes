@@ -1,12 +1,14 @@
 package com.ditod.notes.domain.user;
 
-import com.ditod.notes.domain.exception.EntityNotFoundException;
+import com.ditod.notes.domain.exception.EntityDoesNotExistException;
+import com.ditod.notes.domain.exception.UserDoesNotExistException;
 import com.ditod.notes.web.user.dto.UserFilteredResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,7 +20,8 @@ public class UserService {
     }
 
     public User findById(UUID id) {
-        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("username", id));
+        return userRepository.findById(id)
+                             .orElseThrow(() -> new EntityDoesNotExistException("username", id));
     }
 
     public List<UserFilteredResponse> findFilteredUsers(String search) {
@@ -28,19 +31,19 @@ public class UserService {
 
     public <T> T findByUsername(String username, Class<T> type) {
         return userRepository.findByUsername(username, type)
-                             .orElseThrow(() -> new EntityNotFoundException("username", username));
+                             .orElseThrow(() -> new UserDoesNotExistException((username)));
     }
-
-    //    public <T> Optional<T> findByUsername(String username, Class<T> type) {
-    //        return userRepository.findByUsername(username, type);
-    //    }
 
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username, User.class)
-                             .orElseThrow(() -> new EntityNotFoundException("username", username));
+        return userRepository.findByUsername(username)
+                             .orElseThrow(() -> new UserDoesNotExistException((username)));
     }
 
-    public boolean existsByUsername(String username) {
+    public boolean existsByUsernameIgnoreCase(String username) {
         return userRepository.existsByUsernameIgnoreCase(username);
+    }
+
+    public void save(User user) {
+        userRepository.save(user);
     }
 }

@@ -11,15 +11,15 @@ import java.util.UUID;
 
 @Entity
 public class NoteImage extends DateTimeAudit {
-    @NotNull
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    private String altText;
     @NotNull
-    @JsonIgnore
+    private String altText = "";
+
+    @NotNull
     private String contentType;
+
     @NotNull
     @JsonIgnore
     private byte[] blob;
@@ -92,8 +92,12 @@ public class NoteImage extends DateTimeAudit {
 
     @Override
     public String toString() {
-        return "NoteImage{" + "id=" + id + ", altText='" + altText + '\'' + ", contentType='" + contentType + '\'' +
-                ", blobsize=" + blob.length + +'}';
+        return "NoteImage{" +
+                "id=" + id +
+                ", altText='" + altText + '\'' +
+                ", contentType='" + contentType + '\'' +
+                ", note=" + note +
+                '}';
     }
 }
 

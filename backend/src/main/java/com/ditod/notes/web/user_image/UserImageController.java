@@ -1,6 +1,6 @@
 package com.ditod.notes.web.user_image;
 
-import com.ditod.notes.domain.exception.EntityNotFoundException;
+import com.ditod.notes.domain.exception.EntityDoesNotExistException;
 import com.ditod.notes.domain.user.User;
 import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user_image.UserImage;
@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/user-images")
-@Tag(name = "user image", description = "Acces user images")
+@Tag(name = "user image", description = "Access user images")
 public class UserImageController {
     private final UserImageRepository userImageRepository;
     private final ImageUtils imageUtils;
@@ -37,7 +37,7 @@ public class UserImageController {
     @GetMapping("/{imageId}")
     ResponseEntity<byte[]> getUserImage(@PathVariable UUID imageId) {
         UserImage userImage = userImageRepository.findById(imageId)
-                                                 .orElseThrow(() -> new EntityNotFoundException("user image", imageId));
+                                                 .orElseThrow(() -> new EntityDoesNotExistException("user image", imageId));
 
         return ResponseEntity.ok().headers(
                 imageUtils.getImageResponseHeaders(userImage.getId(), userImage.getContentType(),

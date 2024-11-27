@@ -22,17 +22,14 @@ public interface UserRepository extends JpaRepository<User, UUID> {
                 FROM Note n
                 WHERE n.owner = u
             ) DESC
-                        
+            
             """)
-    List<UserFilteredResponse> findFilteredUsers(@Param("term") String searchQuery, Pageable pageable);
+    List<UserFilteredResponse> findFilteredUsers(@Param("term") String searchQuery,
+                                                 Pageable pageable);
 
     <T> Optional<T> findByUsername(String username, Class<T> type);
 
-    <T> Optional<T> findByUsernameIgnoreCase(String username, Class<T> type);
+    Optional<User> findByUsername(String username);
 
     boolean existsByUsernameIgnoreCase(String username);
-
-    boolean existsByEmail(String email);
-
-    Optional<User> findByUsernameOrEmail(String username, String email);
 }

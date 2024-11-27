@@ -1,6 +1,6 @@
 package com.ditod.notes.web.note_image;
 
-import com.ditod.notes.domain.exception.EntityNotFoundException;
+import com.ditod.notes.domain.exception.EntityDoesNotExistException;
 import com.ditod.notes.domain.note_image.NoteImage;
 import com.ditod.notes.domain.note_image.NoteImageRepository;
 import com.ditod.notes.utils.ImageUtils;
@@ -29,7 +29,7 @@ public class NoteImageController {
     @GetMapping("/{imageId}")
     ResponseEntity<byte[]> getNoteImage(@PathVariable UUID imageId) throws SQLException {
         NoteImage userImage = noteImageRepository.findById(imageId)
-                                                 .orElseThrow(() -> new EntityNotFoundException("note image", imageId));
+                                                 .orElseThrow(() -> new EntityDoesNotExistException("note image", imageId));
 
         return ResponseEntity.ok().headers(
                 imageUtils.getImageResponseHeaders(userImage.getId(), userImage.getContentType(),
