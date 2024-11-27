@@ -44,7 +44,7 @@ export function Icon({
 }) {
   if (children) {
     return (
-      <span className={`inline-flex gap-2 ${childrenSizeClassName[size]}`}>
+      <span className={`inline-flex ${childrenSizeClassName[size]}`}>
         <Icon name={name} size={size} className={className} {...props} />
         {children}
       </span>

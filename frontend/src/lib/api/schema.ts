@@ -4,1057 +4,1122 @@
  */
 
 export interface paths {
-    "/users/{username}/notes/{noteId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getNote"];
-        put: operations["updateNote"];
-        post?: never;
-        delete: operations["deleteNote"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  "/users/{username}/notes/{noteId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/users/{username}/notes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["allNotes"];
-        put?: never;
-        post: operations["createNote"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["getNote"];
+    put: operations["updateNote"];
+    post?: never;
+    delete: operations["deleteNote"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/users/{username}/notes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/users/me/change-password": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["changePassword"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["allNotes"];
+    put?: never;
+    post: operations["createNote"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/user-images/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/users/me/change-email": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["changeEmail"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["updateOrCreateUserImage"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/auth/signup": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/user-images/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["updateOrCreateUserImage"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["signup"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/auth/logout": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/verify": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["verify"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["logout"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/auth/login": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/signup": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["signup"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["login"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/users": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/reset-password": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getResetPasswordUsername"];
-        put?: never;
-        post: operations["resetPassword"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["listUsers"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/users/{username}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/onboarding": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getOnboardEmail"];
-        put?: never;
-        post: operations["onboard"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["getUser"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/users/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/logout": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["logout"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["getMe"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/user-images/{imageId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["login"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["getUserImage"];
+    put?: never;
+    post?: never;
+    delete: operations["delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/note-images/{imageId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/forgot-password": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["forgotPassword"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/users/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getMe"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["updateMe"];
-        trace?: never;
-    };
-    "/users": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listUsers"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/users/{username}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getUser"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/user-images/{imageId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getUserImage"];
-        put?: never;
-        post?: never;
-        delete: operations["delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/note-images/{imageId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getNoteImage"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+    get: operations["getNoteImage"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        NoteImageRequest: {
-            /** Format: uuid */
-            id?: string;
-            altText?: string;
-            /** Format: binary */
-            file?: string;
-        };
-        NoteRequest: {
-            title: string;
-            content: string;
-            images?: components["schemas"]["NoteImageRequest"][];
-        };
-        GrantedAuthority: {
-            authority?: string;
-        };
-        Note: {
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** Format: uuid */
-            id?: string;
-            title: string;
-            content: string;
-            owner: components["schemas"]["User"];
-            images: components["schemas"]["NoteImage"][];
-        };
-        NoteImage: {
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** Format: uuid */
-            id: string;
-            altText?: string;
-            note: components["schemas"]["Note"];
-        };
-        Permission: {
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** Format: uuid */
-            id?: string;
-            action: string;
-            entity: string;
-            access: string;
-            description: string;
-            roles?: components["schemas"]["Role"][];
-            authority?: string;
-        };
-        Role: {
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** Format: uuid */
-            id?: string;
-            name: string;
-            description: string;
-            users: components["schemas"]["User"][];
-            permissions: components["schemas"]["Permission"][];
-        };
-        User: {
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** Format: uuid */
-            id?: string;
-            email: string;
-            username: string;
-            name?: string;
-            notes: components["schemas"]["Note"][];
-            image?: components["schemas"]["UserImage"];
-            roles: components["schemas"]["Role"][];
-            enabled?: boolean;
-            accountNonExpired?: boolean;
-            accountNonLocked?: boolean;
-            credentialsNonExpired?: boolean;
-            authorities?: components["schemas"]["GrantedAuthority"][];
-        };
-        UserImage: {
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** Format: uuid */
-            id?: string;
-            altText?: string;
-            contentType: string;
-            /** Format: byte */
-            blob: string;
-            user?: components["schemas"]["User"];
-        };
-        ChangePasswordRequest: {
-            currentPassword: string;
-            newPassword: string;
-            confirmNewPassword: string;
-        };
-        ProblemDetail: {
-            /** Format: uri */
-            type?: string;
-            title?: string;
-            /** Format: int32 */
-            status?: number;
-            detail?: string;
-            /** Format: uri */
-            instance?: string;
-            properties?: {
-                [key: string]: Record<string, never>;
-            };
-        };
-        ChangeEmailRequest: {
-            email: string;
-        };
-        VerifyRequestParams: {
-            code?: string;
-            /** @enum {string} */
-            type?: VerifyRequestParamsType;
-            target?: string;
-        };
-        SignupRequest: {
-            email: string;
-        };
-        ResetPasswordRequest: {
-            password: string;
-            confirmPassword: string;
-        };
-        AuthUserDto: {
-            roles?: components["schemas"]["RoleSummary"][];
-            name?: string;
-            /** Format: uuid */
-            id: string;
-            username: string;
-            image?: components["schemas"]["UserImageSummary"];
-            email: string;
-        };
-        AuthUserResponse: {
-            user?: components["schemas"]["AuthUserDto"];
-        };
-        PermissionSummary: {
-            access?: string;
-            action?: string;
-            entity?: string;
-        };
-        RoleSummary: {
-            name?: string;
-            permissions?: components["schemas"]["PermissionSummary"][];
-        };
-        UserImageSummary: {
-            /** Format: uuid */
-            id: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        OnboardingRequest: {
-            username: string;
-            name: string;
-            email: string;
-            password: string;
-            confirmPassword: string;
-            agreeToTermsOfServiceAndPrivacyPolicy?: boolean;
-        };
-        LoginRequest: {
-            username: string;
-            password: string;
-            remember?: boolean;
-        };
-        ForgotPasswordRequest: {
-            usernameOrEmail: string;
-        };
-        UpdateNamesRequest: {
-            username: string;
-            name?: string;
-        };
-        UserFilteredResponse: {
-            name?: string;
-            /** Format: uuid */
-            id: string;
-            username: string;
-            /** Format: uuid */
-            imageId?: string;
-        };
-        UserSummaryResponse: {
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            name?: string;
-            /** Format: uuid */
-            id: string;
-            username: string;
-            image?: components["schemas"]["UserImageSummary"];
-            email: string;
-        };
-        NoteSummary: {
-            title: string;
-            /** Format: uuid */
-            id: string;
-        };
-        UserNotesResponse: {
-            notes: components["schemas"]["NoteSummary"][];
-            name?: string;
-            /** Format: uuid */
-            id: string;
-            username: string;
-            image?: components["schemas"]["UserImageSummary"];
-            email: string;
-        };
-        NoteSummaryResponse: {
-            title: string;
-            /** Format: uuid */
-            id: string;
-            content: string;
-            owner: components["schemas"]["OwnerSummary"];
-            images: components["schemas"]["NoteImage"][];
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        OwnerSummary: {
-            /** Format: uuid */
-            id: string;
-        };
-        ResetPasswordResponse: {
-            username?: string;
-        };
-        OnboardingResponse: {
-            email: string;
-        };
+  schemas: {
+    ProblemDetail: {
+      /** Format: uri */
+      type?: string;
+      title?: string;
+      /** Format: int32 */
+      status?: number;
+      detail?: string;
+      /** Format: uri */
+      instance?: string;
+      properties?: {
+        [key: string]: Record<string, never>;
+      };
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    NoteImageRequest: {
+      /** Format: uuid */
+      id?: string;
+      altText?: string;
+      /** Format: binary */
+      file?: string;
+    };
+    NoteRequest: {
+      title: string;
+      content: string;
+      images?: components["schemas"]["NoteImageRequest"][];
+    };
+    Note: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: uuid */
+      id?: string;
+      title: string;
+      content: string;
+      owner: components["schemas"]["User"];
+      images?: components["schemas"]["NoteImage"][];
+    };
+    NoteImage: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: uuid */
+      id?: string;
+      altText: string;
+      contentType: string;
+      note: components["schemas"]["Note"];
+    };
+    Permission: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: uuid */
+      id?: string;
+      action: string;
+      entity: string;
+      access: string;
+      description: string;
+      roles?: components["schemas"]["Role"][];
+      authority?: string;
+    };
+    Role: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: uuid */
+      id?: string;
+      name: string;
+      description: string;
+      users?: components["schemas"]["User"][];
+      permissions: components["schemas"]["Permission"][];
+    };
+    User: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: uuid */
+      id?: string;
+      email: string;
+      username: string;
+      name: string;
+      notes?: components["schemas"]["Note"][];
+      image?: components["schemas"]["UserImage"];
+      roles: components["schemas"]["Role"][];
+    };
+    UserImage: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: uuid */
+      id?: string;
+      altText?: string;
+      contentType: string;
+      /** Format: byte */
+      blob: string;
+      user?: components["schemas"]["User"];
+    };
+    SignupRequest: {
+      username: string;
+      name: string;
+      email: string;
+      password: string;
+      confirmPassword: string;
+      agreeToTermsOfServiceAndPrivacyPolicy?: boolean;
+    };
+    AuthUserDto: {
+      roles?: components["schemas"]["RoleSummary"][];
+      name?: string;
+      /** Format: uuid */
+      id: string;
+      username: string;
+      image?: components["schemas"]["UserImageSummary"];
+      email: string;
+    };
+    AuthUserResponse: {
+      user?: components["schemas"]["AuthUserDto"];
+    };
+    PermissionSummary: {
+      access?: string;
+      action?: string;
+      entity?: string;
+    };
+    RoleSummary: {
+      name?: string;
+      permissions?: components["schemas"]["PermissionSummary"][];
+    };
+    UserImageSummary: {
+      /** Format: uuid */
+      id: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    LoginRequest: {
+      username: string;
+      password: string;
+      remember?: boolean;
+    };
+    UserFilteredResponse: {
+      name?: string;
+      /** Format: uuid */
+      id: string;
+      username: string;
+      /** Format: uuid */
+      imageId?: string;
+    };
+    UserSummaryResponse: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      name?: string;
+      /** Format: uuid */
+      id: string;
+      username: string;
+      image?: components["schemas"]["UserImageSummary"];
+      email: string;
+    };
+    NoteSummary: {
+      title: string;
+      /** Format: uuid */
+      id: string;
+    };
+    UserNotesResponse: {
+      notes: components["schemas"]["NoteSummary"][];
+      name?: string;
+      /** Format: uuid */
+      id: string;
+      username: string;
+      image?: components["schemas"]["UserImageSummary"];
+      email: string;
+    };
+    NoteSummaryResponse: {
+      title: string;
+      /** Format: uuid */
+      id: string;
+      content: string;
+      owner: components["schemas"]["OwnerSummary"];
+      images: components["schemas"]["NoteImage"][];
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    OwnerSummary: {
+      /** Format: uuid */
+      id: string;
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    getNote: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                noteId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["NoteSummaryResponse"];
-                };
-            };
-        };
+  getNote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        noteId: string;
+      };
+      cookie?: never;
     };
-    updateNote: {
-        parameters: {
-            query: {
-                newNote: components["schemas"]["NoteRequest"];
-            };
-            header?: never;
-            path: {
-                username: string;
-                noteId: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["Note"];
-                };
-            };
+        content: {
+          "*/*": components["schemas"]["NoteSummaryResponse"];
         };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
     };
-    deleteNote: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                username: string;
-                noteId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  updateNote: {
+    parameters: {
+      query: {
+        newNote: components["schemas"]["NoteRequest"];
+      };
+      header?: never;
+      path: {
+        username: string;
+        noteId: string;
+      };
+      cookie?: never;
     };
-    allNotes: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                username: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["UserNotesResponse"];
-                };
-            };
+        content: {
+          "*/*": components["schemas"]["Note"];
         };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
     };
-    createNote: {
-        parameters: {
-            query: {
-                note: components["schemas"]["NoteRequest"];
-            };
-            header?: never;
-            path: {
-                username: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["Note"];
-                };
-            };
-        };
+  };
+  deleteNote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        username: string;
+        noteId: string;
+      };
+      cookie?: never;
     };
-    changePassword: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ChangePasswordRequest"];
-            };
+        content?: never;
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ProblemDetail"];
-                };
-            };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
         };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
     };
-    changeEmail: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ChangeEmailRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  allNotes: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        username: string;
+      };
+      cookie?: never;
     };
-    updateOrCreateUserImage: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** Format: binary */
-                    image: string;
-                };
-            };
+        content: {
+          "*/*": components["schemas"]["UserNotesResponse"];
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
     };
-    verify: {
-        parameters: {
-            query: {
-                verifyRequest: components["schemas"]["VerifyRequestParams"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ProblemDetail"];
-                };
-            };
-        };
+  };
+  createNote: {
+    parameters: {
+      query: {
+        note: components["schemas"]["NoteRequest"];
+      };
+      header?: never;
+      path: {
+        username: string;
+      };
+      cookie?: never;
     };
-    signup: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SignupRequest"];
-            };
+        content: {
+          "*/*": components["schemas"]["Note"];
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
     };
-    getResetPasswordUsername: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ResetPasswordResponse"];
-                };
-            };
-        };
+  };
+  updateOrCreateUserImage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    resetPassword: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: {
+      content: {
+        "application/json": {
+          /** Format: binary */
+          image: string;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ResetPasswordRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["AuthUserResponse"];
-                };
-            };
-        };
+      };
     };
-    getOnboardEmail: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["OnboardingResponse"];
-                };
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
     };
-    onboard: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["OnboardingRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["AuthUserResponse"];
-                };
-            };
-        };
+  };
+  signup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    logout: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SignupRequest"];
+      };
     };
-    login: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LoginRequest"];
-            };
+        content: {
+          "*/*": components["schemas"]["AuthUserResponse"];
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["AuthUserResponse"];
-                };
-            };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
     };
-    forgotPassword: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ForgotPasswordRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  logout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    getMe: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["AuthUserResponse"];
-                };
-            };
+        content?: never;
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
     };
-    updateMe: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateNamesRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  login: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    listUsers: {
-        parameters: {
-            query?: {
-                filter?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["UserFilteredResponse"][];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LoginRequest"];
+      };
     };
-    getUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                username: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["UserSummaryResponse"];
-                };
-            };
+        content: {
+          "*/*": components["schemas"]["AuthUserResponse"];
         };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
     };
-    getUserImage: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                imageId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": string;
-                };
-            };
-        };
+  };
+  listUsers: {
+    parameters: {
+      query?: {
+        filter?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                imageId: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
+        content: {
+          "*/*": components["schemas"]["UserFilteredResponse"][];
         };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
     };
-    getNoteImage: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                imageId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": string;
-                };
-            };
-        };
+  };
+  getUser: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        username: string;
+      };
+      cookie?: never;
     };
-}
-export enum VerifyRequestParamsType {
-    RESET_PASSWORD = "RESET_PASSWORD",
-    ONBOARDING = "ONBOARDING",
-    CHANGE_EMAIL = "CHANGE_EMAIL"
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["UserSummaryResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+    };
+  };
+  getMe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["AuthUserResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+    };
+  };
+  getUserImage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        imageId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+    };
+  };
+  delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        imageId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+    };
+  };
+  getNoteImage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        imageId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["ProblemDetail"];
+        };
+      };
+    };
+  };
 }

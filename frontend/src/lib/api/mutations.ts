@@ -4,13 +4,12 @@ import {
   deleteNote,
   getCsrfTokenHeader,
   newNote,
-  postChangeEmail,
   postLogin,
   postLogout,
-  postOnboarding,
+  postSignup,
   putNote,
 } from ".";
-import { ApiSchema, type ApiProblemDetail } from "./apiSchema";
+import { type ApiProblemDetail } from "./apiSchema";
 import { authUserQuery, noteQuery, notesQuery } from "./queryOptions";
 
 export const useLoginMutation = () => {
@@ -37,10 +36,10 @@ export const useLogoutMutation = () => {
   });
 };
 
-export const useOnboardingMutation = () => {
+export const useSignupMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: postOnboarding,
+    mutationFn: postSignup,
     onSuccess(data) {
       queryClient.setQueryData(authUserQuery().queryKey, data);
     },
@@ -90,12 +89,6 @@ export const useNewNoteMutation = (username: string) => {
   });
 };
 
-export const useChangeEmailMutation = () => {
-  return useMutation({
-    mutationFn: postChangeEmail,
-  });
-};
-
 export const useDeleteUserImageMutation = () => {
   return useMutation({
     mutationFn: (imageId?: string) =>
@@ -110,26 +103,6 @@ export const useCreateUserImageMutation = () => {
     mutationFn: (formData: FormData) =>
       api.post<void>("user-images/", {
         body: formData,
-        headers: getCsrfTokenHeader(),
-      }),
-  });
-};
-
-export const useUpdatePasswordMutation = () => {
-  return useMutation({
-    mutationFn: (changePasswordRequest: ApiSchema["ChangePasswordRequest"]) =>
-      api.post<void>("users/me/change-password", {
-        json: changePasswordRequest,
-        headers: getCsrfTokenHeader(),
-      }),
-  });
-};
-
-export const useUpdateUserNamesMutation = () => {
-  return useMutation({
-    mutationFn: (updateUserNames: ApiSchema["UpdateNamesRequest"]) =>
-      api.patch<void>("users/me", {
-        json: updateUserNames,
         headers: getCsrfTokenHeader(),
       }),
   });

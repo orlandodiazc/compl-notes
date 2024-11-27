@@ -46,12 +46,6 @@ export function fetchNote({
   return api.get(`users/${username}/notes/${noteId}`).json();
 }
 
-export function fetchOnboardingEmail(): Promise<
-  ApiSchema["OnboardingResponse"]
-> {
-  return api.get("auth/onboarding").json();
-}
-
 export async function deleteNote({
   username,
   noteId,
@@ -111,38 +105,13 @@ export async function postLogout() {
   });
 }
 
-export function postOnboarding(
-  onboardRequest: ApiSchema["OnboardingRequest"]
+export function postSignup(
+  onboardRequest: ApiSchema["SignupRequest"]
 ): Promise<ApiSchema["AuthUserResponse"]> {
   return api
-    .post("auth/onboarding", {
+    .post("auth/signup", {
       json: onboardRequest,
       headers: getCsrfTokenHeader(),
     })
     .json();
-}
-
-export async function postSignup(signupRequest: ApiSchema["SignupRequest"]) {
-  await api.post("auth/signup", {
-    json: signupRequest,
-    headers: getCsrfTokenHeader(),
-  });
-}
-
-export async function postVerify(
-  VerifyRequestParams: ApiSchema["VerifyRequestParams"]
-) {
-  await api.post("auth/verify", {
-    searchParams: VerifyRequestParams,
-    headers: getCsrfTokenHeader(),
-  });
-}
-
-export async function postChangeEmail(
-  changeEmailRequest: ApiSchema["ChangeEmailRequest"]
-) {
-  await api.post("users/me/change-email", {
-    json: changeEmailRequest,
-    headers: getCsrfTokenHeader(),
-  });
 }

@@ -234,7 +234,7 @@ function ImageChooser({ index }: { index: number }) {
                       <div className="relative">
                         <img
                           src={previewImage}
-                          alt={form.getValues().images?.[index].altText}
+                          alt={form.getValues().images[index]?.altText}
                           className="h-32 w-32 rounded-lg object-cover"
                         />
                         {existingImage ? null : (

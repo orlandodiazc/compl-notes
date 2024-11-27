@@ -1,4 +1,5 @@
 import { requireAnonymous } from "@/auth/helpers";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -9,10 +10,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { StatusButton } from "@/components/ui/status-button";
-import { postSignup } from "@/lib/api";
-import { VerifyRequestParamsType } from "@/lib/api/schema";
+import { useSignupMutation } from "@/lib/api/mutations";
 import { useZodForm } from "@/lib/misc";
-import { useMutation } from "@tanstack/react-query";
+import {
+  EmailSchema,
+  NameSchema,
+  PasswordSchema,
+  UsernameSchema,
+} from "@/lib/validation/user";
 import { createFileRoute } from "@tanstack/react-router";
 import { Helmet } from "react-helmet-async";
 import { z } from "zod";
@@ -21,68 +26,76 @@ export const Route = createFileRoute("/signup")({
   beforeLoad: ({ context }) => {
     requireAnonymous(context.authUser);
   },
-  component: Signup,
+  component: SignupRoute,
 });
 
-const EmailSchema = z
-  .string({ required_error: "Email is required" })
-  .email({ message: "Email is invalid" })
-  .min(3, { message: "Email is too short" })
-  .max(100, { message: "Email is too long" })
-  // users can type the email in any case, but we store it in lowercase
-  .transform((value) => value.toLowerCase());
+const SignupFormSchema = z
+  .object({
+    username: UsernameSchema,
+    name: NameSchema,
+    email: EmailSchema,
+    password: PasswordSchema,
+    confirmPassword: PasswordSchema,
+    agreeToTermsOfServiceAndPrivacyPolicy: z
+      .boolean()
+      .refine(
+        (value) => value === true,
+        "You must agree to the terms of service and privacy policy"
+      ),
+  })
+  .superRefine(({ confirmPassword, password }, ctx) => {
+    if (confirmPassword !== password) {
+      ctx.addIssue({
+        path: ["confirmPassword"],
+        code: "custom",
+        message: "The passwords must match",
+      });
+    }
+  });
 
-const SignupSchema = z.object({
-  email: EmailSchema,
-});
+type SignupForm = z.infer<typeof SignupFormSchema>;
 
-type SignupForm = z.infer<typeof SignupSchema>;
-
-export default function Signup() {
+export default function SignupRoute() {
+  const { mutate, status } = useSignupMutation();
   const navigate = Route.useNavigate();
 
   const form = useZodForm({
-    schema: SignupSchema,
+    schema: SignupFormSchema,
     defaultValues: {
       email: "",
+      username: "",
+      name: "",
+      password: "",
+      confirmPassword: "",
+      agreeToTermsOfServiceAndPrivacyPolicy: false,
     },
-  });
-
-  const { mutate, status } = useMutation({
-    mutationKey: ["signup"],
-    mutationFn: postSignup,
   });
 
   function onSubmit(values: SignupForm) {
     mutate(values, {
       onSuccess() {
-        navigate({
-          to: "/verify",
-          search: {
-            target: values.email,
-            type: VerifyRequestParamsType.ONBOARDING,
-          },
-        });
+        navigate({ to: "/" });
       },
-      onError() {
-        form.setError("root", { message: "Something went wrong" });
-        // expected error is a email already exists exception
+      onError(error) {
+        error.errors &&
+          form.setError("username", { message: error.errors["username"] });
       },
+      // user or email already exist errors
     });
   }
 
   return (
-    <div className="container flex flex-col justify-center pb-32 pt-20">
+    <div className="container flex min-h-full flex-col justify-center pb-32 pt-20">
       <Helmet>
-        <title>Sign Up | Epic Notes</title>
+        <title>Setup Epic Notes Account</title>
       </Helmet>
-      <div className="text-center">
-        <h1 className="text-h1">Let's start your journey!</h1>
-        <p className="mt-3 text-body-md text-muted-foreground">
-          Please enter your email.
-        </p>
-      </div>
-      <div className="mx-auto mt-16 min-w-[368px] max-w-sm">
+      <div className="mx-auto w-full max-w-lg">
+        <div className="flex flex-col gap-3 text-center">
+          <h1 className="text-h1">Welcome aboard!</h1>
+          <p className="text-body-md text-muted-foreground">
+            Please enter your details.
+          </p>
+        </div>
         <Form {...form}>
           <form
             method="POST"
@@ -107,14 +120,104 @@ export default function Signup() {
                 </FormItem>
               )}
             />
-            <StatusButton
-              className="w-full"
-              status={status}
-              type="submit"
-              disabled={status === "pending"}
-            >
-              Submit
-            </StatusButton>
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      autoComplete="username"
+                      className="lowercase"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} autoComplete="name" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      autoComplete="new-password"
+                      type="password"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm password</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      autoComplete="new-password"
+                      type="password"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="agreeToTermsOfServiceAndPrivacyPolicy"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center space-x-2 mb-3">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel>
+                      Do you agree to our Terms of Service and Privacy Policy?
+                    </FormLabel>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex items-center justify-between gap-6">
+              <StatusButton
+                className="w-full"
+                status={status}
+                type="submit"
+                disabled={status === "pending"}
+              >
+                Create an account
+              </StatusButton>
+            </div>
           </form>
         </Form>
       </div>

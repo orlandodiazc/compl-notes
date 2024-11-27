@@ -5,7 +5,7 @@ import com.ditod.notes.domain.user.User;
 import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user.UserService;
 import com.ditod.notes.web.auth.dto.LoginRequest;
-import com.ditod.notes.web.auth.dto.OnboardingRequest;
+import com.ditod.notes.web.auth.dto.SignupRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,59 +24,43 @@ import java.util.List;
 
 @Service
 public class AuthService {
-
     private final PasswordEncoder passwordEncoder;
-
     private final RoleRepository roleRepository;
-
-    private final UserRepository userRepository;
-
     private final UserService userService;
-
     private final AuthenticationManager authenticationManager;
-
-    private final SecurityContextHolderStrategy securityContextHolderStrategy =
-            SecurityContextHolder.getContextHolderStrategy();
-
+    private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
-
     private final SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
-    public AuthService(PasswordEncoder passwordEncoder, RoleRepository roleRepository, UserRepository userRepository,
+    public AuthService(PasswordEncoder passwordEncoder, RoleRepository roleRepository,
                        UserService userService, AuthenticationManager authenticationManager) {
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
+
         this.userService = userService;
         this.authenticationManager = authenticationManager;
     }
 
-    public void authenticate(LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
+    public void authenticate(LoginRequest loginRequest, HttpServletRequest request,
+                             HttpServletResponse response) {
         Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(
                 loginRequest.username(), loginRequest.password());
-        Authentication authentication = this.authenticationManager.authenticate(authenticationRequest);
+        Authentication authentication = this.authenticationManager.authenticate(
+                authenticationRequest);
         SecurityContext context = securityContextHolderStrategy.createEmptyContext();
         context.setAuthentication(authentication);
         securityContextHolderStrategy.setContext(context);
         securityContextRepository.saveContext(context, request, response);
     }
 
-    public void onboard(OnboardingRequest user) {
-        userRepository.save(
-                new User(user.email(), user.username(), passwordEncoder.encode(user.password()), user.name(),
-                         List.of(roleRepository.findByName("ROLE_USER")), null));
+    public void onboard(SignupRequest user) {
+        userService.save(
+                new User(user.email(), user.username(), passwordEncoder.encode(user.password()),
+                         user.name(), List.of(roleRepository.findByName("ROLE_USER")), null));
+
     }
 
     public void logout(HttpServletRequest request) {
         logoutHandler.logout(request, null, null);
-    }
-
-    public void updatePassword(User user, String newPassword) {
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-    }
-
-    public boolean verifyPassword(User user, String password) {
-        return passwordEncoder.matches(password, user.getPassword());
     }
 }

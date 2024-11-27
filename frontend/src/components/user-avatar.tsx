@@ -6,7 +6,8 @@ export default function UserAvatar({
   user,
   className,
 }: {
-  user?: ApiSchema["AuthUserResponse"]["user"] &
+  user?: Omit<ApiSchema["AuthUserDto"], "email"> &
+    Partial<Pick<ApiSchema["AuthUserDto"], "email">> &
     ApiSchema["UserFilteredResponse"];
   className?: string;
 }) {

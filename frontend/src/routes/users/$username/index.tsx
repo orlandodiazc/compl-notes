@@ -81,9 +81,6 @@ export default function UserProfileRoute() {
                     My notes
                   </Link>
                 </Button>
-                <Button asChild>
-                  <Link to="/settings/profile">Edit profile</Link>
-                </Button>
               </>
             ) : (
               <Button asChild>

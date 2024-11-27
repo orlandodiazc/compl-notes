@@ -4,7 +4,6 @@ import {
   fetchFilteredUsers,
   fetchNote,
   fetchNotes,
-  fetchOnboardingEmail,
   fetchUser,
 } from ".";
 
@@ -39,8 +38,3 @@ export const noteQuery = (params: { username: string; noteId: string }) =>
     queryKey: ["users", "notes", params],
     queryFn: () => fetchNote(params),
   });
-
-export const onboardingEmailQuery = queryOptions({
-  queryKey: ["onboardingEmail"],
-  queryFn: fetchOnboardingEmail,
-});

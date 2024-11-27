@@ -22,7 +22,7 @@ export function SearchBar({
     (event: ChangeEvent<HTMLInputElement>) => {
       handleChange(event.target.value || undefined);
     },
-    400,
+    400
   );
   return (
     <div className="relative">
