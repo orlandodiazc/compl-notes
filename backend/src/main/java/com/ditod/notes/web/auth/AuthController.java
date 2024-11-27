@@ -8,7 +8,6 @@ import com.ditod.notes.web.user.dto.AuthUserResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,29 +26,26 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    ResponseEntity<AuthUserResponse> login(@RequestBody LoginRequest userRequest,
-                                           HttpServletRequest request,
-                                           HttpServletResponse response) {
+    AuthUserResponse login(@RequestBody LoginRequest userRequest, HttpServletRequest request,
+                           HttpServletResponse response) {
         authService.authenticate(userRequest, request, response);
-        return ResponseEntity.ok().body(new AuthUserResponse(
-                userService.findByUsername(userRequest.username(), AuthUserDto.class)));
+        return new AuthUserResponse(
+                userService.findByUsername(userRequest.username(), AuthUserDto.class));
     }
 
     @PostMapping("/logout")
-    ResponseEntity<Void> logout(HttpServletRequest request) {
+    void logout(HttpServletRequest request) {
         authService.logout(request);
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signup")
-    ResponseEntity<AuthUserResponse> signup(@RequestBody SignupRequest signupRequest,
-                                            HttpServletRequest request,
-                                            HttpServletResponse response) {
+    AuthUserResponse signup(@RequestBody SignupRequest signupRequest, HttpServletRequest request,
+                            HttpServletResponse response) {
         authService.onboard(signupRequest);
         authService.authenticate(
                 new LoginRequest(signupRequest.username(), signupRequest.password(), false),
                 request, response);
-        return ResponseEntity.ok().body(new AuthUserResponse(
-                userService.findByUsername(signupRequest.username(), AuthUserDto.class)));
+        return new AuthUserResponse(
+                userService.findByUsername(signupRequest.username(), AuthUserDto.class));
     }
 }

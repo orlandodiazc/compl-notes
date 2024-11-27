@@ -9,7 +9,6 @@ import com.ditod.notes.web.user.dto.UserFilteredResponse;
 import com.ditod.notes.web.user.dto.UserSummaryResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,26 +32,24 @@ public class UserController {
     }
 
     @GetMapping
-    ResponseEntity<List<UserFilteredResponse>> listUsers(
+    List<UserFilteredResponse> listUsers(
             @RequestParam(required = false, defaultValue = "") String filter) {
-        return ResponseEntity.ok(userService.findFilteredUsers(filter));
+        return userService.findFilteredUsers(filter);
     }
 
     @GetMapping("/{username}")
-    ResponseEntity<UserSummaryResponse> getUser(@PathVariable String username) {
-        return ResponseEntity.ok(userService.findByUsername(username, UserSummaryResponse.class));
+    UserSummaryResponse getUser(@PathVariable String username) {
+        return userService.findByUsername(username, UserSummaryResponse.class);
     }
 
     @GetMapping("/me")
-    ResponseEntity<AuthUserResponse> getMe(Authentication auth, HttpServletRequest request) {
-        if (auth == null || !auth.isAuthenticated())
-            return ResponseEntity.ok(new AuthUserResponse(null));
+    AuthUserResponse getMe(Authentication auth, HttpServletRequest request) {
+        if (auth == null || !auth.isAuthenticated()) return new AuthUserResponse(null);
         Optional<AuthUserDto> user = userRepository.findByUsername(auth.getName(),
                                                                    AuthUserDto.class);
-        return user.map(authUserDto -> ResponseEntity.ok(new AuthUserResponse(authUserDto)))
-                   .orElseGet(() -> {
-                       authService.logout(request);
-                       return ResponseEntity.ok(new AuthUserResponse(null));
-                   });
+        return user.map(AuthUserResponse::new).orElseGet(() -> {
+            authService.logout(request);
+            return new AuthUserResponse(null);
+        });
     }
 }
