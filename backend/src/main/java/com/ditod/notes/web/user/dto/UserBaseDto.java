@@ -17,7 +17,6 @@ public interface UserBaseDto {
     @NotNull
     String getEmail();
 
-    @NotNull
     String getName();
 
     UserImageSummary getImage();

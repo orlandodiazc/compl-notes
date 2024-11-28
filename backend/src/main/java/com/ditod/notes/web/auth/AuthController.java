@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,19 +36,20 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    void logout(HttpServletRequest request) {
+    ResponseEntity<Void> logout(HttpServletRequest request) {
         authService.logout(request);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signup")
-    AuthUserResponse signup(@Valid @RequestBody SignupRequest signupRequest,
-                            HttpServletRequest request,
-                            HttpServletResponse response) {
+    ResponseEntity<AuthUserResponse> signup(@Valid @RequestBody SignupRequest signupRequest,
+                                            HttpServletRequest request,
+                                            HttpServletResponse response) {
         authService.onboard(signupRequest);
         authService.authenticate(
                 new LoginRequest(signupRequest.username(), signupRequest.password(), false),
                 request, response);
-        return new AuthUserResponse(
-                userService.findByUsername(signupRequest.username(), AuthUserDto.class));
+        return ResponseEntity.ok().body(new AuthUserResponse(
+                userService.findByUsername(signupRequest.username(), AuthUserDto.class)));
     }
 }

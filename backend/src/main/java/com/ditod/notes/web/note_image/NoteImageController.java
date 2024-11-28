@@ -5,7 +5,6 @@ import com.ditod.notes.domain.note_image.NoteImage;
 import com.ditod.notes.domain.note_image.NoteImageRepository;
 import com.ditod.notes.utils.ImageUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,12 +26,12 @@ public class NoteImageController {
     }
 
     @GetMapping("/{imageId}")
-    ResponseEntity<byte[]> getNoteImage(@PathVariable UUID imageId, HttpServletResponse response) {
-        NoteImage userImage = noteImageRepository.findById(imageId).orElseThrow(
-                () -> new EntityDoesNotExistException("note image", imageId));
+    ResponseEntity<byte[]> getNoteImage(@PathVariable UUID imageId) {
+        NoteImage userImage = noteImageRepository.findById(imageId)
+                                                 .orElseThrow(() -> new EntityDoesNotExistException("note image", imageId));
+
         return ResponseEntity.ok().headers(
-                                     imageUtils.getImageResponseHeaders(userImage.getId(), userImage.getContentType(),
-                                                                        userImage.getBlob().length))
-                             .body(userImage.getBlob());
+                imageUtils.getImageResponseHeaders(userImage.getId(), userImage.getContentType(),
+                                                   userImage.getBlob().length)).body(userImage.getBlob());
     }
 }

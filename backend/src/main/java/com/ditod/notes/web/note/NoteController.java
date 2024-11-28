@@ -13,6 +13,7 @@ import com.ditod.notes.web.user.dto.UserNotesResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,38 +35,43 @@ public class NoteController {
     }
 
     @GetMapping
-    UserNotesResponse allNotes(@PathVariable String username) {
-        return noteService.findAll(username);
+    ResponseEntity<UserNotesResponse> allNotes(@PathVariable String username) {
+        return ResponseEntity.ok(noteService.findAll(username));
     }
 
     @GetMapping("/{noteId}")
-    NoteSummaryResponse getNote(@PathVariable UUID noteId, @PathVariable String username) {
+    ResponseEntity<NoteSummaryResponse> getNote(@PathVariable UUID noteId,
+                                                @PathVariable String username) {
         if (!userService.existsByUsernameIgnoreCase(username)) {
             throw new UserDoesNotExistException(username);
         }
-        return noteService.findNoteSummaryById(noteId);
+        return ResponseEntity.ok(noteService.findNoteSummaryById(noteId));
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    Note createNote(@Valid @ModelAttribute NoteRequest note, @PathVariable String username) {
+    ResponseEntity<Note> createNote(@Valid @ModelAttribute NoteRequest note,
+                                    @PathVariable String username) {
         User user = userService.findByUsername(username);
         Note savedNote = noteService.save(new Note(note.getTitle(), note.getContent(), user));
         List<NoteImage> images = noteService.convertMultipartFilesToNoteImage(note.getImages(),
                                                                               savedNote);
         noteImageRepository.saveAll(images);
-        return savedNote;
+        return ResponseEntity.ok(savedNote);
     }
 
     @DeleteMapping("/{noteId}")
-    void deleteNote(@PathVariable String username, @PathVariable UUID noteId) {
+    ResponseEntity<Void> deleteNote(@PathVariable String username, @PathVariable UUID noteId) {
         userService.findByUsername(username);
         noteService.deleteById(noteId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{noteId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    Note updateNote(@Valid @ModelAttribute NoteRequest newNote, @PathVariable String username,
-                    @PathVariable UUID noteId) {
+    ResponseEntity<Note> updateNote(@Valid @ModelAttribute NoteRequest newNote,
+                                    @PathVariable String username,
+                                    @PathVariable UUID noteId) {
         User owner = userService.findByUsername(username);
-        return noteService.updateNote(newNote, noteId, owner);
+        Note replacedOrNewNote = noteService.updateNote(newNote, noteId, owner);
+        return ResponseEntity.ok(replacedOrNewNote);
     }
 }
