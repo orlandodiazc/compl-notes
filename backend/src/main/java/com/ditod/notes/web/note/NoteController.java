@@ -1,6 +1,5 @@
 package com.ditod.notes.web.note;
 
-import com.ditod.notes.domain.exception.UserDoesNotExistException;
 import com.ditod.notes.domain.note.Note;
 import com.ditod.notes.domain.note.NoteService;
 import com.ditod.notes.domain.note_image.NoteImage;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/users/{username}/notes")
+@RequestMapping()
 @Tag(name = "note", description = "Access user notes")
 public class NoteController {
     private final NoteService noteService;
@@ -39,16 +38,12 @@ public class NoteController {
         return ResponseEntity.ok(noteService.findAll(username));
     }
 
-    @GetMapping("/{noteId}")
-    ResponseEntity<NoteSummaryResponse> getNote(@PathVariable UUID noteId,
-                                                @PathVariable String username) {
-        if (!userService.existsByUsernameIgnoreCase(username)) {
-            throw new UserDoesNotExistException(username);
-        }
+    @GetMapping("/notes/{noteId}")
+    ResponseEntity<NoteSummaryResponse> getNote(@PathVariable UUID noteId) {
         return ResponseEntity.ok(noteService.findNoteSummaryById(noteId));
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/users/{username}/notes", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<Note> createNote(@Valid @ModelAttribute NoteRequest note,
                                     @PathVariable String username) {
         User user = userService.findByUsername(username);
@@ -59,17 +54,15 @@ public class NoteController {
         return ResponseEntity.ok(savedNote);
     }
 
-    @DeleteMapping("/{noteId}")
-    ResponseEntity<Void> deleteNote(@PathVariable String username, @PathVariable UUID noteId) {
-        userService.findByUsername(username);
+    @DeleteMapping("notes/{noteId}")
+    ResponseEntity<Void> deleteNote(@PathVariable UUID noteId) {
         noteService.deleteById(noteId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(value = "/{noteId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/users/{username}/notes/{noteId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<Note> updateNote(@Valid @ModelAttribute NoteRequest newNote,
-                                    @PathVariable String username,
-                                    @PathVariable UUID noteId) {
+                                    @PathVariable String username, @PathVariable UUID noteId) {
         User owner = userService.findByUsername(username);
         Note replacedOrNewNote = noteService.updateNote(newNote, noteId, owner);
         return ResponseEntity.ok(replacedOrNewNote);

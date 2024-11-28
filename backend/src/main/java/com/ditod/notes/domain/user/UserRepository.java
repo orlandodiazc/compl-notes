@@ -30,6 +30,4 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     <T> Optional<T> findByUsername(String username, Class<T> type);
 
     Optional<User> findByUsername(String username);
-
-    boolean existsByUsernameIgnoreCase(String username);
 }
