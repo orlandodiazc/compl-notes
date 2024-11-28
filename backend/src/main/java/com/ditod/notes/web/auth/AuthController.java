@@ -8,6 +8,7 @@ import com.ditod.notes.web.user.dto.AuthUserResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    AuthUserResponse login(@RequestBody LoginRequest userRequest, HttpServletRequest request,
+    AuthUserResponse login(@Valid @RequestBody LoginRequest userRequest, HttpServletRequest request,
                            HttpServletResponse response) {
         authService.authenticate(userRequest, request, response);
         return new AuthUserResponse(
@@ -39,7 +40,8 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    AuthUserResponse signup(@RequestBody SignupRequest signupRequest, HttpServletRequest request,
+    AuthUserResponse signup(@Valid @RequestBody SignupRequest signupRequest,
+                            HttpServletRequest request,
                             HttpServletResponse response) {
         authService.onboard(signupRequest);
         authService.authenticate(
