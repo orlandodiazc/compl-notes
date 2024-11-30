@@ -33,7 +33,7 @@ public class NoteController {
         this.noteImageRepository = noteImageRepository;
     }
 
-    @GetMapping
+    @GetMapping(value = "/users/{username}/notes")
     ResponseEntity<UserNotesResponse> allNotes(@PathVariable String username) {
         return ResponseEntity.ok(noteService.findAll(username));
     }
@@ -54,7 +54,7 @@ public class NoteController {
         return ResponseEntity.ok(savedNote);
     }
 
-    @DeleteMapping("notes/{noteId}")
+    @DeleteMapping("/notes/{noteId}")
     ResponseEntity<Void> deleteNote(@PathVariable UUID noteId) {
         noteService.deleteById(noteId);
         return ResponseEntity.noContent().build();

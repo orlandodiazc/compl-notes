@@ -13,14 +13,14 @@ export const Route = createFileRoute(
 )({
   component: NoteRoute,
   loader: ({ params, context: { queryClient } }) => {
-    return queryClient.ensureQueryData(noteQuery(params));
+    return queryClient.ensureQueryData(noteQuery(params.noteId));
   },
 });
 
 export default function NoteRoute() {
   const params = Route.useParams();
   const navigate = Route.useNavigate();
-  const { data } = useSuspenseQuery(noteQuery(params));
+  const { data } = useSuspenseQuery(noteQuery(params.noteId));
   const { mutate, isPending } = useDeleteNoteMutation(params.username);
 
   const user = useAuthUser();
@@ -31,7 +31,7 @@ export default function NoteRoute() {
   );
   const displayBar = canDelete || isOwner;
   function handleDeleteClick() {
-    mutate(params, {
+    mutate(params.noteId, {
       onSuccess: () => {
         toast.success("Your note has been deleted!");
         navigate({

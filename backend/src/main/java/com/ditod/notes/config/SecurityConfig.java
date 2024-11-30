@@ -1,7 +1,7 @@
 package com.ditod.notes.config;
 
-import com.ditod.notes.security.protection.SpaCsrfTokenRequestHandler;
 import com.ditod.notes.security.JpaUserDetailsService;
+import com.ditod.notes.security.protection.SpaCsrfTokenRequestHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +34,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf((csrf) -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        var csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        csrfTokenRepository.setCookieCustomizer(c -> c.secure(true).path("/"));
+        http.csrf((csrf) -> csrf.csrfTokenRepository(csrfTokenRepository)
                                 .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()));
         http.userDetailsService(jpaUserDetailsService);
         http.authorizeHttpRequests(

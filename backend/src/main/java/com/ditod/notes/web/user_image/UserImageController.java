@@ -1,7 +1,6 @@
 package com.ditod.notes.web.user_image;
 
 import com.ditod.notes.domain.exception.EntityDoesNotExistException;
-import com.ditod.notes.domain.user.UserRepository;
 import com.ditod.notes.domain.user_image.UserImage;
 import com.ditod.notes.domain.user_image.UserImageRepository;
 import com.ditod.notes.utils.ImageUtils;
@@ -20,13 +19,10 @@ import java.util.UUID;
 public class UserImageController {
     private final UserImageRepository userImageRepository;
     private final ImageUtils imageUtils;
-    private final UserRepository userRepository;
 
-    public UserImageController(UserImageRepository userImageRepository, ImageUtils imageUtils,
-                               UserRepository userRepository) {
+    public UserImageController(UserImageRepository userImageRepository, ImageUtils imageUtils) {
         this.userImageRepository = userImageRepository;
         this.imageUtils = imageUtils;
-        this.userRepository = userRepository;
     }
 
     @GetMapping("/{imageId}")

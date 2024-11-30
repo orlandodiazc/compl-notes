@@ -33,8 +33,8 @@ export const notesQuery = (username: string) =>
     queryFn: () => fetchNotes(username),
   });
 
-export const noteQuery = (params: { username: string; noteId: string }) =>
+export const noteQuery = (noteId: string) =>
   queryOptions({
-    queryKey: ["users", "notes", params],
-    queryFn: () => fetchNote(params),
+    queryKey: ["users", "notes", noteId],
+    queryFn: () => fetchNote(noteId),
   });

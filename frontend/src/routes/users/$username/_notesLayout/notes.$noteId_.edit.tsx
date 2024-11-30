@@ -14,13 +14,13 @@ export const Route = createFileRoute(
   },
   component: NoteEdit,
   loader: ({ params, context: { queryClient } }) => {
-    return queryClient.ensureQueryData(noteQuery(params));
+    return queryClient.ensureQueryData(noteQuery(params.noteId));
   },
 });
 
 export default function NoteEdit() {
   const params = Route.useParams();
-  const { data } = useSuspenseQuery(noteQuery(params));
+  const { data } = useSuspenseQuery(noteQuery(params.noteId));
   const navigate = Route.useNavigate();
   const { mutate, status } = usePutNoteMutation(params);
   function handleSubmit(formData: FormData) {

@@ -71,7 +71,7 @@ export const usePutNoteMutation = (params: {
     mutationFn: (formData: FormData) => putNote({ params, formData }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: noteQuery(params).queryKey,
+        queryKey: noteQuery(params.noteId).queryKey,
       });
     },
   });

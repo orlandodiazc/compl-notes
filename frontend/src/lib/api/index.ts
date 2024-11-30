@@ -36,24 +36,14 @@ export function fetchNotes(
   return api.get(`users/${username}/notes`).json();
 }
 
-export function fetchNote({
-  username,
-  noteId,
-}: {
-  username: string;
-  noteId: string;
-}): Promise<ApiSchema["NoteSummaryResponse"]> {
-  return api.get(`users/${username}/notes/${noteId}`).json();
+export function fetchNote(
+  noteId: string
+): Promise<ApiSchema["NoteSummaryResponse"]> {
+  return api.get(`notes/${noteId}`).json();
 }
 
-export async function deleteNote({
-  username,
-  noteId,
-}: {
-  username: string;
-  noteId: string;
-}) {
-  await api.delete(`users/${username}/notes/${noteId}`, {
+export async function deleteNote(noteId: string) {
+  await api.delete(`notes/${noteId}`, {
     headers: getCsrfTokenHeader(),
   });
 }
